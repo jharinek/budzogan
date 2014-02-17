@@ -1,0 +1,48 @@
+<html>
+<head>
+<script type="text/javascript" src="d3.v3.min.js"></script>
+<title>Creating SVG groups with D3.js</title>
+</head>
+<body>
+<script type="text/javascript">
+
+// http://tutorials.jenkov.com/svg/g-element.html
+
+d3image = d3.select("body");
+
+svgcanvas = d3image.append("svg:svg").attr("width", 700).attr("height", 500);
+
+svg1 = svgcanvas.append("svg:svg").attr("x", 100).attr("y", 100);
+
+circle1 = svg1.append("svg:circle")
+.attr("cx", 40)
+.attr("cy", 40)
+.attr("r", 37.5)
+.call(d3.behavior.drag().on("drag", move));
+
+rect1 = svg1.append("svg:rect")
+.attr("x",0)
+.attr("y",50)
+.attr("width",100)
+.attr("height",75)
+.call(d3.behavior.drag().on("drag", move));
+
+text1 = svg1.append("svg:text")
+.text("Group 1")
+.attr("x", 0)
+.attr("y", 70)
+.style("stroke", "orange")
+.style("stroke-width", 1)
+.style("font-size", "150%")
+.style("fill", "orange")
+.call(d3.behavior.drag().on("drag", move));
+
+function move(){
+    var parent = d3.select(this.parentNode);
+    parent.attr("x", function(){return d3.event.dx + parseInt(parent.attr("x"))})
+            .attr("y", function(){return d3.event.dy + parseInt(parent.attr("y"))});
+};
+
+</script>
+</body>
+</html>
