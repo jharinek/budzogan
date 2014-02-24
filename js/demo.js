@@ -21,7 +21,7 @@ var svg = d3.select('div .myContainer')
 //      .attr("cy", d.y = Math.max(radius, Math.min(height - radius, d3.event.y)));
 //}
 
-
+//create boxes in menu for sentence parts
 menu.selectAll("div .item")
         .data(items)
         .enter()
@@ -68,6 +68,7 @@ $(document).ready(function() {
 var getColor = function() {
     color = $('.ui-draggable-dragging').css("background-color");
 };
+
 var getCoordinates = function() {
     d3.select(".canvas")
             .on("mouseover", function() {
@@ -103,11 +104,13 @@ var getCoordinates = function() {
 
 var appendText = function() {
     if (activeElement != null) {
+        var translatedX = activeElement.childNodes[0].x.baseVal.value;
+        var translatedY = activeElement.childNodes[0].y.baseVal.value
         d3.select(activeElement).append("text")
                 .text(text)
                 .attr({
-                    x:80,
-                    y:25
+                    x:(80 + translatedX),
+                    y:(25 + translatedY)
                 });
         
         text = null;
