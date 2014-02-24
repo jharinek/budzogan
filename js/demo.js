@@ -6,6 +6,7 @@ var text = null;
 
 var svg = d3.select('div .myContainer')
         .append('svg')
+        .style("cursor", "default")
         .attr("class", "canvas");
 
 
@@ -82,6 +83,7 @@ var getCoordinates = function() {
                         .style("fill", color)
                         .on("mouseover", function() {
                             activeElement = this.parentNode;
+        
                         })
                         .on("mouseout", function() {
                             activeElement = null;
