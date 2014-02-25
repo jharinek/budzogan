@@ -87,8 +87,16 @@ var getCoordinates = function() {
                         })
                         .on("mouseout", function() {
                             activeElement = null;
-                        })
-                        .call(d3.behavior.drag().on("drag", move));
+                        }).call(d3.behavior.drag().on("drag", move));
+                        
+                newElement.append("circle")
+                        .attr("cx", 0)
+                        .attr("cy", 25)
+                        .attr("r",  10).call(d3.behavior.drag().on("drag", move));
+                newElement.append("circle")
+                        .attr("cx", 200)
+                        .attr("cy", 25)
+                        .attr("r",  10).call(d3.behavior.drag().on("drag", move));
             });
             d3.select("body").on("mousemove", function() {
                 d3.select(".canvas")
@@ -128,11 +136,24 @@ function move() {
                 return +dragTarget.attr("y") + d3.event.dy;
             });
             
-    var dragText = d3.select(this.parentNode.childNodes[1]);
+    var dragText = d3.select(this.parentNode.childNodes[3]);
     dragText.attr("x", function() {
         return +dragText.attr("x") + d3.event.dx;
     })
             .attr("y", function() {
                 return +dragText.attr("y") + d3.event.dy;
             });
+            
+    var dragCircleLeft  = d3.select(this.parentNode.childNodes[1]);
+    var dragCircleRight = d3.select(this.parentNode.childNodes[2]);
+    
+    dragCircleLeft.attr("cx", function(){ return +dragCircleLeft.attr("cx") + d3.event.dx; })
+                  .attr("cy", function(){ return +dragCircleLeft.attr("cy") + d3.event.dy; });
+          
+    dragCircleRight.attr("cx", function(){ return +dragCircleRight.attr("cx") + d3.event.dx; })
+                   .attr("cy", function(){ return +dragCircleRight.attr("cy") + d3.event.dy; });
 }
+
+var drag_line = svg.append('svg:path')
+        .attr('class', 'dragline')
+        .attr('d', 'M0,0L0,0');
