@@ -6,7 +6,7 @@
 (function( $, undefined ) {
 
 var uuid = 0,
-	runiqueId = /^ui-id-\d+$/;
+	runiqueId = /^ui-id-\d+$/;g
 
 // $.ui might exist from components with no dependencies, e.g., $.ui.position
 $.ui = $.ui || {};
