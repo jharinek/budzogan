@@ -2,11 +2,11 @@ var graph = new joint.dia.Graph;
 
 var paper = new joint.dia.Paper({
     el: $('#paper'),
-    width: 800,
-    height: 600,
+//    width: 800,
+//    height: 600,
     gridSize: 1,
-    model: graph,
-    elementView: GridMovementView
+    model: graph
+//    elementView: GridMovementView
 });
 
 var erd = joint.shapes.erd;
