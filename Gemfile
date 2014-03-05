@@ -21,6 +21,7 @@ gem 'therubyracer', platforms: :ruby
 gem 'coffee-rails', '~> 4.0.0'
 gem 'jquery-rails'
 gem 'uglifier', '>= 1.3.0'
+gem "d3js-rails", "~> 3.1.6"
 
 # internationalization
 gem 'rails-i18n', '~> 4.0.0'
