@@ -1,0 +1,29 @@
+defaults: &defaults
+  devise:
+    key: TODO
+
+  mailer:
+    username: TODO
+    password: TODO
+
+  secret_token: TODO
+
+  enable:
+    registrations: true
+    passwords: true
+    confirmations: true
+    unlocks: true
+    omniauth: true
+
+  poll:
+    default: 60
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
+
