@@ -1,5 +1,9 @@
 Budzogan::Application.routes.draw do
-  devise_for :users
+  root 'static_pages#home'
+
+  devise_for :users, path: '', path_names: { sign_up: :join, sign_in: :login, sign_out: :logout }
+
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
