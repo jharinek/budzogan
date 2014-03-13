@@ -1650,15 +1650,15 @@
         <dia:point val="22.4529,40.3613"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="22.3615,38.8207;24.1515,41.1613"/>
+        <dia:rectangle val="22.3615,38.8208;24.1515,41.1613"/>
       </dia:attribute>
       <dia:attribute name="meta">
         <dia:composite type="dict"/>
       </dia:attribute>
       <dia:attribute name="orth_points">
         <dia:point val="22.4529,40.3613"/>
-        <dia:point val="22.4529,39.6207"/>
-        <dia:point val="22.4115,39.6207"/>
+        <dia:point val="22.4529,39.6208"/>
+        <dia:point val="22.4115,39.6208"/>
         <dia:point val="22.4115,38.8802"/>
       </dia:attribute>
       <dia:attribute name="orth_orient">
@@ -1974,7 +1974,7 @@
         </dia:composite>
         <dia:composite type="umlattribute">
           <dia:attribute name="name">
-            <dia:string>#assignment_id#</dia:string>
+            <dia:string>#exercise_id#</dia:string>
           </dia:attribute>
           <dia:attribute name="type">
             <dia:string>#integer#</dia:string>
@@ -2043,7 +2043,7 @@
         </dia:composite>
         <dia:composite type="umlattribute">
           <dia:attribute name="name">
-            <dia:string>#solution#</dia:string>
+            <dia:string>#student_solution#</dia:string>
           </dia:attribute>
           <dia:attribute name="type">
             <dia:string>#json#</dia:string>
@@ -2508,8 +2508,8 @@
       </dia:attribute>
       <dia:attribute name="orth_points">
         <dia:point val="27.1393,34.4802"/>
-        <dia:point val="30.1584,34.4802"/>
-        <dia:point val="30.1584,37.8016"/>
+        <dia:point val="30.1585,34.4802"/>
+        <dia:point val="30.1585,37.8016"/>
         <dia:point val="33.1776,37.8016"/>
       </dia:attribute>
       <dia:attribute name="orth_orient">
@@ -2579,8 +2579,8 @@
       </dia:attribute>
       <dia:attribute name="orth_points">
         <dia:point val="37.5204,34.6016"/>
-        <dia:point val="37.5204,33.0501"/>
-        <dia:point val="53.4298,33.0501"/>
+        <dia:point val="37.5204,33.05"/>
+        <dia:point val="53.4298,33.05"/>
         <dia:point val="53.4298,31.4985"/>
       </dia:attribute>
       <dia:attribute name="orth_orient">
@@ -2892,7 +2892,7 @@
         <dia:point val="47.932,25.4985"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="40.3572,24.6985;47.982,26.315"/>
+        <dia:rectangle val="40.3573,24.6985;47.982,26.315"/>
       </dia:attribute>
       <dia:attribute name="meta">
         <dia:composite type="dict"/>
@@ -2901,7 +2901,7 @@
         <dia:point val="47.932,25.4985"/>
         <dia:point val="44.1696,25.4985"/>
         <dia:point val="44.1696,25.515"/>
-        <dia:point val="40.4072,25.515"/>
+        <dia:point val="40.4073,25.515"/>
       </dia:attribute>
       <dia:attribute name="orth_orient">
         <dia:enum val="0"/>
@@ -2927,7 +2927,7 @@
         <dia:point val="-8.55097,5.40985"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="-8.60097,5.35985;0.0840338,11.8599"/>
+        <dia:rectangle val="-8.60097,5.35985;0.08403,11.8599"/>
       </dia:attribute>
       <dia:attribute name="elem_corner">
         <dia:point val="-8.55097,5.40985"/>
@@ -3529,16 +3529,16 @@
         <dia:boolean val="false"/>
       </dia:attribute>
       <dia:attribute name="obj_pos">
-        <dia:point val="13.1648,9.74122"/>
+        <dia:point val="13.1649,9.74122"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="13.1148,8.94122;17.1957,10.5527"/>
+        <dia:rectangle val="13.1149,8.94122;17.1957,10.5527"/>
       </dia:attribute>
       <dia:attribute name="meta">
         <dia:composite type="dict"/>
       </dia:attribute>
       <dia:attribute name="orth_points">
-        <dia:point val="13.1648,9.74122"/>
+        <dia:point val="13.1649,9.74122"/>
         <dia:point val="15.0142,9.74122"/>
         <dia:point val="15.0142,9.75269"/>
         <dia:point val="17.1457,9.75269"/>
