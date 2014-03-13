@@ -3,6 +3,8 @@ Budzogan::Application.routes.draw do
 
   devise_for :users, path: '', path_names: { sign_up: :join, sign_in: :login, sign_out: :logout }
 
+  get 'solve', to: 'tasks#solve'
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
