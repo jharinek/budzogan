@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
   validates :last,  format: { with: /\A\p{Lu}\p{Ll}*\z/u }, allow_blank: true
 
   def login=(value)
-    write_attribute :login, value,to_s.downcase
+    write_attribute :login, value.to_s.downcase
 
     self.nick ||= login
   end
