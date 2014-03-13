@@ -22001,7 +22001,7 @@ joint.shapes.basic.TextBlock = joint.shapes.basic.Rect.extend({
 
         type: 'basic.TextBlock',
 
-        // see joint.css for the element styles
+        // see joint.css.scss for the element styles
 
         content: ''
 
