@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Budzogan</title>
-  <%= stylesheet_link_tag    "application", media: "all" %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
-  <%= render 'shared/flash_messages' %>
-
-<%= yield %>
-
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title> <%= default_title %> </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%= stylesheet_link_tag 'application', media: :all %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body>
+    <%= render 'layouts/header' %>
+    <div class="container">
+      <%= render 'shared/flash_messages' %>
+      <%= yield %>
+    </div>
+    <%= render 'layouts/footer' %>
+  </body>
 </html>

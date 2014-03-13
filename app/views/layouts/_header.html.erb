@@ -1,0 +1,22 @@
+<header id="header-navbar" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+      </button>
+      <%= navbar_logo_tag default_title %>
+    </div>
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li><%= link_to "Úlohy" %></li>
+        <li><%= link_to "Nová úloha" %></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><%= link_to "Prihlásiť", new_user_session_path %></li>
+        <li><%= link_to "Registrovať", new_user_registration_path%></li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<%= yield :header %>
