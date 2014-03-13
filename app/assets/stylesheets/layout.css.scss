@@ -1,0 +1,17 @@
+@import 'mixins';
+@import 'variables';
+
+@import 'bootstrap';
+
+html {
+  height: 100%;
+  overflow-y: scroll;
+}
+
+body {
+  margin-top: $navbar-height;
+}
+
+.container > section:first-child{
+  padding-top: $navbar-height;
+}
