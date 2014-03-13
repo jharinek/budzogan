@@ -15,3 +15,7 @@ body {
 .container > section:first-child{
   padding-top: $navbar-height;
 }
+
+.well {
+  overflow: hidden;
+}
