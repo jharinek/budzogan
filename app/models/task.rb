@@ -1,3 +1,7 @@
 class Task < ActiveRecord::Base
-  # TODO (jharinek) Add associations with other tables
+  belongs_to :exercise
+  belongs_to :sentence
+
+  has_many :students, class_name: :User, through: :task_assignments
+
 end

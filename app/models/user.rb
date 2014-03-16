@@ -11,6 +11,9 @@ class User < ActiveRecord::Base
 
          authentication_keys: [:login]
 
+  has_many :work_groups, through: :enrollments
+  has_many :tasks, through: :task_assignments
+
   validates :login, format: { with: /\A[A-Za-z0-9]+\z/ }, presence: true, uniqueness: { case_sensitive: false }
   validates :nick,  format: { with: /\A[A-Za-z0-9]+\z/ }, presence: true, uniqueness: { case_sensitive: false }
 
