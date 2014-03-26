@@ -1,6 +1,22 @@
 class TasksController < ApplicationController
-  def solve
-    # TODO (jharinek) Refactor according to sentence model
-    @sentence = "Veta na rozbor".split
+
+  def index
+    @tasks = current_user.tasks
+  end
+
+  def new
+
+  end
+
+  def create
+
+  end
+
+  def show
+
+  end
+
+  def edit
+    @sentence = Task.find_by(id: params[:id]).sentence.content.split
   end
 end
