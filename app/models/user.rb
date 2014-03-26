@@ -11,7 +11,10 @@ class User < ActiveRecord::Base
 
          authentication_keys: [:login]
 
+  has_many :enrollments, dependent: :destroy
   has_many :work_groups, through: :enrollments
+
+  has_many :task_assignments, dependent: :destroy
   has_many :tasks, through: :task_assignments
 
   validates :login, format: { with: /\A[A-Za-z0-9]+\z/ }, presence: true, uniqueness: { case_sensitive: false }
