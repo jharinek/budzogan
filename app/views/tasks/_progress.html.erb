@@ -1,0 +1,7 @@
+<% if task.state == 0 %>
+  <span class="glyphicon glyphicon-remove-circle circle-red"></span>
+<% elsif task.state == 1 %>
+  <span class="glyphicon glyphicon-ok-circle circle-orange"></span>
+<% else %>
+  <span class="glyphicon glyphicon-ok-circle circle-green"></span>
+<% end %>
