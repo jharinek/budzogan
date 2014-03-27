@@ -21,6 +21,20 @@ paper.on('cell:pointerdblclick', function(cellView, evt, x, y) {
     link(cellView.model);
 });
 
+// identify active element
+graph.on('add', function() {
+    var last = $('.Entity').last();
+    if(last.size() != 0){
+        d3.select("#"+last[0].id)
+            .on("mouseover", function() {
+                activeElement = this;
+            })
+            .on("mouseout", function() {
+                activeElement = null;
+            })
+    }
+});
+
 var diagram = joint.shapes.erd;
 
 var element = function(elm, x, y, color) {
@@ -54,6 +68,15 @@ var color = null;
 var activeElement = null;
 var text = null;
 
+// create lines to represent connections between boxes
+lines_menu.selectAll("div .item-line")
+    .data(connections)
+    .enter()
+    .append('div')
+    .attr('class', 'item-line line-draggable')
+    .append('hr')
+//    .attr('class', 'draggable')
+    .attr('size', '3');
 // create boxes in boxes_menu for sentence parts
 boxes_menu.selectAll("div .item-box")
     .data(items)
@@ -69,22 +92,14 @@ boxes_menu.selectAll("div .item-box")
         return d[0];
     });
 
-// create lines to represent connections between boxes
-lines_menu.selectAll("div .item-line")
-    .data(connections)
-    .enter()
-    .append('div')
-    .attr('class', 'item-line draggable')
-    .append('hr')
-    .attr('size', '3');
-
 //set draggable elements
 $(document).ready(function() {
     //dragable rectangles
     $(".draggable").draggable({
         zIndex: 1000,
         helper: "clone",
-        revert: "invalid"
+        revert: "invalid",
+        revertDuration: '200'
     })
         .on("dragstart", getColor)
         .on("dragstop", createElement);
@@ -93,12 +108,23 @@ $(document).ready(function() {
     $(".text-draggable").draggable({
         helper: "clone",
         revert: "invalid",
+        revertDuration: '200',
         zIndex: 1000
     })
         .on("dragstart", function() {
             text = $(this).text()
         })
         .on("dragstop", appendText);
+
+    //dragable lines
+    $(".line-draggable").draggable({
+        zIndex: 1000,
+        helper: "clone",
+        revert: "invalid",
+        revertDuration: '200'
+    })
+        .on("dragstart", getColor)
+        .on("dragstop", createElement);
 
 //droppable container
     $(".myContainer").droppable({
@@ -111,17 +137,35 @@ var getColor = function() {
     color = $('.ui-draggable-dragging').css("background-color");
 };
 
-var createElement = function() {
-    d3.select("#v_5")
-        .on("mouseover", function() {
-            var coordinates = d3.mouse(d3.select("#v_5")[0].pop());
+var createElement = function () {
+    if ($('.ui-draggable-dragging').prop("class").indexOf("item-box") >= 0) {
+        d3.select("#v_5")
+            .on("mouseover", function () {
+                var coordinates = d3.mouse(d3.select("#v_5")[0].pop());
+// TODO (jharinek) why this jumps out of scope??
+                element(diagram.Entity, coordinates[0], coordinates[1], color);
+            });
+    }
+    if((activeElement != null) && ($('.ui-draggable-dragging').prop("class").indexOf("item-line") >= 0)) {
+        var model = toModel(activeElement);
+        link(model);
+    }
 
-            element(diagram.Entity, coordinates[0], coordinates[1], color);
-        });
-    d3.select("body").on("mousemove", function() {
+
+    d3.select("body").on("mousemove", function () {
         d3.select("#v_5")
             .on("mouseover", null);
     });
+};
+
+var toModel = function() {
+    var model = null;
+    graph.get('cells').find(function(cell) {
+        if(cell.id == activeElement.attributes[1].value) {
+            model = cell;
+        }
+    });
+    return model;
 };
 
 var appendText = function() {
