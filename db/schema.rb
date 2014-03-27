@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140316155140) do
+ActiveRecord::Schema.define(version: 20140327011333) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -81,12 +81,13 @@ ActiveRecord::Schema.define(version: 20140316155140) do
   add_index "task_assignments", ["user_id"], name: "index_task_assignments_on_user_id", using: :btree
 
   create_table "tasks", force: true do |t|
-    t.integer  "sentence_id",      null: false
-    t.integer  "exercise_id",      null: false
+    t.integer  "sentence_id",                  null: false
+    t.integer  "exercise_id",                  null: false
     t.json     "teacher_solution"
     t.json     "student_solution"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "state",            default: 0, null: false
   end
 
   create_table "users", force: true do |t|
