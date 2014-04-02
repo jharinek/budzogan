@@ -1,16 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 //jointjs to handle svg canvas and actions on it
 var graph = new joint.dia.Graph;
 
 //TODO (jharinek) supply custom Element view
 var paper = new joint.dia.Paper({
     el:       $('#paper'),
-    class: 'canvas',
     gridSize: 80,
     model:    graph
 });
@@ -38,7 +31,7 @@ graph.on('add', function() {
 var diagram = joint.shapes.erd;
 
 var element = function(elm, x, y, color) {
-    var cell = new elm({ position: { x: x, y: y }, attrs: { text: { text: "A" } }});
+    var cell = new elm({ position: { x: x, y: y }, attrs: { text: { text: "" }, polygon: { fill: color }}});
     graph.addCell(cell);
     return cell;
 };
@@ -67,6 +60,7 @@ var lines_menu = d3.select('div .itemized#lines');
 var color = null;
 var activeElement = null;
 var text = null;
+var validContainer = false;
 
 // create lines to represent connections between boxes
 lines_menu.selectAll("div .item-line")
@@ -96,7 +90,6 @@ boxes_menu.selectAll("div .item-box")
 $(document).ready(function() {
     //dragable rectangles
     $(".draggable").draggable({
-        zIndex: 1000,
         helper: "clone",
         revert: "invalid",
         revertDuration: '200'
@@ -104,12 +97,20 @@ $(document).ready(function() {
         .on("dragstart", getColor)
         .on("dragstop", createElement);
 
+
     //draggable text
     $(".text-draggable").draggable({
         helper: "clone",
-        revert: "invalid",
         revertDuration: '200',
-        zIndex: 1000
+        start: function(event, ui){
+            $(this).draggable("option", "revert", "invalid");
+        },
+        drag: function(event, ui){
+            if(validContainer){
+                $(this).draggable("option", "revert", false);
+                validContainer = false;
+            }
+        }
     })
         .on("dragstart", function() {
             text = $(this).text()
@@ -118,10 +119,17 @@ $(document).ready(function() {
 
     //dragable lines
     $(".line-draggable").draggable({
-        zIndex: 1000,
         helper: "clone",
-        revert: "invalid",
-        revertDuration: '200'
+        revertDuration: '200',
+        start: function(event, ui){
+            $(this).draggable("option", "revert", "invalid");
+        },
+        drag: function(event, ui){
+            if(validContainer){
+                $(this).draggable("option", "revert", false);
+                validContainer = false;
+            }
+        }
     })
         .on("dragstart", getColor)
         .on("dragstop", createElement);
@@ -142,7 +150,6 @@ var createElement = function () {
         d3.select("#v_5")
             .on("mouseover", function () {
                 var coordinates = d3.mouse(d3.select("#v_5")[0].pop());
-// TODO (jharinek) why this jumps out of scope??
                 element(diagram.Entity, coordinates[0], coordinates[1], color);
             });
     }
@@ -176,3 +183,11 @@ var appendText = function() {
     }
     text = null;
 };
+
+$(document).ready(function(){
+    $('.myContainer').mouseup(function(){
+        if(activeElement){
+            validContainer = true;
+        }
+    });
+});

@@ -17,6 +17,7 @@
 #= require bootstrap
 #= require jquery.ui.all
 #= require d3
+#= require jquery.sortElements
 #= require analysis_graph
 #
 #= require_tree .
