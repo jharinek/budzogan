@@ -38,7 +38,7 @@ graph.on('add', function() {
 var diagram = joint.shapes.erd;
 
 var element = function(elm, x, y, color) {
-    var cell = new elm({ position: { x: x, y: y }, attrs: { text: { text: "" }, polygon: { fill: color }}});
+    var cell = new elm({ position: { x: x, y: y }, attrs: { text: { text: "A" } }});
     graph.addCell(cell);
     return cell;
 };
@@ -170,15 +170,9 @@ var toModel = function() {
 
 var appendText = function() {
     if (activeElement != null) {
-        var translatedX = activeElement.childNodes[0].x.baseVal.value;
-        var translatedY = activeElement.childNodes[0].y.baseVal.value
-        d3.select(activeElement).append("text")
-            .text(text)
-            .attr({
-                x:(80 + translatedX),
-                y:(25 + translatedY)
-            });
+        var model       = toModel(activeElement);
 
-        text = null;
+        model.attr({ text: { text: text }});
     }
+    text = null;
 };
