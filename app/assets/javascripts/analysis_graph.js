@@ -20,10 +20,23 @@ graph.on('add', function() {
     if(last.size() != 0){
         d3.select("#"+last[0].id)
             .on("mouseover", function() {
-                activeElement = this;
+                activeElement = toModel(this);
+                originalColor = activeElement.attr("polygon").fill
+                activeElement.attr({
+                   polygon: { stroke: 'orange' }
+                });
+                validContainer = true;
+
+
             })
             .on("mouseout", function() {
-                activeElement = null;
+                activeElement.attr({
+                    polygon: { stroke: originalColor }
+                });
+                activeElement  = null;
+                originalColor  = null;
+                validContainer = false;
+
             })
     }
 });
@@ -31,7 +44,7 @@ graph.on('add', function() {
 var diagram = joint.shapes.erd;
 
 var element = function(elm, x, y, color) {
-    var cell = new elm({ position: { x: x, y: y }, attrs: { text: { text: "" }, polygon: { fill: color }}});
+    var cell = new elm({ position: { x: x, y: y }, attrs: { text: { text: "" }, polygon: { fill: color, stroke: color }}});
     graph.addCell(cell);
     return cell;
 };
@@ -59,6 +72,7 @@ var boxes_menu = d3.select('div .itemized#boxes');
 var lines_menu = d3.select('div .itemized#lines');
 var color = null;
 var activeElement = null;
+var originalColor = null;
 var text = null;
 var validContainer = false;
 
@@ -69,8 +83,8 @@ lines_menu.selectAll("div .item-line")
     .append('div')
     .attr('class', 'item-line line-draggable')
     .append('hr')
-//    .attr('class', 'draggable')
     .attr('size', '3');
+
 // create boxes in boxes_menu for sentence parts
 boxes_menu.selectAll("div .item-box")
     .data(items)
@@ -90,6 +104,7 @@ boxes_menu.selectAll("div .item-box")
 $(document).ready(function() {
     //dragable rectangles
     $(".draggable").draggable({
+        zIndex: 1000,
         helper: "clone",
         revert: "invalid",
         revertDuration: '200'
@@ -108,7 +123,6 @@ $(document).ready(function() {
         drag: function(event, ui){
             if(validContainer){
                 $(this).draggable("option", "revert", false);
-                validContainer = false;
             }
         }
     })
@@ -119,7 +133,16 @@ $(document).ready(function() {
 
     //dragable lines
     $(".line-draggable").draggable({
-        helper: "clone",
+        helper: function(){
+            var el = $('<span>')
+                .attr('class', 'glyphicon glyphicon-minus');
+//                .style({
+//                    position: 'absolute',
+//                    left: 1,
+//                    top: 2
+//                });
+            return el;
+        },
         revertDuration: '200',
         start: function(event, ui){
             $(this).draggable("option", "revert", "invalid");
@@ -153,9 +176,8 @@ var createElement = function () {
                 element(diagram.Entity, coordinates[0], coordinates[1], color);
             });
     }
-    if((activeElement != null) && ($('.ui-draggable-dragging').prop("class").indexOf("item-line") >= 0)) {
-        var model = toModel(activeElement);
-        link(model);
+    if((activeElement != null) && ($('.ui-draggable-dragging').prop("class").indexOf("glyphicon") >= 0)) {
+        link(activeElement);
     }
 
 
@@ -165,10 +187,10 @@ var createElement = function () {
     });
 };
 
-var toModel = function() {
+var toModel = function(element) {
     var model = null;
     graph.get('cells').find(function(cell) {
-        if(cell.id == activeElement.attributes[1].value) {
+        if(cell.id == element.attributes[1].value) {
             model = cell;
         }
     });
@@ -177,17 +199,7 @@ var toModel = function() {
 
 var appendText = function() {
     if (activeElement != null) {
-        var model       = toModel(activeElement);
-
-        model.attr({ text: { text: text }});
+        activeElement.attr({ text: { text: text }});
     }
     text = null;
 };
-
-$(document).ready(function(){
-    $('.myContainer').mouseup(function(){
-        if(activeElement){
-            validContainer = true;
-        }
-    });
-});
