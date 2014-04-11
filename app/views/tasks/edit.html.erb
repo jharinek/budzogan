@@ -2,8 +2,8 @@
   <div class="col-md-offset-3 col-md-9">
     <div class="well">
       <p>
-        <% @sentence.each do |word| %>
-          <span class="text-draggable"><%= word %></span>
+        <% @sentence.each_with_index do |word, index| %>
+          <span class="text-draggable" id="text-<%= index %>"><%= word %></span>
         <% end %>
       </p>
     </div>
@@ -16,6 +16,19 @@
     </div>
     <div class="well itemized" id="lines">
       <h2>Vetné sklady</h2>
+      <!--<div class="line-draggable">-->
+        <!--<span class="glyphicon glyphicon-minus"></span></br>-->
+        <!--<span class="glyphicon glyphicon-minus"></span>-->
+      <!--</div>-->
+      <!--<div class="line-draggable">-->
+        <!--<span class="glyphicon glyphicon-minus"></span>-->
+      <!--</div>-->
+      <!--<div class="line-draggable">-->
+        <!--<span class="glyphicon glyphicon-minus"></span>-->
+      <!--</div>-->
+    </div>
+    <div class ="well itemized" id="properties">
+      <h2>Vlastnosti</h2>
     </div>
   </div>
   <div class="col-md-9 myContainer" id="paper">
