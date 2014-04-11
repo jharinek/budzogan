@@ -17,14 +17,14 @@ ActiveRecord::Schema.define(version: 20140327011333) do
   enable_extension "plpgsql"
 
   create_table "enrollments", force: true do |t|
-    t.integer  "group_id"
+    t.integer  "work_group_id"
     t.integer  "student_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "enrollments", ["group_id"], name: "index_enrollments_on_group_id", using: :btree
   add_index "enrollments", ["student_id"], name: "index_enrollments_on_student_id", using: :btree
+  add_index "enrollments", ["work_group_id"], name: "index_enrollments_on_work_group_id", using: :btree
 
   create_table "exercise_templates", force: true do |t|
     t.string   "text",       default: "", null: false
@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 20140327011333) do
 
   create_table "exercises", force: true do |t|
     t.integer  "template_id"
-    t.integer  "group_id"
+    t.integer  "work_group_id"
     t.integer  "sentence_length"
     t.string   "sentence_difficulty"
     t.string   "sentence_source"
@@ -42,8 +42,8 @@ ActiveRecord::Schema.define(version: 20140327011333) do
     t.datetime "updated_at"
   end
 
-  add_index "exercises", ["group_id"], name: "index_exercises_on_group_id", using: :btree
   add_index "exercises", ["template_id"], name: "index_exercises_on_template_id", using: :btree
+  add_index "exercises", ["work_group_id"], name: "index_exercises_on_work_group_id", using: :btree
 
   create_table "sentences", force: true do |t|
     t.string   "content"

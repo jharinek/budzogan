@@ -2,7 +2,7 @@ class CreateExercises < ActiveRecord::Migration
   def change
     create_table :exercises do |t|
       t.integer :template_id
-      t.integer :group_id
+      t.integer :work_group_id
 
       t.integer :sentence_length
       t.string :sentence_difficulty
@@ -12,6 +12,6 @@ class CreateExercises < ActiveRecord::Migration
     end
 
     add_index :exercises, :template_id
-    add_index :exercises, :group_id
+    add_index :exercises, :work_group_id
   end
 end
