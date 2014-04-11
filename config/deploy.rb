@@ -18,6 +18,7 @@ set :use_sudo, false
 
 set :rvm_ruby_string, :local         # use the same ruby as used locally for deployment
 set :rvm_autolibs_flag, 'read-only'  # more info: rvm help autolibs
+set :rvm_ruby_version, 'ruby-2.1.0@budzogan'
 
 set :deploy_via, :remote_cache
 set :git_enable_submodules, 1
