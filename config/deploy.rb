@@ -73,7 +73,6 @@ namespace :deploy do
   [:start, :stop, :restart, :upgrade].each do |command|
     desc "#{command.to_s.capitalize} nginx server"
     task command, roles: :app, except: { no_release: true } do
-    end
       run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
     end
   end
