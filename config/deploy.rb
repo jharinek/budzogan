@@ -73,7 +73,8 @@ namespace :deploy do
   [:start, :stop, :restart, :upgrade].each do |command|
     desc "#{command.to_s.capitalize} nginx server"
     task command, roles: :app, except: { no_release: true } do
-      run "/etc/init.d/unicorn-#{application}-#{rails_env} #{command}"
+    end
+      run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
     end
   end
 
@@ -84,11 +85,11 @@ namespace :deploy do
   end
 
   after 'deploy', 'deploy:cleanup'
-  after 'deploy:update_code', 'deploy:symlink_shared'#, 'db:create_release', 'deploy:migrate', 'db:seed'
+  after 'deploy:update_code', 'deploy:symlink_shared', 'db:create_release', 'deploy:migrate', 'db:seed'
 
-  #after 'deploy:update_code' do
-  #  run "cd #{release_path}; RAILS_ENV=#{rails_env} bundle exec rake assets:precompile"
-  #end
+  after 'deploy:update_code' do
+    run "cd #{release_path}; RAILS_ENV=#{rails_env} bundle exec rake assets:precompile"
+  end
 end
 
 # set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
@@ -106,10 +107,10 @@ end
 # these http://github.com/rails/irs_process_scripts
 
 # If you are using Passenger mod_rails uncomment this:
-# namespace :deploy do
+#namespace :deploy do
 #   task :start do ; end
 #   task :stop do ; end
 #   task :restart, :roles => :app, :except => { :no_release => true } do
 #     run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
 #   end
-# end
+#end
