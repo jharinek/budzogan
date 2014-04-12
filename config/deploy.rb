@@ -1,6 +1,6 @@
 require 'rvm/capistrano'
 require 'bundler/capistrano'
-require 'whenever/capistrano'
+#require 'whenever/capistrano'
 
 set :stages, [:staging, :production]
 
@@ -26,7 +26,7 @@ set :ssh_options, { forward_agent: true }
 set :keep_releases, 5
 
 # Whenever
-set :whenever_command, "RAILS_ENV=#{rails_env} bundle exec whenever"
+#set :whenever_command, "RAILS_ENV=#{rails_env} bundle exec whenever"
 
 default_run_options[:pty] = true
 
