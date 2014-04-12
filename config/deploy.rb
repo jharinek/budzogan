@@ -84,7 +84,7 @@ namespace :deploy do
   end
 
   after 'deploy', 'deploy:cleanup'
-  after 'deploy:update_code', 'deploy:symlink_shared', 'db:create_release', 'deploy:migrate', 'db:seed'
+  after 'deploy:update_code', 'deploy:symlink_shared'#, 'db:create_release', 'deploy:migrate', 'db:seed'
 
   after 'deploy:update_code' do
     run "cd #{release_path}; RAILS_ENV=#{rails_env} bundle exec rake assets:precompile"
