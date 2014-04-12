@@ -86,9 +86,9 @@ namespace :deploy do
   after 'deploy', 'deploy:cleanup'
   after 'deploy:update_code', 'deploy:symlink_shared'#, 'db:create_release', 'deploy:migrate', 'db:seed'
 
-  after 'deploy:update_code' do
-    run "cd #{release_path}; RAILS_ENV=#{rails_env} bundle exec rake assets:precompile"
-  end
+  #after 'deploy:update_code' do
+  #  run "cd #{release_path}; RAILS_ENV=#{rails_env} bundle exec rake assets:precompile"
+  #end
 end
 
 # set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
