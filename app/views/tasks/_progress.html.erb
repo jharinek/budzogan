@@ -1,7 +1,13 @@
 <% if task.state == 0 %>
-  <span class="glyphicon glyphicon-remove-circle circle-red"></span>
+  <div class="progress">
+    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+  </div>
 <% elsif task.state == 1 %>
-  <span class="glyphicon glyphicon-ok-circle circle-orange"></span>
+  <div class="progress">
+    <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+  </div>
 <% else %>
-  <span class="glyphicon glyphicon-ok-circle circle-green"></span>
+  <div class="progress">
+    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+  </div>
 <% end %>
