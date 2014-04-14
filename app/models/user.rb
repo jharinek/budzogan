@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
 
          authentication_keys: [:login]
 
-  has_many :enrollments, dependent: :destroy
+  has_many :enrollments, dependent: :destroy, foreign_key: :student_id
   has_many :work_groups, through: :enrollments
 
   has_many :task_assignments, dependent: :destroy
