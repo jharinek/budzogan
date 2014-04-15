@@ -10,12 +10,11 @@
       </tr>
       </thead>
       <tbody>
-      <% @groups.each do |group| %>
+      <% @groups.each_with_index do |group, index| %>
           <tr>
-            <td><%= "#{group.id}" %></td>
-            <td><%= link_to task.exercise.template.text, edit_task_path(task.id) %></td>
-            <td><%= group.id %></td>
-            <td><%= "#{task.sentence.content}" %></td>
+            <td><%= index+1 %></td>
+            <td><%= link_to group.name, work_group_path(id: group.id) %></td>
+            <td><%= group.students.count %></td>
           </tr>
       <% end %>
       </tbody>
