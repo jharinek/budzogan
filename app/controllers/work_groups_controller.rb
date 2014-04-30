@@ -29,6 +29,11 @@ class WorkGroupsController < ApplicationController
     @groups = WorkGroup.where(teacher: current_user).first
   end
 
+  def edit
+    @workgroup = WorkGroup.where(id: params[:id]).first
+    @students  = @workgroup.students
+  end
+
   private
   def work_group_params
     params.require(:work_group).permit(:name).merge(teacher: current_user)
