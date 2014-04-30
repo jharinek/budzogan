@@ -1,0 +1,44 @@
+// Style the environment for solving tasks
+.item-box.draggable.ui-draggable, .text-draggable, g {
+  cursor: move;
+}
+
+.item-line {
+    cursor: url(<%= asset_path 'cursors/horizontal_line.png' %>), move;
+}
+
+#predicative {
+    cursor: url(<%= asset_path 'cursors/horizontal_line.png' %>), move;
+}
+
+#determinative {
+    cursor: url(<%= asset_path 'cursors/inclined_line.png' %>), move;
+}
+
+#assignative {
+    cursor: url(<%= asset_path 'cursors/horizontal_line.png' %>), move;
+}
+
+.item-box {
+  width:   153px;
+  height:  62px;
+  outline: 5px solid white;
+  float:   left;
+}
+
+.item-text {
+  font-size:  200%;
+  text-align: center;
+}
+
+.item-line {
+  width: 100%;
+  height: 100%;
+}
+
+hr {
+  color:            #000000;
+  background-color: #000000;
+  height:           3px;
+  width:            60%;
+}
