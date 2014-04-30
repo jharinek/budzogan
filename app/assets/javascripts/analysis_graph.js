@@ -8,8 +8,6 @@ var paper = new joint.dia.Paper({
     model:    graph
 });
 
-//$('svg').addClass('canvas');
-
 paper.on('cell:pointerdblclick', function(cellView, evt, x, y) {
     link(cellView.model);
 });
@@ -129,7 +127,10 @@ $(document).ready(function() {
         .on("dragstart", function() {
             text = $(this).text()
         })
-        .on("dragstop", appendText);
+        .on("dragstop", function() {
+            $(this).draggable('disable');
+            appendText();
+        });
 
     //dragable lines
     $(".line-draggable").draggable({
