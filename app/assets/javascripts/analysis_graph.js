@@ -179,7 +179,7 @@ var createElement = function () {
                 element(diagram.Entity, coordinates[0], coordinates[1], color);
             });
     }
-    if((activeElement != null) && ($('.ui-draggable-dragging').prop("class").indexOf("glyphicon") >= 0)) {
+    if((activeElement != null) && ($('.ui-draggable-dragging').prop("class").indexOf("line-draggable") >= 0)) {
         link(activeElement);
     }
 
