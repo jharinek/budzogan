@@ -4,15 +4,22 @@
 }
 
 .item-line {
-    cursor: url(<%= asset_path 'cursors/horizontal_line.png' %>), move;
 }
 
 #predicative {
-    cursor: url(<%= asset_path 'cursors/horizontal_line.png' %>), move;
+    cursor: move;
+    background:url(<%= asset_path 'cursors/horizontal_line.png' %>) left top;
+    width:50px;
+    height:25px;
+    display: block;
 }
 
 #determinative {
-    cursor: url(<%= asset_path 'cursors/inclined_line.png' %>), move;
+    cursor: move;
+    background:url(<%= asset_path 'cursors/inclined_line.png' %>) left top;
+    width:30px;
+    height:20px;
+    display: block;
 }
 
 #assignative {

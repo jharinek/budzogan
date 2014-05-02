@@ -75,13 +75,13 @@ var text = null;
 var validContainer = false;
 
 // create lines to represent connections between boxes
-lines_menu.selectAll("div .item-line")
-    .data(connections)
-    .enter()
-    .append('div')
-    .attr('class', 'item-line line-draggable')
-    .append('hr')
-    .attr('size', '3');
+//lines_menu.selectAll("div .item-line")
+//    .data(connections)
+//    .enter()
+//    .append('div')
+//    .attr('class', 'item-line line-draggable')
+//    .append('hr')
+//    .attr('size', '3');
 
 // create boxes in boxes_menu for sentence parts
 boxes_menu.selectAll("div .item-box")
@@ -134,16 +134,18 @@ $(document).ready(function() {
 
     //dragable lines
     $(".line-draggable").draggable({
-        helper: function(){
-            var el = $('<span>')
-                .attr('class', 'glyphicon glyphicon-minus');
-//                .style({
-//                    position: 'absolute',
-//                    left: 1,
-//                    top: 2
-//                });
-            return el;
-        },
+        helper: 'clone',
+//            function(){
+//            var el = $('<span>')
+//                .attr('class', 'glyphicon glyphicon-minus')
+//                .attr('id', '#dragged-line');
+////                .style({
+////                    position: 'absolute',
+////                    left: 1,
+////                    top: 2
+////                });
+//            return el;
+//        },
         revertDuration: '200',
         start: function(event, ui){
             $(this).draggable("option", "revert", "invalid");
@@ -204,3 +206,12 @@ var appendText = function() {
     }
     text = null;
 };
+
+//$(document).mousedown(function(event) {
+//    $('#dragged-line').position({
+//        my: "left bottom",
+//        of: event,
+//        collision: "fit"
+//    });
+//});
+//$('body').mousemove(function(event){alert(event.pageX);})
