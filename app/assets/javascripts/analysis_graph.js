@@ -43,7 +43,16 @@ var diagram = joint.shapes.erd;
 
 var element = function(elm, x, y, color) {
     var cell = new elm({ position: { x: x, y: y }, attrs: { text: { text: "" }, polygon: { fill: color, stroke: color }}});
+    var circle = circleDelete(x-5, y-5);
+    var toolbox = circleToolbox(x+12,y-5);
+
+    cell.embed(circle);
+    cell.embed(toolbox)
+
     graph.addCell(cell);
+    graph.addCell(circle);
+    graph.addCell(toolbox);
+
     return cell;
 };
 
@@ -215,3 +224,106 @@ var appendText = function() {
 //    });
 //});
 //$('body').mousemove(function(event){alert(event.pageX);})
+
+// Define custom Entity element
+
+joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
+    markup: '<g class="rotatable"><g class="scalable"><polygon class="outer"><circle class="delete-button"/></polygon><polygon class="inner"/></g><text/></g>',
+
+    defaults: joint.util.deepSupplement({
+
+        type: 'erd.EntityDeletable',
+        size: { width: 150, height: 60 },
+        attrs: {
+            '.delete-button': {
+                fill: 'blue', stroke: 'blue',
+                ref: '.outer', 'ref-x': .5, 'ref-y': .5,
+                'x-alignment': 'right', 'y-alignment': 'top',
+                size: { width: 20, height: 20 }
+            }
+        }
+
+    }, joint.shapes.erd.Entity.prototype.defaults)
+});
+
+
+// Create a custom element.
+// ------------------------
+
+joint.shapes.html = {};
+joint.shapes.html.Element = joint.shapes.erd.Entity.extend({
+    defaults: joint.util.deepSupplement({
+        type: 'html.Element'
+    }, joint.shapes.erd.Entity.prototype.defaults)
+});
+
+// Create a custom view for that element that displays an HTML div above it.
+// -------------------------------------------------------------------------
+
+joint.shapes.html.ElementView = joint.dia.ElementView.extend({
+
+    template: [
+        '<div class="html-element">',
+        '<button class="delete">x</button>',
+        '</div>'
+    ].join(''),
+
+    initialize: function() {
+        _.bindAll(this, 'updateBox');
+        joint.dia.ElementView.prototype.initialize.apply(this, arguments);
+
+        this.$box = $(_.template(this.template)());
+        // Prevent paper from handling pointerdown.
+        this.$box.find('input,select').on('mousedown click', function(evt) { evt.stopPropagation(); });
+        // This is an example of reacting on the input change and storing the input data in the cell model.
+        this.$box.find('input').on('change', _.bind(function(evt) {
+            this.model.set('input', $(evt.target).val());
+        }, this));
+        this.$box.find('select').on('change', _.bind(function(evt) {
+            this.model.set('select', $(evt.target).val());
+        }, this));
+        this.$box.find('select').val(this.model.get('select'));
+        this.$box.find('.delete').on('click', _.bind(this.model.remove, this.model));
+        // Update the box position whenever the underlying model changes.
+        this.model.on('change', this.updateBox, this);
+        // Remove the box when the model gets removed from the graph.
+        this.model.on('remove', this.removeBox, this);
+
+        this.updateBox();
+    },
+    render: function() {
+        joint.dia.ElementView.prototype.render.apply(this, arguments);
+        this.paper.$el.prepend(this.$box);
+        this.updateBox();
+        return this;
+    },
+    updateBox: function() {
+        // Set the position and dimension of the box so that it covers the JointJS element.
+        var bbox = this.model.getBBox();
+        // Example of updating the HTML with a data stored in the cell model.
+        this.$box.find('label').text(this.model.get('label'));
+        this.$box.find('span').text(this.model.get('select'));
+        this.$box.css({ width: bbox.width, height: bbox.height, left: bbox.x, top: bbox.y, transform: 'rotate(' + (this.model.get('angle') || 0) + 'deg)' });
+    },
+    removeBox: function(evt) {
+        this.$box.remove();
+    }
+});
+
+var circleDelete = function(x, y) {
+    return new joint.shapes.basic.Circle({
+    position: { x: x, y: y },
+    size: { width: 16, height: 16 },
+    attrs: { text: { text: 'x' }, circle: { fill: 'red' } },
+    name: 'deleteCircle'
+    });
+}
+
+var circleToolbox = function(x, y) {
+    return new joint.shapes.basic.Circle({
+    position: { x: x, y: y },
+    size: { width: 16, height: 16 },
+    attrs: { text: { text: 't' }, circle: { fill: 'green' } },
+    name: 'toolboxCircle'
+    });
+}
