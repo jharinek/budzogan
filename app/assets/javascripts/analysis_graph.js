@@ -46,7 +46,7 @@ graph.on('add', function() {
     }
     d3.selectAll('.delete-button')
         .on("mousedown", function(){
-            //TODO remove function for element
+            activeElement.remove();
         });
     d3.selectAll('.toolbox-button')
         .on("mousedown", function(){
@@ -58,15 +58,8 @@ var diagram = joint.shapes.erd;
 
 var element = function(elm, x, y, color) {
     var cell = new elm({ position: { x: x, y: y }, attrs: { text: { text: "" }, polygon: { fill: color, stroke: color }}});
-//    var circle = circleDelete(x-5, y-5);
-//    var toolbox = circleToolbox(x+12,y-5);
-
-//    cell.embed(circle);
-//    cell.embed(toolbox)
 
     graph.addCell(cell);
-//    graph.addCell(circle);
-//    graph.addCell(toolbox);
 
     return cell;
 };
@@ -154,11 +147,11 @@ $(document).ready(function() {
             text = $(this).text()
         })
         .on("dragstop", function() {
-            appendText();
+            appendText(this.id);
             if(dropped){
               $(this).draggable('disable');
-              dropped = false;
             }
+            dropped=false;
         });
 
     //dragable lines
@@ -205,8 +198,8 @@ var createElement = function () {
         d3.select("#v_5")
             .on("mouseover", function () {
                 var coordinates = d3.mouse(d3.select("#v_5")[0].pop());
+                idCounter += 1;
                 element(diagram.EntityDeletable, coordinates[0], coordinates[1], color);
-                idCounter++;
             });
     }
     if((activeElement != null) && ($('.ui-draggable-dragging').prop("class").indexOf("line-draggable") >= 0)) {
@@ -230,9 +223,9 @@ var toModel = function(element) {
     return model;
 };
 
-var appendText = function() {
+var appendText = function(id) {
     if (activeElement != null) {
-        activeElement.attr({ text: { text: text }});
+        activeElement.attr({ text: { text: text, id: id }});
         dropped=true;
     }
     text = null;
@@ -289,7 +282,7 @@ joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
     },
 
     getDeleteButton: function(){
-        return
+        return;
     }
 });
 
