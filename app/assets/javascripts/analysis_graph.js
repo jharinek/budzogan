@@ -269,10 +269,10 @@ joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
         '<g class="rotatable">',
         '<g class="scalable">',
         '<polygon class="outer"/>',
-        '<circle class="delete-button"/>',
         '<polygon class="inner"/>',
         '</g>',
         '<text class="box-content"/>',
+        '<circle class="delete-button"/>',
         '<circle class="delete-text"/>',
         '</g>'
     ].join(''),
@@ -285,7 +285,6 @@ joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
             '.delete-button': {
                 fill: 'red', stroke: 'black',
                 ref: '.outer', 'ref-x': 0, 'ref-y': 0,
-                'x-alignment': 'right', 'y-alignment': 'top',
                 r: 5
             },
             '.delete-text': {
