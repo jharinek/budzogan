@@ -14,7 +14,7 @@ paper.on('cell:pointerdblclick', function(cellView, evt, x, y) {
 
 // identify active element
 graph.on('add', function() {
-    var last = $('.Entity').last();
+    var last = $('.EntityDeletable').last();
     if(last.size() != 0){
         d3.select("#"+last[0].id)
             .on("mouseover", function() {
@@ -25,33 +25,48 @@ graph.on('add', function() {
                 });
                 validContainer = true;
 
-
+                //on mouseover show delete button
+                d3.select('#'+activeElement.attributes.attrs.circle.id)
+                    .style('visibility', 'visible');
             })
             .on("mouseout", function() {
                 activeElement.attr({
                     polygon: { stroke: originalColor }
                 });
+
+                //on mouseout hide delete button
+                d3.select('#'+activeElement.attributes.attrs.circle.id)
+                    .style('visibility', 'hidden');
+
                 activeElement  = null;
                 originalColor  = null;
                 validContainer = false;
 
             })
     }
+    d3.selectAll('.delete-button')
+        .on("mousedown", function(){
+            //TODO remove function for element
+        });
+    d3.selectAll('.toolbox-button')
+        .on("mousedown", function(){
+           //TODO edit element properties
+        });
 });
 
 var diagram = joint.shapes.erd;
 
 var element = function(elm, x, y, color) {
     var cell = new elm({ position: { x: x, y: y }, attrs: { text: { text: "" }, polygon: { fill: color, stroke: color }}});
-    var circle = circleDelete(x-5, y-5);
-    var toolbox = circleToolbox(x+12,y-5);
+//    var circle = circleDelete(x-5, y-5);
+//    var toolbox = circleToolbox(x+12,y-5);
 
-    cell.embed(circle);
-    cell.embed(toolbox)
+//    cell.embed(circle);
+//    cell.embed(toolbox)
 
     graph.addCell(cell);
-    graph.addCell(circle);
-    graph.addCell(toolbox);
+//    graph.addCell(circle);
+//    graph.addCell(toolbox);
 
     return cell;
 };
@@ -83,6 +98,7 @@ var originalColor = null;
 var text = null;
 var validContainer = false;
 var dropped = false;
+var idCounter = 0;
 
 // create lines to represent connections between boxes
 //lines_menu.selectAll("div .item-line")
@@ -189,7 +205,8 @@ var createElement = function () {
         d3.select("#v_5")
             .on("mouseover", function () {
                 var coordinates = d3.mouse(d3.select("#v_5")[0].pop());
-                element(diagram.Entity, coordinates[0], coordinates[1], color);
+                element(diagram.EntityDeletable, coordinates[0], coordinates[1], color);
+                idCounter++;
             });
     }
     if((activeElement != null) && ($('.ui-draggable-dragging').prop("class").indexOf("line-draggable") >= 0)) {
@@ -233,85 +250,46 @@ var appendText = function() {
 // Define custom Entity element
 
 joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
-    markup: '<g class="rotatable"><g class="scalable"><polygon class="outer"><circle class="delete-button"/></polygon><polygon class="inner"/></g><text/></g>',
+    markup: [
+        '<g class="rotatable">',
+        '<g class="scalable">',
+        '<polygon class="outer"/>',
+        '<circle class="delete-button"/>',
+        '<polygon class="inner"/>',
+        '</g>',
+        '<text/>',
+        '</g>'
+    ].join(''),
 
     defaults: joint.util.deepSupplement({
 
         type: 'erd.EntityDeletable',
         size: { width: 150, height: 60 },
         attrs: {
-            '.delete-button': {
-                fill: 'blue', stroke: 'blue',
-                ref: '.outer', 'ref-x': .5, 'ref-y': .5,
+            'circle': {
+                fill: 'red', stroke: 'black',
+                ref: '.outer', 'ref-x': 0, 'ref-y': 0,
                 'x-alignment': 'right', 'y-alignment': 'top',
-                size: { width: 20, height: 20 }
+                r: 5,
+                id: 'delete_'+idCounter.toString()
             }
         }
 
-    }, joint.shapes.erd.Entity.prototype.defaults)
-});
+    }, joint.shapes.erd.Entity.prototype.defaults),
 
+    initialize: function () {
 
-// Create a custom element.
-// ------------------------
-
-joint.shapes.html = {};
-joint.shapes.html.Element = joint.shapes.erd.Entity.extend({
-    defaults: joint.util.deepSupplement({
-        type: 'html.Element'
-    }, joint.shapes.erd.Entity.prototype.defaults)
-});
-
-// Create a custom view for that element that displays an HTML div above it.
-// -------------------------------------------------------------------------
-
-joint.shapes.html.ElementView = joint.dia.ElementView.extend({
-
-    template: [
-        '<div class="html-element">',
-        '<button class="delete">x</button>',
-        '</div>'
-    ].join(''),
-
-    initialize: function() {
-        _.bindAll(this, 'updateBox');
-        joint.dia.ElementView.prototype.initialize.apply(this, arguments);
-
-        this.$box = $(_.template(this.template)());
-        // Prevent paper from handling pointerdown.
-        this.$box.find('input,select').on('mousedown click', function(evt) { evt.stopPropagation(); });
-        // This is an example of reacting on the input change and storing the input data in the cell model.
-        this.$box.find('input').on('change', _.bind(function(evt) {
-            this.model.set('input', $(evt.target).val());
-        }, this));
-        this.$box.find('select').on('change', _.bind(function(evt) {
-            this.model.set('select', $(evt.target).val());
-        }, this));
-        this.$box.find('select').val(this.model.get('select'));
-        this.$box.find('.delete').on('click', _.bind(this.model.remove, this.model));
-        // Update the box position whenever the underlying model changes.
-        this.model.on('change', this.updateBox, this);
-        // Remove the box when the model gets removed from the graph.
-        this.model.on('remove', this.removeBox, this);
-
-        this.updateBox();
+        _.bindAll(this, 'format');
+        this.format();
+        joint.shapes.erd.Entity.prototype.initialize.apply(this, arguments);
     },
-    render: function() {
-        joint.dia.ElementView.prototype.render.apply(this, arguments);
-        this.paper.$el.prepend(this.$box);
-        this.updateBox();
-        return this;
+
+    format: function () {
+        var attrs = this.get('attrs');
     },
-    updateBox: function() {
-        // Set the position and dimension of the box so that it covers the JointJS element.
-        var bbox = this.model.getBBox();
-        // Example of updating the HTML with a data stored in the cell model.
-        this.$box.find('label').text(this.model.get('label'));
-        this.$box.find('span').text(this.model.get('select'));
-        this.$box.css({ width: bbox.width, height: bbox.height, left: bbox.x, top: bbox.y, transform: 'rotate(' + (this.model.get('angle') || 0) + 'deg)' });
-    },
-    removeBox: function(evt) {
-        this.$box.remove();
+
+    getDeleteButton: function(){
+        return
     }
 });
 
@@ -319,7 +297,7 @@ var circleDelete = function(x, y) {
     return new joint.shapes.basic.Circle({
     position: { x: x, y: y },
     size: { width: 16, height: 16 },
-    attrs: { text: { text: 'x' }, circle: { fill: 'red' } },
+    attrs: { text: { text: 'x' }, circle: { fill: 'red', class: 'delete-button' } },
     name: 'deleteCircle'
     });
 }
@@ -328,7 +306,7 @@ var circleToolbox = function(x, y) {
     return new joint.shapes.basic.Circle({
     position: { x: x, y: y },
     size: { width: 16, height: 16 },
-    attrs: { text: { text: 't' }, circle: { fill: 'green' } },
+    attrs: { text: { text: 't' }, circle: { fill: 'green', class: 'toolbox-button' } },
     name: 'toolboxCircle'
     });
 }
