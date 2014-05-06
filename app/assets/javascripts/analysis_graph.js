@@ -15,6 +15,10 @@ paper.on('cell:pointerdblclick', function(cellView, evt, x, y) {
 // identify active element
 graph.on('add', function() {
     var last = $('.EntityDeletable').last();
+    var txt  = $('.box-content').last();
+    var deleteBox = $('.delete-button').last();
+    var deleteText = $('.delete-text').last();
+
     if(last.size() != 0){
         d3.select("#"+last[0].id)
             .on("mouseover", function() {
@@ -26,8 +30,7 @@ graph.on('add', function() {
                 validContainer = true;
 
                 //on mouseover show delete button
-                d3.select('#'+activeElement.attr('.delete-button').id)
-                    .style('visibility', 'visible');
+                deleteBox.css('visibility', 'visible');
             })
             .on("mouseout", function() {
                 activeElement.attr({
@@ -35,14 +38,21 @@ graph.on('add', function() {
                 });
 
                 //on mouseout hide delete button
-                d3.select('#'+activeElement.attr('.delete-button').id)
-                    .style('visibility', 'hidden');
+                deleteBox.css('visibility', 'hidden');
 
                 activeElement  = null;
                 originalColor  = null;
                 validContainer = false;
 
+            });
+        d3.select('#'+txt.attr('id'))
+            .on("mouseover", function() {
+                deleteText.css('visibility', 'visible');
             })
+            .on("mouseout", function() {
+                deleteText.css('visibility', 'hidden');
+            });
+
     }
     d3.selectAll('.delete-button')
         .on("mousedown", function(){
@@ -94,7 +104,6 @@ var activeElement = null;
 var originalColor = null;
 var validContainer = false;
 var dropped = false;
-var idCounter = 0;
 
 // create lines to represent connections between boxes
 //lines_menu.selectAll("div .item-line")
@@ -199,7 +208,6 @@ var createElement = function () {
         d3.select("#v_5")
             .on("mouseover", function () {
                 var coordinates = d3.mouse(d3.select("#v_5")[0].pop());
-                idCounter += 1;
                 element(diagram.EntityDeletable, coordinates[0], coordinates[1], color);
             });
     }
@@ -251,7 +259,8 @@ joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
         '<circle class="delete-button"/>',
         '<polygon class="inner"/>',
         '</g>',
-        '<text/>',
+        '<text class="box-content"/>',
+        '<circle class="delete-text"/>',
         '</g>'
     ].join(''),
 
@@ -264,8 +273,12 @@ joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
                 fill: 'red', stroke: 'black',
                 ref: '.outer', 'ref-x': 0, 'ref-y': 0,
                 'x-alignment': 'right', 'y-alignment': 'top',
-                r: 5,
-                id: 'delete_'+idCounter.toString()
+                r: 5
+            },
+            '.delete-text': {
+                fill: 'orange', stroke: 'black',
+                ref: '.box-content', 'ref-x': 0, 'ref-y': 0,
+                r: 3
             }
         }
 
