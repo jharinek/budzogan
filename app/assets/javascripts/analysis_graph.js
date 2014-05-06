@@ -8,9 +8,9 @@ var paper = new joint.dia.Paper({
     model:    graph
 });
 
-paper.on('cell:pointerdblclick', function(cellView, evt, x, y) {
-    link(cellView.model);
-});
+//paper.on('cell:pointerdblclick', function(cellView, evt, x, y) {
+//    link(cellView.model);
+//});
 
 // identify active element
 graph.on('add', function() {
@@ -31,6 +31,9 @@ graph.on('add', function() {
 
                 //on mouseover show delete button
                 deleteBox.css('visibility', 'visible');
+
+                //on mouseover delete text button visible
+                deleteText.css('visibility', 'visible');
             })
             .on("mouseout", function() {
                 activeElement.attr({
@@ -40,18 +43,21 @@ graph.on('add', function() {
                 //on mouseout hide delete button
                 deleteBox.css('visibility', 'hidden');
 
+                //on mouseout hide delete text button
+                deleteText.css('visibility', 'hidden');
+
                 activeElement  = null;
                 originalColor  = null;
                 validContainer = false;
 
             });
-        d3.select('#'+txt.attr('id'))
-            .on("mouseover", function() {
-                deleteText.css('visibility', 'visible');
-            })
-            .on("mouseout", function() {
-                deleteText.css('visibility', 'hidden');
-            });
+//        d3.select('#'+txt.attr('id'))
+//            .on("mouseover", function() {
+//                deleteText.css('visibility', 'visible');
+//            })
+//            .on("mouseout", function() {
+//                deleteText.css('visibility', 'hidden');
+//            });
 
     }
     d3.selectAll('.delete-button')
@@ -65,6 +71,13 @@ graph.on('add', function() {
     d3.selectAll('.toolbox-button')
         .on("mousedown", function(){
            //TODO edit element properties
+        });
+    d3.selectAll('.delete-text')
+        .on("mousedown", function(){
+            var text = $('#'+activeElement.attr('text').id)
+            text.draggable('enable');
+
+            activeElement.attr({'text': { text: "" }});
         });
 });
 
@@ -278,7 +291,7 @@ joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
             '.delete-text': {
                 fill: 'orange', stroke: 'black',
                 ref: '.box-content', 'ref-x': 0, 'ref-y': 0,
-                r: 3
+                r: 4
             }
         }
 
@@ -293,10 +306,6 @@ joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
 
     format: function () {
         var attrs = this.get('attrs');
-    },
-
-    getDeleteButton: function(){
-        return;
     }
 });
 
