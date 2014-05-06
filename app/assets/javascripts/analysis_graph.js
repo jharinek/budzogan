@@ -226,6 +226,7 @@ var toModel = function(element) {
 
 var appendText = function(id, text) {
     if (activeElement != null) {
+        $('#'+activeElement.attr('text').id).draggable('enable');
         activeElement.attr({ text: { text: text, id: id }});
         dropped=true;
     }
