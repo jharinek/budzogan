@@ -46,6 +46,8 @@ graph.on('add', function() {
     }
     d3.selectAll('.delete-button')
         .on("mousedown", function(){
+            $('#'+activeElement.attr('text').id).draggable('enable');
+            dropped=false;
             activeElement.remove();
         });
     d3.selectAll('.toolbox-button')
@@ -143,7 +145,7 @@ $(document).ready(function() {
         }
     })
         .on("dragstop", function() {
-            appendText($(this).id, $(this).text());
+            appendText(this.id, $(this).text());
             if(dropped){
               $(this).draggable('disable');
             }
