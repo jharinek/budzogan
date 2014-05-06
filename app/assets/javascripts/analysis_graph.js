@@ -88,7 +88,6 @@ var lines_menu = d3.select('div .itemized#lines');
 var color = null;
 var activeElement = null;
 var originalColor = null;
-var text = null;
 var validContainer = false;
 var dropped = false;
 var idCounter = 0;
@@ -143,11 +142,8 @@ $(document).ready(function() {
             }
         }
     })
-        .on("dragstart", function() {
-            text = $(this).text()
-        })
         .on("dragstop", function() {
-            appendText(this.id);
+            appendText($(this).id, $(this).text());
             if(dropped){
               $(this).draggable('disable');
             }
@@ -223,12 +219,11 @@ var toModel = function(element) {
     return model;
 };
 
-var appendText = function(id) {
+var appendText = function(id, text) {
     if (activeElement != null) {
         activeElement.attr({ text: { text: text, id: id }});
         dropped=true;
     }
-    text = null;
 };
 
 //$(document).mousedown(function(event) {
