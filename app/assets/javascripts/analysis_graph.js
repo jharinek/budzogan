@@ -82,6 +82,7 @@ var activeElement = null;
 var originalColor = null;
 var text = null;
 var validContainer = false;
+var dropped = false;
 
 // create lines to represent connections between boxes
 //lines_menu.selectAll("div .item-line")
@@ -137,8 +138,11 @@ $(document).ready(function() {
             text = $(this).text()
         })
         .on("dragstop", function() {
-            $(this).draggable('disable');
             appendText();
+            if(dropped){
+              $(this).draggable('disable');
+              dropped = false;
+            }
         });
 
     //dragable lines
@@ -212,6 +216,7 @@ var toModel = function(element) {
 var appendText = function() {
     if (activeElement != null) {
         activeElement.attr({ text: { text: text }});
+        dropped=true;
     }
     text = null;
 };
