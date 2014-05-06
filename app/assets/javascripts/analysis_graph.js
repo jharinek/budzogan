@@ -26,7 +26,7 @@ graph.on('add', function() {
                 validContainer = true;
 
                 //on mouseover show delete button
-                d3.select('#'+activeElement.attributes.attrs.circle.id)
+                d3.select('#'+activeElement.attr('.delete-button').id)
                     .style('visibility', 'visible');
             })
             .on("mouseout", function() {
@@ -35,7 +35,7 @@ graph.on('add', function() {
                 });
 
                 //on mouseout hide delete button
-                d3.select('#'+activeElement.attributes.attrs.circle.id)
+                d3.select('#'+activeElement.attr('.delete-button').id)
                     .style('visibility', 'hidden');
 
                 activeElement  = null;
@@ -46,9 +46,11 @@ graph.on('add', function() {
     }
     d3.selectAll('.delete-button')
         .on("mousedown", function(){
-            $('#'+activeElement.attr('text').id).draggable('enable');
-            dropped=false;
+            var text = $('#'+activeElement.attr('text').id)
+            text.draggable('enable');
+
             activeElement.remove();
+            activeElement = null;
         });
     d3.selectAll('.toolbox-button')
         .on("mousedown", function(){
@@ -137,6 +139,7 @@ $(document).ready(function() {
         revertDuration: '200',
         start: function(event, ui){
             $(this).draggable("option", "revert", "invalid");
+
         },
         drag: function(event, ui){
             if(validContainer){
@@ -256,7 +259,7 @@ joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
         type: 'erd.EntityDeletable',
         size: { width: 150, height: 60 },
         attrs: {
-            'circle': {
+            '.delete-button': {
                 fill: 'red', stroke: 'black',
                 ref: '.outer', 'ref-x': 0, 'ref-y': 0,
                 'x-alignment': 'right', 'y-alignment': 'top',
