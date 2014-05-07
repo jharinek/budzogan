@@ -308,6 +308,12 @@ joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
     }
 });
 
+//$(document).ready(function(){
+//    $('#save').on("ajax:before", function(){
+//       alert("Zacal");
+//    });
+//});
+
 var saveResult = function(){
     url  = window.location.pathname.replace('edit', '');
     data = JSON.stringify(graph.toJSON());
