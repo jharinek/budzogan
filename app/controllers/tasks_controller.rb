@@ -1,7 +1,6 @@
 class TasksController < ApplicationController
 
   def index
-    #require 'pry'; binding.pry
     @tasks = current_user.tasks
   end
 
@@ -19,5 +18,15 @@ class TasksController < ApplicationController
 
   def edit
     @sentence = Task.find_by(id: params[:id]).sentence.content.split
+  end
+
+  def update
+    @task = Task.find(params[:id])
+    solution = params[:graph].to_json || @task.solution
+    @task.student_solution = solution
+
+    @task.save!
+
+    render nothing: true
   end
 end
