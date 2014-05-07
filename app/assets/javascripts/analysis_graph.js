@@ -308,6 +308,18 @@ joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
     }
 });
 
+var saveResult = function(){
+    url  = window.location.pathname.replace('edit', '');
+    data = JSON.stringify(graph.toJSON());
+
+    $.ajax({
+        url: url,
+        type: 'PATCH',
+        data: { graph: data },
+        async: true
+    });
+};
+
 var circleDelete = function(x, y) {
     return new joint.shapes.basic.Circle({
     position: { x: x, y: y },
@@ -325,3 +337,5 @@ var circleToolbox = function(x, y) {
     name: 'toolboxCircle'
     });
 }
+
+
