@@ -32,6 +32,6 @@
     </div>
   </div>
   <div class="col-md-9 myContainer" id="paper">
-
   </div>
+  <%= button_to "Uložiť", { controller: :tasks, action: :update }, method: :patch, id: 'save', remote: true %>
 </div>
