@@ -17,13 +17,14 @@ class TasksController < ApplicationController
   end
 
   def edit
-    @sentence = Task.find_by(id: params[:id]).sentence.content.split
+    @task = Task.find(params[:id])
+    @sentence = Task.find(params[:id]).sentence.content.split
   end
 
   def update
     @task = Task.find(params[:id])
-    solution = params[:graph].to_json || @task.solution
-    @task.student_solution = solution
+
+    @task.student_solution = params[:graph].to_json || @task.student_solution
 
     @task.save!
 
