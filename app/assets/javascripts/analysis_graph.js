@@ -414,3 +414,19 @@ var circleToolbox = function(x, y) {
     name: 'toolboxCircle'
     });
 }
+
+$(document).ready(function worker() {
+  url  = window.location.pathname.replace('edit', '');
+  data = JSON.stringify(graph.toJSON());
+
+  $.ajax({
+    url: url,
+    type: 'PATCH',
+    data: { graph: data },
+    async: true,
+    complete: function() {
+      // Schedule the next request when the current one's complete
+      setTimeout(worker, 10000);
+    }
+  });
+});
