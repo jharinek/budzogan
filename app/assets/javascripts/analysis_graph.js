@@ -83,9 +83,9 @@ graph.on('add', function() {
 
 
 var initializeGraph = function(){
-  var last = $('.EntityDeletable')
+  var boxes = $('.EntityDeletable')
 
-  last.each(function(index){
+  boxes.each(function(index){
     if(last.size() != 0){
       d3.select(this)
         .on("mouseover", function() {
@@ -145,7 +145,7 @@ var initializeGraph = function(){
 var diagram = joint.shapes.erd;
 
 var element = function(elm, x, y, color) {
-    var cell = new elm({ position: { x: x, y: y }, attrs: { text: { text: "" }, polygon: { fill: color, stroke: color }}});
+    var cell = new elm({ position: { x: x, y: y }, attrs: { text: { text: '' }, polygon: { fill: color, stroke: color }}});
 
     graph.addCell(cell);
 
@@ -414,4 +414,3 @@ var circleToolbox = function(x, y) {
     name: 'toolboxCircle'
     });
 }
-
