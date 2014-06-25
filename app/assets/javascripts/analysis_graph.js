@@ -81,6 +81,67 @@ graph.on('add', function() {
         });
 });
 
+
+var initializeGraph = function(){
+  var last = $('.EntityDeletable')
+
+  last.each(function(index){
+    if(last.size() != 0){
+      d3.select(this)
+        .on("mouseover", function() {
+          activeElement = toModel(this);
+          originalColor = activeElement.attr("polygon").fill
+          activeElement.attr({
+            polygon: { stroke: 'orange' }
+          });
+          validContainer = true;
+
+          //on mouseover show delete button
+          $(d3.select('#' + this.id).select('.delete-button').node()).css('visibility', 'visible');
+
+          //on mouseover delete text button visible
+          $(d3.select('#' + this.id).select('.delete-text').node()).css('visibility', 'visible');
+        })
+        .on("mouseout", function() {
+          activeElement.attr({
+            polygon: { stroke: originalColor }
+          });
+
+          //on mouseout hide delete button
+          $(d3.select('#' + this.id).select('.delete-button').node()).css('visibility', 'hidden');
+
+          //on mouseout hide delete text button
+          $(d3.select('#' + this.id).select('.delete-text').node()).css('visibility', 'hidden');
+
+          activeElement  = null;
+          originalColor  = null;
+          validContainer = false;
+
+        });
+    }
+  });
+  d3.selectAll('.delete-button')
+    .on("mousedown", function(){
+      var text = $('#'+activeElement.attr('text').id);
+      text.draggable('enable');
+
+      activeElement.remove();
+      activeElement = null;
+    });
+  d3.selectAll('.toolbox-button')
+    .on("mousedown", function(){
+      //TODO edit element properties
+    });
+  d3.selectAll('.delete-text')
+    .on("mousedown", function(){
+      var text = $('#'+activeElement.attr('text').id)
+      text.draggable('enable');
+
+      activeElement.attr({'text': { text: "" }});
+    });
+}
+
+
 var diagram = joint.shapes.erd;
 
 var element = function(elm, x, y, color) {
@@ -221,6 +282,7 @@ $(document).ready(function() {
 
 $(document).ready(function(){
   loadGraph(JSON.parse($("div[data-value]").attr('data-value')));
+  initializeGraph();
 });
 
 var getColor = function() {
