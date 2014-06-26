@@ -3,7 +3,11 @@
     <div class="well">
       <p>
         <% @sentence.each_with_index do |word, index| %>
-          <span class="text-draggable" id="text-<%= index %>"><%= word %></span>
+          <% if @used_words.include? word %>
+            <span class="text-draggable disabled" id="text-<%= index %>"><%= word %></span>
+          <% else %>
+            <span class="text-draggable" id="text-<%= index %>"><%= word %></span>
+          <% end %>
         <% end %>
       </p>
     </div>

@@ -19,6 +19,9 @@ class TasksController < ApplicationController
   def edit
     @task = Task.find(params[:id])
     @sentence = Task.find(params[:id]).sentence.content.split
+
+    @used_words = @task.student_solution["cells"].map {|cell| cell["attrs"]["text"]["text"] if cell["type"] == "erd.EntityDeletable"}
+    @used_words.compact!
   end
 
   def update

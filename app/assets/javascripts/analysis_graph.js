@@ -81,6 +81,9 @@ graph.on('add', function() {
         });
 });
 
+var initializeText = function(){
+  $('.text-draggable.disabled').draggable("disable")
+}
 
 var initializeGraph = function(){
   var boxes = $('.EntityDeletable')
@@ -281,6 +284,7 @@ $(document).ready(function() {
 $(document).ready(function(){
   loadGraph(JSON.parse($("div[data-value]").attr('data-value')));
   initializeGraph();
+  initializeText();
 });
 
 var getColor = function() {
