@@ -20,7 +20,8 @@ class TasksController < ApplicationController
     @task = Task.find(params[:id])
     @sentence = Task.find(params[:id]).sentence.content.split
 
-    @used_words = @task.student_solution["cells"].map {|cell| cell["attrs"]["text"]["text"] if cell["type"] == "erd.EntityDeletable"}
+    @used_words = []
+    @used_words = @task.student_solution["cells"].map {|cell| cell["attrs"]["text"]["text"] if cell["type"] == "erd.EntityDeletable"} if @task.student_solution
     @used_words.compact!
   end
 
