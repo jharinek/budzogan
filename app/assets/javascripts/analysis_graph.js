@@ -50,7 +50,15 @@ graph.on('add', function() {
                 originalColor  = null;
                 validContainer = false;
 
-            });
+            })
+            .on("dblclick", function(){
+
+              var txt = d3.select('g>#' + activeElement.attributes.attrs.text.id);
+
+              var node = $(d3.select('#' + txt.node().parentNode.parentNode.id).select('.properties').node());
+
+              $('#box-editing').modal('show');
+          });
 //        d3.select('#'+txt.attr('id'))
 //            .on("mouseover", function() {
 //                deleteText.css('visibility', 'visible');
@@ -119,7 +127,14 @@ var initializeGraph = function(){
           originalColor  = null;
           validContainer = false;
 
-        });
+        })
+        .on("dblclick", function(){
+          var txt = d3.select('g>#' + activeElement.attributes.attrs.text.id);
+
+          var node = $(d3.select('#' + txt.node().parentNode.parentNode.id).select('.properties').node());
+
+          $('#box-editing').modal('show');
+        });;
   });
   d3.selectAll('.delete-button')
     .on("mousedown", function(){
@@ -347,6 +362,7 @@ joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
         '<polygon class="inner"/>',
         '</g>',
         '<text class="box-content"/>',
+        '<g class="properties"/>',
         '<circle class="delete-button"/>',
         '<circle class="delete-text"/>',
         '</g>'
@@ -366,6 +382,9 @@ joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
                 fill: 'orange', stroke: 'black',
                 ref: '.box-content', 'ref-x': 0, 'ref-y': 0,
                 r: 4
+            },
+            '.properties': {
+              ref: '.box-content', 'ref-x': 0, 'ref-y': 0
             }
         }
 
