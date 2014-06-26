@@ -86,7 +86,6 @@ var initializeGraph = function(){
   var boxes = $('.EntityDeletable')
 
   boxes.each(function(index){
-    if(last.size() != 0){
       d3.select(this)
         .on("mouseover", function() {
           activeElement = toModel(this);
@@ -118,7 +117,6 @@ var initializeGraph = function(){
           validContainer = false;
 
         });
-    }
   });
   d3.selectAll('.delete-button')
     .on("mousedown", function(){
