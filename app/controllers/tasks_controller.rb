@@ -23,6 +23,7 @@ class TasksController < ApplicationController
     @used_words = []
     @used_words = @task.student_solution["cells"].map {|cell| cell["attrs"]["text"]["text"] if cell["type"] == "erd.EntityDeletable"} if @task.student_solution
     @used_words.compact!
+    @used_words = @used_words.collect(&:split).flatten
   end
 
   def update
