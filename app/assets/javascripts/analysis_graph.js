@@ -1,5 +1,6 @@
 //jointjs to handle svg canvas and actions on it
 var graph = new joint.dia.Graph;
+var counter = 0;
 
 //TODO (jharinek) supply custom Element view
 var paper = new joint.dia.Paper({
@@ -161,9 +162,10 @@ var initializeGraph = function(){
 var diagram = joint.shapes.erd;
 
 var element = function(elm, x, y, color) {
-    var cell = new elm({ position: { x: x, y: y }, attrs: { text: { text: '' }, polygon: { fill: color, stroke: color }}});
+    var cell = new elm({ position: { x: x, y: y }, attrs: { text: { text: '', id: 'txt-' + counter }, polygon: { fill: color, stroke: color }}});
 
     graph.addCell(cell);
+    counter++;
 
     return cell;
 };
@@ -337,9 +339,11 @@ var toModel = function(element) {
 
 var appendText = function(id, text) {
     if (activeElement != null) {
-        $('#'+activeElement.attr('text').id).draggable('enable');
-        activeElement.attr({ text: { text: text, id: id }});
-        dropped=true;
+      $('span.text-draggable').filter(function() {
+        return $(this).text() == activeElement.attr('text').text
+      }).draggable('enable');
+      activeElement.attr({ text: { text: text, id: id }});
+      dropped=true;
     }
 };
 
