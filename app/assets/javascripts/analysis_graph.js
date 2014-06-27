@@ -197,7 +197,20 @@ var initializeGraph = function () {
 var diagram = joint.shapes.erd;
 
 var element = function (elm, x, y, color) {
-  var cell = new elm({ position: { x: x, y: y }, attrs: { text: { text: '', id: 'txt-' + counter }, polygon: { fill: color, stroke: color }}});
+  var sentenceElement = '';
+
+  switch(rgbToHex(color)) {
+    case '#6599ff': sentenceElement = 'subject'
+      break;
+    case '#ff9900': sentenceElement = 'predicate'
+      break;
+    case '#097054': sentenceElement = 'object'
+      break;
+    case '#ffde00': sentenceElement = 'attribute'
+      break;
+  }
+
+  var cell = new elm({ position: { x: x, y: y }, attrs: { rect: { class: 'properties ' + sentenceElement + ' 1' }, text: { text: '', id: 'txt-' + counter }, polygon: { fill: color, stroke: color }}});
 
   graph.addCell(cell);
   counter++;
@@ -223,10 +236,10 @@ var link = function (elm) {
 //d3js and jquery to handle drag and drop events to svg canvas
 
 var items = [
-  ["podmet", "red"],
-  ["prísudok", "yellow"],
-  ["predmet", "green"],
-  ["prívlastok", "#33CCFF"]
+  ["podmet", "#6599ff"],
+  ["prísudok", "#ff9900"],
+  ["predmet", "#097054"],
+  ["prívlastok", "#ffde00"]
 ];
 var connections = ["prisudzovací", "určovací", "priraďovací"];
 var boxes_menu = d3.select('div .itemized#boxes');
@@ -511,3 +524,19 @@ $(document).ready(function worker() {
     }
   });
 });
+
+function componentToHex(c) {
+  var hex = c.toString(16);
+  return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(rgbString) {
+  var s = rgbString.replace('rgb(', '');
+  s = s.replace(')', '');
+  s = s.replace(',', '');
+  s = s.replace(',', '');
+
+  var numericalValues = s.split(' ');
+
+  return "#" + componentToHex(parseInt(numericalValues[0])) + componentToHex(parseInt(numericalValues[1])) + componentToHex(parseInt(numericalValues[2]));
+}
