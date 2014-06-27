@@ -2,6 +2,7 @@
 var graph = new joint.dia.Graph;
 var counter = 0;
 
+
 //TODO (jharinek) supply custom Element view
 var paper = new joint.dia.Paper({
   el: $('#paper'),
@@ -53,12 +54,7 @@ graph.on('add', function () {
 
       })
       .on("dblclick", function () {
-
-        var txt = d3.select('g>#' + activeElement.attributes.attrs.text.id);
-
-        var node = $(d3.select('#' + txt.node().parentNode.parentNode.id).select('.properties').node());
-
-        $('#box-editing').modal('show');
+        initializeModal(activeElement);
       });
 //        d3.select('#'+txt.attr('id'))
 //            .on("mouseover", function() {
@@ -100,6 +96,28 @@ graph.on('add', function () {
     });
 });
 
+var initializeModal = function(activeEl) {
+  var txt = d3.select('g>#' + activeEl.attributes.attrs.text.id);
+
+  var editableId = txt.node().parentNode.parentNode.id
+  var id = txt.node().parentNode.parentNode.id;
+  var node = $(d3.select('#' + id).select('.properties').node());
+  var properties = node.attr('class').split(' ');
+
+  if($(d3.select('#' + id).node()).attr('class').indexOf("EntityDeletable") >= 0) {
+    $('#box').attr('class', editableId);
+
+    $('#sentence-element').val(properties[1]);
+    $('#gramatical-case').val(properties[2]);
+  }else{
+    $('#connection').attr('class', editableId);
+
+    $('#connection-type').val(properties[1]);
+  }
+
+  $('#box-editing').modal('show');
+};
+
 var initializeText = function () {
   $('.text-draggable.disabled').draggable("disable")
 }
@@ -140,11 +158,7 @@ var initializeGraph = function () {
 
       })
       .on("dblclick", function () {
-        var txt = d3.select('g>#' + activeElement.attributes.attrs.text.id);
-
-        var node = $(d3.select('#' + txt.node().parentNode.parentNode.id).select('.properties').node());
-
-        $('#box-editing').modal('show');
+        initializeModal(activeElement);
       });
     ;
   });
