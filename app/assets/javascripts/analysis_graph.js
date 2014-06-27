@@ -71,10 +71,11 @@ graph.on('add', function () {
   }
   d3.selectAll('.delete-button')
     .on("mousedown", function () {
-      $('span.text-draggable').filter(function () {
-        return $(this).text() == activeElement.attr('text').text
-      }).draggable('enable');
-
+      activeElement.attr('text').text.split(" ").map(function(item){
+        $('span.text-draggable').filter(function () {
+          return $(this).text() == item
+        }).draggable('enable');
+      });
       activeElement.remove();
       activeElement = null;
     });
@@ -84,8 +85,11 @@ graph.on('add', function () {
     });
   d3.selectAll('.delete-text')
     .on("mousedown", function () {
-      var text = $('#' + activeElement.attr('text').id)
-      text.draggable('enable');
+      activeElement.attr('text').text.split(" ").map(function(item){
+        $('span.text-draggable').filter(function () {
+          return $(this).text() == item
+        }).draggable('enable');
+      });
 
       activeElement.attr({'text': { text: "" }});
     });
@@ -146,9 +150,11 @@ var initializeGraph = function () {
   });
   d3.selectAll('.delete-button')
     .on("mousedown", function () {
-      $('span.text-draggable').filter(function () {
-        return $(this).text() == activeElement.attr('text').text
-      }).draggable('enable');
+      activeElement.attr('text').text.split(" ").map(function(item){
+        $('span.text-draggable').filter(function () {
+          return $(this).text() == item
+        }).draggable('enable');
+      });
 
       activeElement.remove();
       activeElement = null;
@@ -159,9 +165,12 @@ var initializeGraph = function () {
     });
   d3.selectAll('.delete-text')
     .on("mousedown", function () {
-      var text = $('#' + activeElement.attr('text').id)
-      text.draggable('enable');
-
+      activeElement.attr('text').text.split(" ").map(function(item){
+        $('span.text-draggable').filter(function () {
+          return $(this).text() == item
+        }).draggable('enable');
+      });
+      
       activeElement.attr({'text': { text: "" }});
     });
   d3.selectAll('.link')
@@ -357,10 +366,13 @@ var toModel = function (element) {
 
 var appendText = function (id, text) {
   if (activeElement != null) {
-    $('span.text-draggable').filter(function () {
-      return $(this).text() == activeElement.attr('text').text
-    }).draggable('enable');
-    activeElement.attr({ text: { text: text, id: id }});
+//    activeElement.attr('text').text.split(" ").map(function(item){
+//      $('span.text-draggable').filter(function () {
+//        return $(this).text() == item
+//      }).draggable('enable');
+//    });
+    var new_text = activeElement.attr('text').text + " " + text
+    activeElement.attr({ text: { text: new_text, id: id }});
     dropped = true;
   }
 };
