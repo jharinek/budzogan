@@ -101,8 +101,7 @@ var initializeModal = function(activeEl) {
 
   var editableId = txt.node().parentNode.parentNode.id
   var id = txt.node().parentNode.parentNode.id;
-  var node = $(d3.select('#' + id).select('.properties').node());
-  var properties = node.attr('class').split(' ');
+  var properties = activeEl.attr('rect').class.split(' ');
 
   if($(d3.select('#' + id).node()).attr('class').indexOf("EntityDeletable") >= 0) {
     $('#box').attr('class', editableId);
@@ -422,7 +421,7 @@ joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
     '<polygon class="inner"/>',
     '</g>',
     '<text class="box-content"/>',
-    '<g class="properties"/>',
+    '<rect/>',
     '<circle class="delete-button"/>',
     '<circle class="delete-text"/>',
     '</g>'
@@ -443,8 +442,9 @@ joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
         ref: '.box-content', 'ref-x': 0, 'ref-y': 0,
         r: 4
       },
-      '.properties': {
-        ref: '.box-content', 'ref-x': 0, 'ref-y': 0
+      'rect': {
+        ref: '.box-content', 'ref-x': 0, 'ref-y': 0,
+        class: 'properties'
       }
     }
 
