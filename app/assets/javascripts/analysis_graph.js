@@ -105,7 +105,7 @@ var initializeText = function () {
 }
 
 var initializeGraph = function () {
-  var boxes = $('.EntityDeletable')
+  var boxes = $('.EntityDeletable');
 
   boxes.each(function (index) {
     d3.select(this)
@@ -178,7 +178,7 @@ var initializeGraph = function () {
       d3.event.preventDefault();
       $('#connection-editing').modal('show');
     });
-}
+};
 
 
 var diagram = joint.shapes.erd;
