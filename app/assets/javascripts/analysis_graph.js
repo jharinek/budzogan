@@ -4,9 +4,9 @@ var counter = 0;
 
 //TODO (jharinek) supply custom Element view
 var paper = new joint.dia.Paper({
-    el:       $('#paper'),
-    gridSize: 80,
-    model:    graph
+  el: $('#paper'),
+  gridSize: 80,
+  model: graph
 });
 
 //paper.on('cell:pointerdblclick', function(cellView, evt, x, y) {
@@ -14,52 +14,52 @@ var paper = new joint.dia.Paper({
 //});
 
 // identify active element
-graph.on('add', function() {
-    var last = $('.EntityDeletable').last();
-    var txt  = $('.box-content').last();
-    var deleteBox = $('.delete-button').last();
-    var deleteText = $('.delete-text').last();
+graph.on('add', function () {
+  var last = $('.EntityDeletable').last();
+  var txt = $('.box-content').last();
+  var deleteBox = $('.delete-button').last();
+  var deleteText = $('.delete-text').last();
 
-    if(last.size() != 0){
-        d3.select("#"+last[0].id)
-            .on("mouseover", function() {
-                activeElement = toModel(this);
-                originalColor = activeElement.attr("polygon").fill
-                activeElement.attr({
-                   polygon: { stroke: 'orange' }
-                });
-                validContainer = true;
+  if (last.size() != 0) {
+    d3.select("#" + last[0].id)
+      .on("mouseover", function () {
+        activeElement = toModel(this);
+        originalColor = activeElement.attr("polygon").fill
+        activeElement.attr({
+          polygon: { stroke: 'orange' }
+        });
+        validContainer = true;
 
-                //on mouseover show delete button
-                deleteBox.css('visibility', 'visible');
+        //on mouseover show delete button
+        deleteBox.css('visibility', 'visible');
 
-                //on mouseover delete text button visible
-                deleteText.css('visibility', 'visible');
-            })
-            .on("mouseout", function() {
-                activeElement.attr({
-                    polygon: { stroke: originalColor }
-                });
+        //on mouseover delete text button visible
+        deleteText.css('visibility', 'visible');
+      })
+      .on("mouseout", function () {
+        activeElement.attr({
+          polygon: { stroke: originalColor }
+        });
 
-                //on mouseout hide delete button
-                deleteBox.css('visibility', 'hidden');
+        //on mouseout hide delete button
+        deleteBox.css('visibility', 'hidden');
 
-                //on mouseout hide delete text button
-                deleteText.css('visibility', 'hidden');
+        //on mouseout hide delete text button
+        deleteText.css('visibility', 'hidden');
 
-                activeElement  = null;
-                originalColor  = null;
-                validContainer = false;
+        activeElement = null;
+        originalColor = null;
+        validContainer = false;
 
-            })
-            .on("dblclick", function(){
+      })
+      .on("dblclick", function () {
 
-              var txt = d3.select('g>#' + activeElement.attributes.attrs.text.id);
+        var txt = d3.select('g>#' + activeElement.attributes.attrs.text.id);
 
-              var node = $(d3.select('#' + txt.node().parentNode.parentNode.id).select('.properties').node());
+        var node = $(d3.select('#' + txt.node().parentNode.parentNode.id).select('.properties').node());
 
-              $('#box-editing').modal('show');
-          });
+        $('#box-editing').modal('show');
+      });
 //        d3.select('#'+txt.attr('id'))
 //            .on("mouseover", function() {
 //                deleteText.css('visibility', 'visible');
@@ -68,79 +68,10 @@ graph.on('add', function() {
 //                deleteText.css('visibility', 'hidden');
 //            });
 
-    }
-    d3.selectAll('.delete-button')
-        .on("mousedown", function(){
-        $('span.text-draggable').filter(function() {
-          return $(this).text() == activeElement.attr('text').text
-        }).draggable('enable');
-
-            activeElement.remove();
-            activeElement = null;
-        });
-    d3.selectAll('.toolbox-button')
-        .on("mousedown", function(){
-           //TODO edit element properties
-        });
-    d3.selectAll('.delete-text')
-        .on("mousedown", function(){
-            var text = $('#'+activeElement.attr('text').id)
-            text.draggable('enable');
-
-            activeElement.attr({'text': { text: "" }});
-        });
-});
-
-var initializeText = function(){
-  $('.text-draggable.disabled').draggable("disable")
-}
-
-var initializeGraph = function(){
-  var boxes = $('.EntityDeletable')
-
-  boxes.each(function(index){
-      d3.select(this)
-        .on("mouseover", function() {
-          activeElement = toModel(this);
-          originalColor = activeElement.attr("polygon").fill
-          activeElement.attr({
-            polygon: { stroke: 'orange' }
-          });
-          validContainer = true;
-
-          //on mouseover show delete button
-          $(d3.select('#' + this.id).select('.delete-button').node()).css('visibility', 'visible');
-
-          //on mouseover delete text button visible
-          $(d3.select('#' + this.id).select('.delete-text').node()).css('visibility', 'visible');
-        })
-        .on("mouseout", function() {
-          activeElement.attr({
-            polygon: { stroke: originalColor }
-          });
-
-          //on mouseout hide delete button
-          $(d3.select('#' + this.id).select('.delete-button').node()).css('visibility', 'hidden');
-
-          //on mouseout hide delete text button
-          $(d3.select('#' + this.id).select('.delete-text').node()).css('visibility', 'hidden');
-
-          activeElement  = null;
-          originalColor  = null;
-          validContainer = false;
-
-        })
-        .on("dblclick", function(){
-          var txt = d3.select('g>#' + activeElement.attributes.attrs.text.id);
-
-          var node = $(d3.select('#' + txt.node().parentNode.parentNode.id).select('.properties').node());
-
-          $('#box-editing').modal('show');
-        });;
-  });
+  }
   d3.selectAll('.delete-button')
-    .on("mousedown", function(){
-      $('span.text-draggable').filter(function() {
+    .on("mousedown", function () {
+      $('span.text-draggable').filter(function () {
         return $(this).text() == activeElement.attr('text').text
       }).draggable('enable');
 
@@ -148,12 +79,82 @@ var initializeGraph = function(){
       activeElement = null;
     });
   d3.selectAll('.toolbox-button')
-    .on("mousedown", function(){
+    .on("mousedown", function () {
       //TODO edit element properties
     });
   d3.selectAll('.delete-text')
-    .on("mousedown", function(){
-      var text = $('#'+activeElement.attr('text').id)
+    .on("mousedown", function () {
+      var text = $('#' + activeElement.attr('text').id)
+      text.draggable('enable');
+
+      activeElement.attr({'text': { text: "" }});
+    });
+});
+
+var initializeText = function () {
+  $('.text-draggable.disabled').draggable("disable")
+}
+
+var initializeGraph = function () {
+  var boxes = $('.EntityDeletable')
+
+  boxes.each(function (index) {
+    d3.select(this)
+      .on("mouseover", function () {
+        activeElement = toModel(this);
+        originalColor = activeElement.attr("polygon").fill
+        activeElement.attr({
+          polygon: { stroke: 'orange' }
+        });
+        validContainer = true;
+
+        //on mouseover show delete button
+        $(d3.select('#' + this.id).select('.delete-button').node()).css('visibility', 'visible');
+
+        //on mouseover delete text button visible
+        $(d3.select('#' + this.id).select('.delete-text').node()).css('visibility', 'visible');
+      })
+      .on("mouseout", function () {
+        activeElement.attr({
+          polygon: { stroke: originalColor }
+        });
+
+        //on mouseout hide delete button
+        $(d3.select('#' + this.id).select('.delete-button').node()).css('visibility', 'hidden');
+
+        //on mouseout hide delete text button
+        $(d3.select('#' + this.id).select('.delete-text').node()).css('visibility', 'hidden');
+
+        activeElement = null;
+        originalColor = null;
+        validContainer = false;
+
+      })
+      .on("dblclick", function () {
+        var txt = d3.select('g>#' + activeElement.attributes.attrs.text.id);
+
+        var node = $(d3.select('#' + txt.node().parentNode.parentNode.id).select('.properties').node());
+
+        $('#box-editing').modal('show');
+      });
+    ;
+  });
+  d3.selectAll('.delete-button')
+    .on("mousedown", function () {
+      $('span.text-draggable').filter(function () {
+        return $(this).text() == activeElement.attr('text').text
+      }).draggable('enable');
+
+      activeElement.remove();
+      activeElement = null;
+    });
+  d3.selectAll('.toolbox-button')
+    .on("mousedown", function () {
+      //TODO edit element properties
+    });
+  d3.selectAll('.delete-text')
+    .on("mousedown", function () {
+      var text = $('#' + activeElement.attr('text').id)
       text.draggable('enable');
 
       activeElement.attr({'text': { text: "" }});
@@ -163,33 +164,38 @@ var initializeGraph = function(){
 
 var diagram = joint.shapes.erd;
 
-var element = function(elm, x, y, color) {
-    var cell = new elm({ position: { x: x, y: y }, attrs: { text: { text: '', id: 'txt-' + counter }, polygon: { fill: color, stroke: color }}});
+var element = function (elm, x, y, color) {
+  var cell = new elm({ position: { x: x, y: y }, attrs: { text: { text: '', id: 'txt-' + counter }, polygon: { fill: color, stroke: color }}});
 
-    graph.addCell(cell);
-    counter++;
+  graph.addCell(cell);
+  counter++;
 
-    return cell;
+  return cell;
 };
 
-var link = function(elm) {
-    var coordinates = elm.get('position');
+var link = function (elm) {
+  var coordinates = elm.get('position');
 
-    var newLink = new joint.dia.Link({
-        source: { id: elm.id },
-        target: {
-            x: coordinates.x + 220,
-            y: coordinates.y - 20
-        }
-    });
-    graph.addCell(newLink);
-    return newLink;
+  var newLink = new joint.dia.Link({
+    source: { id: elm.id },
+    target: {
+      x: coordinates.x + 220,
+      y: coordinates.y - 20
+    }
+  });
+  graph.addCell(newLink);
+  return newLink;
 };
 
 
 //d3js and jquery to handle drag and drop events to svg canvas
 
-var items = [["podmet", "red"], ["prísudok", "yellow"], ["predmet", "green"], ["prívlastok", "#33CCFF"]];
+var items = [
+  ["podmet", "red"],
+  ["prísudok", "yellow"],
+  ["predmet", "green"],
+  ["prívlastok", "#33CCFF"]
+];
 var connections = ["prisudzovací", "určovací", "priraďovací"];
 var boxes_menu = d3.select('div .itemized#boxes');
 var lines_menu = d3.select('div .itemized#lines');
@@ -210,57 +216,57 @@ var dropped = false;
 
 // create boxes in boxes_menu for sentence parts
 boxes_menu.selectAll("div .item-box")
-    .data(items)
-    .enter()
-    .append('div')
-    .attr('class', 'item-box draggable')
-    .style('background-color', function(d) {
-        return d[1];
-    })
-    .append('p')
-    .attr('class', 'item-text')
-    .text(function(d) {
-        return d[0];
-    });
+  .data(items)
+  .enter()
+  .append('div')
+  .attr('class', 'item-box draggable')
+  .style('background-color', function (d) {
+    return d[1];
+  })
+  .append('p')
+  .attr('class', 'item-text')
+  .text(function (d) {
+    return d[0];
+  });
 
 //set draggable elements
-$(document).ready(function() {
-    //dragable rectangles
-    $(".draggable").draggable({
-        zIndex: 1000,
-        helper: "clone",
-        revert: "invalid",
-        revertDuration: '200'
-    })
-        .on("dragstart", getColor)
-        .on("dragstop", createElement);
+$(document).ready(function () {
+  //dragable rectangles
+  $(".draggable").draggable({
+    zIndex: 1000,
+    helper: "clone",
+    revert: "invalid",
+    revertDuration: '200'
+  })
+    .on("dragstart", getColor)
+    .on("dragstop", createElement);
 
 
-    //draggable text
-    $(".text-draggable").draggable({
-        helper: "clone",
-        revertDuration: '200',
-        start: function(event, ui){
-            $(this).draggable("option", "revert", "invalid");
+  //draggable text
+  $(".text-draggable").draggable({
+    helper: "clone",
+    revertDuration: '200',
+    start: function (event, ui) {
+      $(this).draggable("option", "revert", "invalid");
 
-        },
-        drag: function(event, ui){
-            if(validContainer){
-                $(this).draggable("option", "revert", false);
-            }
-        }
-    })
-        .on("dragstop", function() {
-            appendText(this.id, $(this).text());
-            if(dropped){
-              $(this).draggable('disable');
-            }
-            dropped=false;
-        });
+    },
+    drag: function (event, ui) {
+      if (validContainer) {
+        $(this).draggable("option", "revert", false);
+      }
+    }
+  })
+    .on("dragstop", function () {
+      appendText(this.id, $(this).text());
+      if (dropped) {
+        $(this).draggable('disable');
+      }
+      dropped = false;
+    });
 
-    //dragable lines
-    $(".line-draggable").draggable({
-        helper: 'clone',
+  //dragable lines
+  $(".line-draggable").draggable({
+    helper: 'clone',
 //            function(){
 //            var el = $('<span>')
 //                .attr('class', 'glyphicon glyphicon-minus')
@@ -272,81 +278,81 @@ $(document).ready(function() {
 ////                });
 //            return el;
 //        },
-        revertDuration: '200',
-        start: function(event, ui){
-            $(this).draggable("option", "revert", "invalid");
-        },
-        drag: function(event, ui){
-            if(validContainer){
-                $(this).draggable("option", "revert", false);
-                validContainer = false;
-            }
-        }
-    })
-        .on("dragstart", getColor)
-        .on("dragstop", createElement);
+    revertDuration: '200',
+    start: function (event, ui) {
+      $(this).draggable("option", "revert", "invalid");
+    },
+    drag: function (event, ui) {
+      if (validContainer) {
+        $(this).draggable("option", "revert", false);
+        validContainer = false;
+      }
+    }
+  })
+    .on("dragstart", getColor)
+    .on("dragstop", createElement);
 
 //droppable container
-    $(".myContainer").droppable({
-        accept: ".draggable"
-    });
+  $(".myContainer").droppable({
+    accept: ".draggable"
+  });
 //    $(".accept-text").droppable();
 
 
-    // load graph
+  // load graph
 //    $.get( window.location.pathname.replace('edit', '') + "loadGraph", function( data ) {
 //
 //        alert( "Load was performed." );
 //    });
 });
 
-$(document).ready(function(){
+$(document).ready(function () {
   loadGraph(JSON.parse($("div[data-value]").attr('data-value')));
   initializeGraph();
   initializeText();
 });
 
-var getColor = function() {
-    color = $('.ui-draggable-dragging').css("background-color");
+var getColor = function () {
+  color = $('.ui-draggable-dragging').css("background-color");
 };
 
 var createElement = function () {
-    if ($('.ui-draggable-dragging').prop("class").indexOf("item-box") >= 0) {
-        d3.select("#v_5")
-            .on("mouseover", function () {
-                var coordinates = d3.mouse(d3.select("#v_5")[0].pop());
-                element(diagram.EntityDeletable, coordinates[0], coordinates[1], color);
-            });
-    }
-    if((activeElement != null) && ($('.ui-draggable-dragging').prop("class").indexOf("line-draggable") >= 0)) {
-        link(activeElement);
-    }
+  if ($('.ui-draggable-dragging').prop("class").indexOf("item-box") >= 0) {
+    d3.select("#v_5")
+      .on("mouseover", function () {
+        var coordinates = d3.mouse(d3.select("#v_5")[0].pop());
+        element(diagram.EntityDeletable, coordinates[0], coordinates[1], color);
+      });
+  }
+  if ((activeElement != null) && ($('.ui-draggable-dragging').prop("class").indexOf("line-draggable") >= 0)) {
+    link(activeElement);
+  }
 
 
-    d3.select("body").on("mousemove", function () {
-        d3.select("#v_5")
-            .on("mouseover", null);
-    });
+  d3.select("body").on("mousemove", function () {
+    d3.select("#v_5")
+      .on("mouseover", null);
+  });
 };
 
-var toModel = function(element) {
-    var model = null;
-    graph.get('cells').find(function(cell) {
-        if(cell.id == element.attributes[1].value) {
-            model = cell;
-        }
-    });
-    return model;
+var toModel = function (element) {
+  var model = null;
+  graph.get('cells').find(function (cell) {
+    if (cell.id == element.attributes[1].value) {
+      model = cell;
+    }
+  });
+  return model;
 };
 
-var appendText = function(id, text) {
-    if (activeElement != null) {
-      $('span.text-draggable').filter(function() {
-        return $(this).text() == activeElement.attr('text').text
-      }).draggable('enable');
-      activeElement.attr({ text: { text: text, id: id }});
-      dropped=true;
-    }
+var appendText = function (id, text) {
+  if (activeElement != null) {
+    $('span.text-draggable').filter(function () {
+      return $(this).text() == activeElement.attr('text').text
+    }).draggable('enable');
+    activeElement.attr({ text: { text: text, id: id }});
+    dropped = true;
+  }
 };
 
 //$(document).mousedown(function(event) {
@@ -361,89 +367,89 @@ var appendText = function(id, text) {
 // Define custom Entity element
 
 joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
-    markup: [
-        '<g class="rotatable">',
-        '<g class="scalable">',
-        '<polygon class="outer"/>',
-        '<polygon class="inner"/>',
-        '</g>',
-        '<text class="box-content"/>',
-        '<g class="properties"/>',
-        '<circle class="delete-button"/>',
-        '<circle class="delete-text"/>',
-        '</g>'
-    ].join(''),
+  markup: [
+    '<g class="rotatable">',
+    '<g class="scalable">',
+    '<polygon class="outer"/>',
+    '<polygon class="inner"/>',
+    '</g>',
+    '<text class="box-content"/>',
+    '<g class="properties"/>',
+    '<circle class="delete-button"/>',
+    '<circle class="delete-text"/>',
+    '</g>'
+  ].join(''),
 
-    defaults: joint.util.deepSupplement({
+  defaults: joint.util.deepSupplement({
 
-        type: 'erd.EntityDeletable',
-        size: { width: 150, height: 60 },
-        attrs: {
-            '.delete-button': {
-                fill: 'red', stroke: 'black',
-                ref: '.outer', 'ref-x': 0, 'ref-y': 0,
-                r: 5
-            },
-            '.delete-text': {
-                fill: 'orange', stroke: 'black',
-                ref: '.box-content', 'ref-x': 0, 'ref-y': 0,
-                r: 4
-            },
-            '.properties': {
-              ref: '.box-content', 'ref-x': 0, 'ref-y': 0
-            }
-        }
-
-    }, joint.shapes.erd.Entity.prototype.defaults),
-
-    initialize: function () {
-
-        _.bindAll(this, 'format');
-        this.format();
-        joint.shapes.erd.Entity.prototype.initialize.apply(this, arguments);
-    },
-
-    format: function () {
-        var attrs = this.get('attrs');
+    type: 'erd.EntityDeletable',
+    size: { width: 150, height: 60 },
+    attrs: {
+      '.delete-button': {
+        fill: 'red', stroke: 'black',
+        ref: '.outer', 'ref-x': 0, 'ref-y': 0,
+        r: 5
+      },
+      '.delete-text': {
+        fill: 'orange', stroke: 'black',
+        ref: '.box-content', 'ref-x': 0, 'ref-y': 0,
+        r: 4
+      },
+      '.properties': {
+        ref: '.box-content', 'ref-x': 0, 'ref-y': 0
+      }
     }
+
+  }, joint.shapes.erd.Entity.prototype.defaults),
+
+  initialize: function () {
+
+    _.bindAll(this, 'format');
+    this.format();
+    joint.shapes.erd.Entity.prototype.initialize.apply(this, arguments);
+  },
+
+  format: function () {
+    var attrs = this.get('attrs');
+  }
 });
 
-var saveResult = function(){
-    url  = window.location.pathname.replace('edit', '');
-    data = JSON.stringify(graph.toJSON());
+var saveResult = function () {
+  url = window.location.pathname.replace('edit', '');
+  data = JSON.stringify(graph.toJSON());
 
-    $.ajax({
-        url: url,
-        type: 'PATCH',
-        data: { graph: data },
-        async: true
-    });
+  $.ajax({
+    url: url,
+    type: 'PATCH',
+    data: { graph: data },
+    async: true
+  });
 };
 
-var loadGraph = function(json){
-    graph.fromJSON(json);
+var loadGraph = function (json) {
+  graph.fromJSON(json);
 }
 
-var circleDelete = function(x, y) {
-    return new joint.shapes.basic.Circle({
+var circleDelete = function (x, y) {
+  return new joint.shapes.basic.Circle({
     position: { x: x, y: y },
     size: { width: 16, height: 16 },
     attrs: { text: { text: 'x' }, circle: { fill: 'red', class: 'delete-button' } },
     name: 'deleteCircle'
-    });
+  });
 }
 
-var circleToolbox = function(x, y) {
-    return new joint.shapes.basic.Circle({
+var circleToolbox = function (x, y) {
+  return new joint.shapes.basic.Circle({
     position: { x: x, y: y },
     size: { width: 16, height: 16 },
     attrs: { text: { text: 't' }, circle: { fill: 'green', class: 'toolbox-button' } },
     name: 'toolboxCircle'
-    });
+  });
 }
 
 $(document).ready(function worker() {
-  url  = window.location.pathname.replace('edit', '');
+  url = window.location.pathname.replace('edit', '');
   data = JSON.stringify(graph.toJSON());
 
   $.ajax({
@@ -451,7 +457,7 @@ $(document).ready(function worker() {
     type: 'PATCH',
     data: { graph: data },
     async: true,
-    complete: function() {
+    complete: function () {
       // Schedule the next request when the current one's complete
       setTimeout(worker, 10000);
     }
