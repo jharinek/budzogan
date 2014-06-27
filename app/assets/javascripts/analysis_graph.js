@@ -54,7 +54,7 @@ graph.on('add', function () {
 
       })
       .on("dblclick", function () {
-        initializeModal(activeElement);
+        initializeBoxModal(activeElement);
       });
 //        d3.select('#'+txt.attr('id'))
 //            .on("mouseover", function() {
@@ -96,7 +96,7 @@ graph.on('add', function () {
 //    });
 });
 
-var initializeModal = function(activeEl) {
+var initializeBoxModal = function(activeEl) {
   var txt = d3.select('g>#' + activeEl.attributes.attrs.text.id);
 
   var editableId = txt.node().parentNode.parentNode.id
@@ -157,7 +157,7 @@ var initializeGraph = function () {
 
       })
       .on("dblclick", function () {
-        initializeModal(activeElement);
+        initializeBoxModal(activeElement);
       });
     ;
   });
