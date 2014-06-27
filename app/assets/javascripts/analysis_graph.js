@@ -325,6 +325,18 @@ $(document).ready(function () {
 //    });
 });
 
+
+$(document).ready(function(){
+  $('#save-connection').click(function(){
+    $('#connection-editing').modal('hide');
+  });
+
+  $('#save-box').click(function(){
+    $('#box-editing').modal('hide');
+  });
+});
+
+
 $(document).ready(function () {
   loadGraph(JSON.parse($("div[data-value]").attr('data-value')));
   initializeGraph();
