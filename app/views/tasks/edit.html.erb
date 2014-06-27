@@ -34,7 +34,7 @@
   </div>
   <div class="col-md-9 myContainer" id="paper" data-value="<%= @task.student_solution.to_json %>">
   </div>
-  <div class="col-md-offset-12">
+  <div class="col-md-offset-11">
     <%= button_to "Uložiť", { controller: :tasks, action: :update }, method: :patch, id: 'save', remote: true %>
   </div>
   <div id="item-properties">
