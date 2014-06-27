@@ -1,22 +1,22 @@
 <div id="connection-editing" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="row">
-        <div class="col-md-6">Typ skladu:</div>
-        <div class="col-md-6">
-          <select class="form-control" id="connection">
-            <option value="one">Podmet</option>
-            <option value="two">Prísudok</option>
-            <option value="three">Predmet</option>
-            <option value="four">Prívlastok</option>
-          </select>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6">Typ skladu:</div>
+          <div class="col-md-6">
+            <select class="form-control" id="connection">
+              <option value="assignative">Priraďovací</option>
+              <option value="predicative">Podraďovací</option>
+              <option value="determinative">Určovací</option>
+            </select>
+          </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-md-offset-9">
-          <button class="btn btn-md">Zrušiť</button>
-          <button class="btn btn-md">Uložiť</button>
-        </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Zrušiť</button>
+        <button type="button" class="btn btn-primary">Uložiť</button>
       </div>
     </div>
   </div>
