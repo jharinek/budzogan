@@ -380,7 +380,11 @@ $(document).ready(function(){
 
     var model = toModel($('#' + modelId)[0]);
     model.attr('polygon').fill = clr;
+    model.attr('polygon').stroke = clr;
     model.attr('rect').class = properties;
+
+    graph.fromJSON(graph.toJSON());
+    initializeGraph();
 
     $('#box').removeClass(modelId);
     $('#box-editing').modal('hide');
