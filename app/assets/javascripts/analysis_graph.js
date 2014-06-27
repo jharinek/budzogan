@@ -71,8 +71,9 @@ graph.on('add', function() {
     }
     d3.selectAll('.delete-button')
         .on("mousedown", function(){
-            var text = $('#'+activeElement.attr('text').id)
-            text.draggable('enable');
+        $('span.text-draggable').filter(function() {
+          return $(this).text() == activeElement.attr('text').text
+        }).draggable('enable');
 
             activeElement.remove();
             activeElement = null;
@@ -139,8 +140,9 @@ var initializeGraph = function(){
   });
   d3.selectAll('.delete-button')
     .on("mousedown", function(){
-      var text = $('#'+activeElement.attr('text').id);
-      text.draggable('enable');
+      $('span.text-draggable').filter(function() {
+        return $(this).text() == activeElement.attr('text').text
+      }).draggable('enable');
 
       activeElement.remove();
       activeElement = null;
