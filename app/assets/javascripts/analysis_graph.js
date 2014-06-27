@@ -89,11 +89,11 @@ graph.on('add', function () {
 
       activeElement.attr({'text': { text: "" }});
     });
-  d3.selectAll('.link')
-    .on('dblclick', function(){
-      d3.event.preventDefault();
-      $('#connection-editing').modal('show');
-    });
+//  d3.selectAll('.link')
+//    .on('dblclick', function(){
+//      d3.event.preventDefault();
+//      $('#connection-editing').modal('show');
+//    });
 });
 
 var initializeModal = function(activeEl) {
@@ -186,11 +186,11 @@ var initializeGraph = function () {
       
       activeElement.attr({'text': { text: "" }});
     });
-  d3.selectAll('.link')
-    .on('dblclick', function(){
-      d3.event.preventDefault();
-      $('#connection-editing').modal('show');
-    });
+//  d3.selectAll('.link')
+//    .on('dblclick', function(){
+//      d3.event.preventDefault();
+//      $('#connection-editing').modal('show');
+//    });
 };
 
 
@@ -354,10 +354,35 @@ $(document).ready(function () {
 
 $(document).ready(function(){
   $('#save-connection').click(function(){
+  var modelId = $('#connections').attr('class');
+
+
+    $('#connection').removeClass(modelId);
     $('#connection-editing').modal('hide');
   });
 
   $('#save-box').click(function(){
+    var modelId = $('#box').attr('class');
+    var clr = '';
+
+    switch($('#sentence-element').val()) {
+      case 'subject': clr = hexToRgb('#6599ff');
+        break;
+      case 'predicate': clr = hexToRgb('#ff9900');
+        break;
+      case 'object': clr = hexToRgb('#097054');
+        break;
+      case 'attribute': clr = hexToRgb('#ffde00');
+        break;
+    }
+
+    var properties = "properties " + $('#sentence-element').val() + " " + $('#grammatical-case').val();
+
+    var model = toModel($('#' + modelId)[0]);
+    model.attr('polygon').fill = clr;
+    model.attr('rect').class = properties;
+
+    $('#box').removeClass(modelId);
     $('#box-editing').modal('hide');
   });
 });
@@ -539,4 +564,9 @@ function rgbToHex(rgbString) {
   var numericalValues = s.split(' ');
 
   return "#" + componentToHex(parseInt(numericalValues[0])) + componentToHex(parseInt(numericalValues[1])) + componentToHex(parseInt(numericalValues[2]));
+}
+
+function hexToRgb(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return "rgb(" + parseInt(result[1], 16) + ", " + parseInt(result[2], 16) + ", " + parseInt(result[3], 16) + ")";
 }
