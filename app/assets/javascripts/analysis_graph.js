@@ -89,6 +89,11 @@ graph.on('add', function () {
 
       activeElement.attr({'text': { text: "" }});
     });
+  d3.selectAll('.link')
+    .on('dblclick', function(){
+      d3.event.preventDefault();
+      $('#connection-editing').modal('show');
+    });
 });
 
 var initializeText = function () {
@@ -158,6 +163,11 @@ var initializeGraph = function () {
       text.draggable('enable');
 
       activeElement.attr({'text': { text: "" }});
+    });
+  d3.selectAll('.link')
+    .on('dblclick', function(){
+      d3.event.preventDefault();
+      $('#connection-editing').modal('show');
     });
 }
 
