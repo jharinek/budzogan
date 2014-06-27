@@ -30,7 +30,7 @@ class TasksController < ApplicationController
 
     @task.student_solution = params[:graph].to_json || @task.student_solution
 
-    if @task.student_solution.size > 15
+    if @task.student_solution && @task.student_solution.size > 15
       @task.state = 1
     else
       @task.state = 0
