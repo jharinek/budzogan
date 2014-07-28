@@ -13,7 +13,7 @@ class TasksController < ApplicationController
   end
 
   def show
-
+    @task = Task.find(params[:id])
   end
 
   def edit
@@ -31,6 +31,7 @@ class TasksController < ApplicationController
 
     @task.student_solution = params[:graph].to_json || @task.student_solution
 
+    # TODO weird task state representation
     if @task.student_solution && @task.student_solution.size > 15
       @task.state = 1
     else
