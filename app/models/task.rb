@@ -5,9 +5,9 @@ class Task < ActiveRecord::Base
   has_many :task_assignments, dependent: :destroy
   has_many :students, class_name: :User, through: :task_assignments
 
-  before_create :set_solution
+  before_create :initialize_solution
 
-  def set_solution
+  def initialize_solution
     this.student_solution = "{\"cells\":[]}"
   end
 end
