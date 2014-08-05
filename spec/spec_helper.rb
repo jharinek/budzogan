@@ -50,6 +50,13 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = "random"
 
+  # Fail after first fail
+  config.fail_fast = true
+
+  config.expect_with :rspec do |c|
+    c.syntax = :expect # Allow only usage of expect syntax
+  end
+
   # FactoryGirl
   config.include FactoryGirl::Syntax::Methods
 end
