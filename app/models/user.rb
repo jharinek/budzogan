@@ -18,8 +18,8 @@ class User < ActiveRecord::Base
   has_many :task_assignments, dependent: :destroy
   has_many :tasks, through: :task_assignments
 
-  validates :login, format: { with: /\A[A-Za-z0-9]+\z/ }, presence: true, uniqueness: { case_sensitive: false }
-  validates :nick,  format: { with: /\A[A-Za-z0-9]+\z/ }, presence: true, uniqueness: { case_sensitive: false }
+  validates :login, format: { with: /\A[A-Za-z0-9_]+\z/ }, presence: true, uniqueness: { case_sensitive: false }
+  validates :nick,  format: { with: /\A[A-Za-z0-9_]+\z/ }, presence: true, uniqueness: { case_sensitive: false }
 
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/ }, presence: true, uniqueness: { case_sensitive: false }
 
