@@ -39,6 +39,7 @@ GEM
     bootstrap-sass (3.1.1.0)
       sass (~> 3.2)
     builder (3.2.2)
+    cancan (1.6.10)
     capistrano (2.15.5)
       highline
       net-scp (>= 1.0.0)
@@ -286,6 +287,7 @@ DEPENDENCIES
   actionview-encoded_mail_to
   active_model_serializers
   bootstrap-sass (~> 3.1.0)
+  cancan (~> 1.6.9)
   capistrano (~> 2.15.5)
   capistrano-ext
   capybara (~> 2.2.1)
@@ -294,7 +296,7 @@ DEPENDENCIES
   d3js-rails (~> 3.1.6)
   database_cleaner (~> 1.2.0)
   devise (~> 3.1.1)
-  factory_girl_rails
+  factory_girl_rails (~> 4.0)
   faker (= 1.1.2)
   font-awesome-rails (~> 4.0.3)
   forgery

@@ -10,6 +10,7 @@ gem 'squire', '~> 1.3.6'
 
 # authentification
 gem 'devise', '~> 3.1.1'
+gem 'cancan', '~> 1.6.9'
 
 # stylesheets
 gem 'sass-rails', '~> 4.0.3'
@@ -68,7 +69,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 2.0'
   gem 'fuubar'
   gem 'database_cleaner', '~> 1.2.0'
-  gem 'factory_girl_rails'
+  gem 'factory_girl_rails', '~> 4.0'
   gem 'launchy'
   gem 'capybara', '~> 2.2.1'
   gem 'selenium-webdriver'
