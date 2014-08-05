@@ -11,20 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140414181852) do
+ActiveRecord::Schema.define(version: 20140805160426) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "enrollments", force: true do |t|
-    t.integer  "work_group_id"
+    t.integer  "workgroup_id"
     t.integer  "student_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "enrollments", ["student_id"], name: "index_enrollments_on_student_id", using: :btree
-  add_index "enrollments", ["work_group_id"], name: "index_enrollments_on_work_group_id", using: :btree
+  add_index "enrollments", ["workgroup_id"], name: "index_enrollments_on_workgroup_id", using: :btree
 
   create_table "exercise_templates", force: true do |t|
     t.string   "text",       default: "", null: false
@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 20140414181852) do
 
   create_table "exercises", force: true do |t|
     t.integer  "template_id"
-    t.integer  "work_group_id"
+    t.integer  "workgroup_id"
     t.integer  "sentence_length"
     t.string   "sentence_difficulty"
     t.string   "sentence_source"
@@ -43,7 +43,7 @@ ActiveRecord::Schema.define(version: 20140414181852) do
   end
 
   add_index "exercises", ["template_id"], name: "index_exercises_on_template_id", using: :btree
-  add_index "exercises", ["work_group_id"], name: "index_exercises_on_work_group_id", using: :btree
+  add_index "exercises", ["workgroup_id"], name: "index_exercises_on_workgroup_id", using: :btree
 
   create_table "sentences", force: true do |t|
     t.string   "content"
@@ -126,13 +126,13 @@ ActiveRecord::Schema.define(version: 20140414181852) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
 
-  create_table "work_groups", force: true do |t|
+  create_table "workgroups", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "teacher_id", default: 0, null: false
   end
 
-  add_index "work_groups", ["teacher_id"], name: "index_work_groups_on_teacher_id", using: :btree
+  add_index "workgroups", ["teacher_id"], name: "index_workgroups_on_teacher_id", using: :btree
 
 end

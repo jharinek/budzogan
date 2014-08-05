@@ -1,16 +1,16 @@
-class WorkGroupsController < ApplicationController
+class WorkgroupsController < ApplicationController
   def index
-    @groups = WorkGroup.where(teacher: current_user)
+    @groups = Workgroup.where(teacher: current_user)
   end
 
   def new
     # TODO only students for actual school
     @students = User.where(role: :student)
-    @work_group    = WorkGroup.new
+    @workgroup    = Workgroup.new
   end
 
   def create
-    @workgroup = WorkGroup.new(work_group_params)
+    @workgroup = Workgroup.new(work_group_params)
 
     if @workgroup.save
       student_id_params.each do |id|
@@ -26,17 +26,17 @@ class WorkGroupsController < ApplicationController
   end
 
   def show
-    @group = WorkGroup.find(params[:id])
+    @group = Workgroup.find(params[:id])
   end
 
   def edit
-    @workgroup = WorkGroup.find(params[:id])
+    @workgroup = Workgroup.find(params[:id])
     @students  = @workgroup.students
   end
 
   private
   def work_group_params
-    params.require(:work_group).permit(:name).merge(teacher: current_user)
+    params.require(:workgroup).permit(:name).merge(teacher: current_user)
   end
 
   def student_id_params
