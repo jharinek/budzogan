@@ -1,1 +1,6 @@
 sk:
+  task:
+    navigation: 'Úlohy'
+
+    new:
+      title: 'Nová úloha'

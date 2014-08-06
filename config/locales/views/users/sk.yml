@@ -1,1 +1,5 @@
 sk:
+  user:
+    sign_up: 'Registrovať'
+    sign_in: 'Prihlásiť'
+    sign_out: 'Odhlásiť'

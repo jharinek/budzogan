@@ -9,18 +9,18 @@
     <% if user_signed_in? %>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><%= link_to "Úlohy", tasks_path %></li>
-            <li><%= link_to "Nová úloha" %></li>
-            <li><%= link_to "Nová trieda", new_workgroup_path %></li>
-            <li><%= link_to "Zoznam tried", workgroups_path %></li>
+            <li><%= link_to t('task.navigation'), tasks_path %></li>
+            <li><%= link_to t('task.new.title') %></li>
+            <li><%= link_to t('workgroup.new.title'), new_workgroup_path %></li>
+            <li><%= link_to t('workgroup.navigation'), workgroups_path %></li>
           </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><%= link_to "Odhlásiť", destroy_user_session_path, method: :delete %></li>
+          <li><%= link_to t('user.sign_out'), destroy_user_session_path, method: :delete %></li>
         </ul>
     <% else %>
         <ul class="nav navbar-nav navbar-right">
-          <li><%= link_to "Prihlásiť", new_user_session_path %></li>
-          <li><%= link_to "Registrovať", new_user_registration_path %></li>
+          <li><%= link_to t('user.sign_in'), new_user_session_path %></li>
+          <li><%= link_to t('user.sign_up'), new_user_registration_path %></li>
         </ul>
     <% end %>
     </div>
