@@ -1,0 +1,4 @@
+<%= form_for @exercise do |f| %>
+    <%= f.label 'Vyberte typ cvičenia' %>
+    <%= f.select(:template_id, @exercise_types) %>
+<% end %>
