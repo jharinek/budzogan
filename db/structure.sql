@@ -104,7 +104,8 @@ CREATE TABLE exercises (
     sentence_difficulty character varying(255),
     sentence_source character varying(255),
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    description character varying(255) DEFAULT ''::character varying NOT NULL
 );
 
 
@@ -698,4 +699,6 @@ INSERT INTO schema_migrations (version) VALUES ('20140414181852');
 INSERT INTO schema_migrations (version) VALUES ('20140805160426');
 
 INSERT INTO schema_migrations (version) VALUES ('20140812200006');
+
+INSERT INTO schema_migrations (version) VALUES ('20140812210644');
 
