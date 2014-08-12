@@ -59,4 +59,7 @@ RSpec.configure do |config|
 
   # FactoryGirl
   config.include FactoryGirl::Syntax::Methods
+
+  # Include support
+  config.include AuthenticationHelper, type: :feature
 end
