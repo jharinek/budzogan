@@ -1,7 +1,7 @@
 class ExercisesController < ApplicationController
   def new
     @exercise = Exercise.new
-    @exercise_types = ExerciseTemplate.pluck(:id, :name)
+    @exercise_types = ExerciseTemplate.pluck(:name, :id)
   end
 
   def create
