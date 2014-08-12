@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Create Task' do
+describe 'Create Exercise' do
   let(:teacher) { create :teacher }
 
   before :each do
@@ -12,7 +12,7 @@ describe 'Create Task' do
 
     click_link 'Nová úloha'
 
-    expect(page).to have_content('Vyberte typ úlohy')
+    expect(page).to have_content('Vyberte typ cvičenia')
     expect(page).to have_content('Znenie úlohy')
     expect(page).to have_content('Ďalej')
   end
