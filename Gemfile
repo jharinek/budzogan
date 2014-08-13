@@ -45,6 +45,7 @@ gem 'murmurhash3'
 gem 'nokogiri'
 gem 'statistics2'
 gem 'symbolize'
+gem 'wicked'
 
 # documentation
 group :doc do
