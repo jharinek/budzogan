@@ -9,7 +9,7 @@ FactoryGirl.define do
     password 'password'
     password_confirmation 'password'
 
-    first 'John'
+    first 'Joe'
     last  'Doe'
 
     # TODO change according to roles model
