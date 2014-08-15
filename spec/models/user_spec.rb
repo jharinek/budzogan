@@ -89,10 +89,10 @@ describe User do
       user_params = { first: 'Joe', last: 'Doe', login: 'user', email: 'user@example.com', password: 'password' }
       user = User.create_without_confirmation!(user_params)
 
-      expect(user.login).to eq('user')
-      expect(user.email).to eq('user@example.com')
+      expect(user.login).to                  eq('user')
+      expect(user.email).to                  eq('user@example.com')
       expect(user.encrypted_password).not_to be_nil
-      expect(user).to be_confirmed
+      expect(user).to                        be_confirmed
     end
   end
 
