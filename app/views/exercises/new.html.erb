@@ -1,4 +1,13 @@
 <%= form_for @exercise do |f| %>
-    <%= f.label 'Vyberte typ cvičenia' %>
-    <%= f.select(:template_id, @exercise_types) %>
+    <div class="form-group">
+      <%= f.label 'Vyberte typ cvičenia' %>
+      <%= f.select(:template_id, @exercise_types) %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label 'Znenie úlohy' %>
+      <%= f.text_area :description %>
+    </div>
+
+    <button type="submit">Ďalej</button>
 <% end %>

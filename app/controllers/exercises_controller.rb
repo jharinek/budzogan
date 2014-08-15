@@ -5,6 +5,6 @@ class ExercisesController < ApplicationController
   end
 
   def create
-
+    render nothing: true
   end
 end
