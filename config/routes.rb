@@ -7,8 +7,9 @@ Budzogan::Application.routes.draw do
 
   resources :workgroups
 
-  resources :exercises, only: [:new, :create, :edit, :index]
-
+  resources :exercises, only: [:new, :create, :edit, :index] do
+    resources :build, controller: 'exercises/build'
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
