@@ -23,8 +23,8 @@ class User < ActiveRecord::Base
 
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/ }, presence: true, uniqueness: { case_sensitive: false }
 
-  validates :first, format: { with: /\A\p{Lu}\p{Ll}*\z/u }, allow_blank: true
-  validates :last,  format: { with: /\A\p{Lu}\p{Ll}*\z/u }, allow_blank: true
+  validates :first, format: { with: /\A\p{Lu}\p{Ll}*\z/u }, presence: true
+  validates :last,  format: { with: /\A\p{Lu}\p{Ll}*\z/u }, presence: true
 
   def login=(value)
     write_attribute :login, value.to_s.downcase
