@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe User do
   let(:user) { create :user }
-  
+
   it 'requires correct login' do
     user = build :user, login: ''
     expect(user).not_to be_valid
@@ -11,6 +11,17 @@ describe User do
     expect(user).not_to be_valid
 
     user = build :user, login: 'user1'
+    expect(user).to be_valid
+  end
+
+  it 'requires correct nick' do
+    user = build :user, nick: ''
+    expect(user).not_to be_valid
+
+    user = build :user, nick: 'invalid-nick!'
+    expect(user).not_to be_valid
+
+    user = build :user, nick: 'nickName'
     expect(user).to be_valid
   end
 
@@ -46,6 +57,32 @@ describe User do
     user = build :user, email: 'student@school.com'
     expect(user).to be_valid
   end
+
+  it 'sets nick according to login on create' do
+    user = build :user
+
+    expect(user.login).to eql(user.nick)
+  end
+
+  context 'when login is set' do
+    it 'requires nick' do
+      user = build :user, login: 'joe'
+
+      expect(user).to      be_valid
+      expect(user.nick).to eql('joe')
+    end
+  end
+
+  # TODO ask smolnar
+  # context 'when login is not set' do
+  #   it 'does not require nick' do
+  #     user = build :user, login: nil
+  #
+  #     expect(user).not_to        be_valid
+  #     expect(user.errors).to     include(:login)
+  #     expect(user.errors).not_to include(:nick)
+  #   end
+  # end
 
   describe '.create_without_confirmation!' do
     it 'creates user without need of confirmation' do
