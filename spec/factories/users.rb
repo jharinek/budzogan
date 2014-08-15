@@ -3,7 +3,6 @@
 FactoryGirl.define do
   factory :user, aliases: [:student] do
     sequence(:login) { |n| "user_#{n}" }
-    sequence(:nick)  { |n| "nick_#{n}" }
     sequence(:email) { |n| "user_#{n}@mailer.com" }
 
     password 'password'
