@@ -10,7 +10,7 @@ class Task < ActiveRecord::Base
   before_create :initialize_solution
 
   def initialize_solution
-    student_solution = "{\"cells\":[]}"
+    teacher_solution = student_solution = "{\"cells\":[]}"
   end
 
   def initialize_state
