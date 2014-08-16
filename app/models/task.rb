@@ -1,4 +1,6 @@
 class Task < ActiveRecord::Base
+  STATES = [:new, :in_progress, :solved]
+
   belongs_to :exercise
   belongs_to :sentence
 
@@ -8,6 +10,10 @@ class Task < ActiveRecord::Base
   before_create :initialize_solution
 
   def initialize_solution
-    this.student_solution = "{\"cells\":[]}"
+    student_solution = "{\"cells\":[]}"
+  end
+
+  def initialize_state
+    state = STATES.first
   end
 end
