@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  ROLES = [:student, :teacher, :admin]
 
   devise :database_authenticatable,
          :confirmable,
@@ -34,6 +35,10 @@ class User < ActiveRecord::Base
 
   def name
     (value = "#{first} #{last}".squeeze(' ').strip).blank? ? nil : value
+  end
+
+  def role?(base_role)
+    ROLES.index(base_role.to_s) <= ROLES.index(role)
   end
 
   def self.create_without_confirmation!(attributes)
