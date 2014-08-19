@@ -27,6 +27,10 @@ class User < ActiveRecord::Base
   validates :first, format: { with: /\A\p{Lu}\p{Ll}*\z/u }, presence: true
   validates :last,  format: { with: /\A\p{Lu}\p{Ll}*\z/u }, presence: true
 
+  validates :role, presence: true
+
+  symbolize :role, in: ROLES
+
   def login=(value)
     write_attribute :login, value.to_s.downcase
 
@@ -38,7 +42,7 @@ class User < ActiveRecord::Base
   end
 
   def role?(base_role)
-    ROLES.index(base_role.to_s) <= ROLES.index(role)
+    ROLES.index(base_role.to_sym) <= ROLES.index(role)
   end
 
   def self.create_without_confirmation!(attributes)
