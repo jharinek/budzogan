@@ -14,7 +14,7 @@
         <% @tasks.each do |task| %>
           <tr>
             <td><%= "#{task.id}" %></td>
-            <td><%= link_to task.exercise.template.text, edit_task_path(task.id) %></td>
+            <td><%= link_to task.exercise.template.name, edit_task_path(task.id) %></td>
             <td><%= render 'progress', task: task %></td>
             <td><%= "#{task.sentence.content}" %></td>
           </tr>
