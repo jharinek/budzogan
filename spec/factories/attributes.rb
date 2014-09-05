@@ -1,7 +1,7 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
 FactoryGirl.define do
-  factory :tag, :class => 'Tag' do
+  factory :attribute, :class => 'Attribute' do
     name "MyString"
   end
 end
