@@ -30,6 +30,72 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: attribute_assignments; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE attribute_assignments (
+    id integer NOT NULL,
+    tag_id integer,
+    template_id integer,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    attributable_type character varying(255) DEFAULT ''::character varying NOT NULL,
+    attributable_id integer NOT NULL
+);
+
+
+--
+-- Name: attribute_assignments_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE attribute_assignments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: attribute_assignments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE attribute_assignments_id_seq OWNED BY attribute_assignments.id;
+
+
+--
+-- Name: attributes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE attributes (
+    id integer NOT NULL,
+    name character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    category character varying(255) DEFAULT ''::character varying NOT NULL
+);
+
+
+--
+-- Name: attributes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE attributes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: attributes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE attributes_id_seq OWNED BY attributes.id;
+
+
+--
 -- Name: enrollments; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -167,70 +233,6 @@ CREATE SEQUENCE sentences_id_seq
 --
 
 ALTER SEQUENCE sentences_id_seq OWNED BY sentences.id;
-
-
---
--- Name: taggings; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE taggings (
-    id integer NOT NULL,
-    tag_id integer,
-    template_id integer,
-    type character varying(255),
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
-);
-
-
---
--- Name: taggings_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE taggings_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: taggings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE taggings_id_seq OWNED BY taggings.id;
-
-
---
--- Name: tags; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE tags (
-    id integer NOT NULL,
-    name character varying(255),
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
-);
-
-
---
--- Name: tags_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE tags_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE tags_id_seq OWNED BY tags.id;
 
 
 --
@@ -388,6 +390,20 @@ ALTER SEQUENCE workgroups_id_seq OWNED BY workgroups.id;
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY attribute_assignments ALTER COLUMN id SET DEFAULT nextval('attribute_assignments_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY attributes ALTER COLUMN id SET DEFAULT nextval('attributes_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY enrollments ALTER COLUMN id SET DEFAULT nextval('enrollments_id_seq'::regclass);
 
 
@@ -410,20 +426,6 @@ ALTER TABLE ONLY exercises ALTER COLUMN id SET DEFAULT nextval('exercises_id_seq
 --
 
 ALTER TABLE ONLY sentences ALTER COLUMN id SET DEFAULT nextval('sentences_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY taggings ALTER COLUMN id SET DEFAULT nextval('taggings_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY tags ALTER COLUMN id SET DEFAULT nextval('tags_id_seq'::regclass);
 
 
 --
@@ -490,7 +492,7 @@ ALTER TABLE ONLY sentences
 -- Name: taggings_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY taggings
+ALTER TABLE ONLY attribute_assignments
     ADD CONSTRAINT taggings_pkey PRIMARY KEY (id);
 
 
@@ -498,7 +500,7 @@ ALTER TABLE ONLY taggings
 -- Name: tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY tags
+ALTER TABLE ONLY attributes
     ADD CONSTRAINT tags_pkey PRIMARY KEY (id);
 
 
@@ -535,6 +537,27 @@ ALTER TABLE ONLY workgroups
 
 
 --
+-- Name: index_attribute_assignments_on_tag_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_attribute_assignments_on_tag_id ON attribute_assignments USING btree (tag_id);
+
+
+--
+-- Name: index_attribute_assignments_on_template_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_attribute_assignments_on_template_id ON attribute_assignments USING btree (template_id);
+
+
+--
+-- Name: index_attributes_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_attributes_on_name ON attributes USING btree (name);
+
+
+--
 -- Name: index_enrollments_on_student_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -560,27 +583,6 @@ CREATE INDEX index_exercises_on_template_id ON exercises USING btree (template_i
 --
 
 CREATE INDEX index_exercises_on_workgroup_id ON exercises USING btree (workgroup_id);
-
-
---
--- Name: index_taggings_on_tag_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_taggings_on_tag_id ON taggings USING btree (tag_id);
-
-
---
--- Name: index_taggings_on_template_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_taggings_on_template_id ON taggings USING btree (template_id);
-
-
---
--- Name: index_tags_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_tags_on_name ON tags USING btree (name);
 
 
 --
@@ -704,4 +706,10 @@ INSERT INTO schema_migrations (version) VALUES ('20140812200006');
 INSERT INTO schema_migrations (version) VALUES ('20140812210644');
 
 INSERT INTO schema_migrations (version) VALUES ('20140815132432');
+
+INSERT INTO schema_migrations (version) VALUES ('20140820195853');
+
+INSERT INTO schema_migrations (version) VALUES ('20140820201902');
+
+INSERT INTO schema_migrations (version) VALUES ('20140821151852');
 
