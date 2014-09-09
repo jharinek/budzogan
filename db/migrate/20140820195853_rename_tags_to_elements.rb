@@ -6,4 +6,3 @@ class RenameTagsToElements < ActiveRecord::Migration
     rename_column :element_assignments, :tag_id, :element_id
   end
 end
-e
