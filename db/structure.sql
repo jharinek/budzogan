@@ -35,7 +35,7 @@ SET default_with_oids = false;
 
 CREATE TABLE element_assignments (
     id integer NOT NULL,
-    tag_id integer,
+    element_id integer,
     template_id integer,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
@@ -537,10 +537,10 @@ ALTER TABLE ONLY workgroups
 
 
 --
--- Name: index_element_assignments_on_tag_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_element_assignments_on_element_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX index_element_assignments_on_tag_id ON element_assignments USING btree (tag_id);
+CREATE INDEX index_element_assignments_on_element_id ON element_assignments USING btree (element_id);
 
 
 --
