@@ -3,6 +3,11 @@ require 'spec_helper'
 describe User do
   let(:user) { create :user }
 
+  it 'has a valid factory' do
+    user = build :user
+    expect(user).to be_valid
+  end
+
   it 'requires correct login' do
     user = build :user, login: ''
     expect(user).not_to be_valid
