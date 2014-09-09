@@ -172,7 +172,7 @@ CREATE TABLE exercises (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     description character varying(255) DEFAULT ''::character varying NOT NULL,
-    state character varying(255) DEFAULT ''::character varying NOT NULL
+    status character varying(255) DEFAULT ''::character varying NOT NULL
 );
 
 

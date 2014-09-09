@@ -1,4 +1,4 @@
-class RenameTextToNameInExerciseTempaltes < ActiveRecord::Migration
+class RenameTextToNameInExerciseTemplates < ActiveRecord::Migration
   def change
     rename_column :exercise_templates, :text, :name
   end
