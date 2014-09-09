@@ -5,5 +5,5 @@ class Workgroup < ActiveRecord::Base
 
   belongs_to :teacher, class_name: :User
 
-  validates :name, format: { with: /\A[\w.\-: ]*\z/ }, presence: true
+  validates :name, format: { with: /\A[\w.\-:\# ]*\z/ }, presence: true
 end
