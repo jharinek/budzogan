@@ -30,25 +30,25 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: attribute_assignments; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: element_assignments; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE TABLE attribute_assignments (
+CREATE TABLE element_assignments (
     id integer NOT NULL,
     tag_id integer,
     template_id integer,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    attributable_type character varying(255) DEFAULT ''::character varying NOT NULL,
-    attributable_id integer NOT NULL
+    elementable_type character varying(255) DEFAULT ''::character varying NOT NULL,
+    elementable_id integer NOT NULL
 );
 
 
 --
--- Name: attribute_assignments_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: element_assignments_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE attribute_assignments_id_seq
+CREATE SEQUENCE element_assignments_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -57,17 +57,17 @@ CREATE SEQUENCE attribute_assignments_id_seq
 
 
 --
--- Name: attribute_assignments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: element_assignments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE attribute_assignments_id_seq OWNED BY attribute_assignments.id;
+ALTER SEQUENCE element_assignments_id_seq OWNED BY element_assignments.id;
 
 
 --
--- Name: attributes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: elements; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE TABLE attributes (
+CREATE TABLE elements (
     id integer NOT NULL,
     name character varying(255),
     created_at timestamp without time zone,
@@ -77,10 +77,10 @@ CREATE TABLE attributes (
 
 
 --
--- Name: attributes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: elements_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE attributes_id_seq
+CREATE SEQUENCE elements_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -89,10 +89,10 @@ CREATE SEQUENCE attributes_id_seq
 
 
 --
--- Name: attributes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: elements_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE attributes_id_seq OWNED BY attributes.id;
+ALTER SEQUENCE elements_id_seq OWNED BY elements.id;
 
 
 --
@@ -390,14 +390,14 @@ ALTER SEQUENCE workgroups_id_seq OWNED BY workgroups.id;
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY attribute_assignments ALTER COLUMN id SET DEFAULT nextval('attribute_assignments_id_seq'::regclass);
+ALTER TABLE ONLY element_assignments ALTER COLUMN id SET DEFAULT nextval('element_assignments_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY attributes ALTER COLUMN id SET DEFAULT nextval('attributes_id_seq'::regclass);
+ALTER TABLE ONLY elements ALTER COLUMN id SET DEFAULT nextval('elements_id_seq'::regclass);
 
 
 --
@@ -492,7 +492,7 @@ ALTER TABLE ONLY sentences
 -- Name: taggings_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY attribute_assignments
+ALTER TABLE ONLY element_assignments
     ADD CONSTRAINT taggings_pkey PRIMARY KEY (id);
 
 
@@ -500,7 +500,7 @@ ALTER TABLE ONLY attribute_assignments
 -- Name: tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY attributes
+ALTER TABLE ONLY elements
     ADD CONSTRAINT tags_pkey PRIMARY KEY (id);
 
 
@@ -537,24 +537,24 @@ ALTER TABLE ONLY workgroups
 
 
 --
--- Name: index_attribute_assignments_on_tag_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_element_assignments_on_tag_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX index_attribute_assignments_on_tag_id ON attribute_assignments USING btree (tag_id);
-
-
---
--- Name: index_attribute_assignments_on_template_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_attribute_assignments_on_template_id ON attribute_assignments USING btree (template_id);
+CREATE INDEX index_element_assignments_on_tag_id ON element_assignments USING btree (tag_id);
 
 
 --
--- Name: index_attributes_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_element_assignments_on_template_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_attributes_on_name ON attributes USING btree (name);
+CREATE INDEX index_element_assignments_on_template_id ON element_assignments USING btree (template_id);
+
+
+--
+-- Name: index_elements_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_elements_on_name ON elements USING btree (name);
 
 
 --
