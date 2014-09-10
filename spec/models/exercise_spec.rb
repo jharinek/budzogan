@@ -64,7 +64,20 @@ describe Exercise do
   end
 
   it 'requires to have a valid status' do
-    pending
+    exercise_new        = build :exercise, status: :new
+    exercise_setup      = build :exercise, status: :setup
+    exercise_sentences  = build :exercise, status: :sentences
+    exercise_assignment = build :exercise, status: :assignment
+    exercise_active     = build :exercise, status: :active
+
+    exercise_invalid = build :exercise, status: :invalid
+    expect(exercise_invalid).not_to be_valid
+
+    expect(exercise_new).to be_valid
+    expect(exercise_setup).to be_valid
+    expect(exercise_sentences).to be_valid
+    expect(exercise_assignment).to be_valid
+    expect(exercise_active).to be_valid
   end
 
   describe '#active?' do
