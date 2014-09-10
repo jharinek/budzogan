@@ -4,49 +4,58 @@ describe Exercise do
   it 'has a valid factory' do
     exercise = build :exercise
     expect(exercise).to be_valid
+
+    exercise = build :exercise, :in_setup_state
+    expect(exercise).to be_valid
+
+    exercise = build :exercise, :in_sentences_state
+    expect(exercise).to be_valid
+
+    exercise = build :exercise, :in_assignment_state
+    expect(exercise).to be_valid
   end
 
   it 'requires valid description' do
-    exercise = build :exercise, description: ''
+    exercise = build :exercise, :in_setup_state, description: ''
     expect(exercise).not_to be_valid
 
-    exercise = build :exercise, description: 'Popis cvičenia'
+    exercise = build :exercise, :in_setup_state, description: 'Popis cvičenia'
     expect(exercise).to be_valid
   end
 
   it 'requires to set sentence_length' do
-    exercise = build :exercise, sentence_length: nil
+    exercise = build :exercise, :in_sentences_state, sentence_length: nil
     expect(exercise).not_to be_valid
 
-    exercise = build :exercise, sentence_length: 5
+    exercise = build :exercise, :in_sentences_state, sentence_length: 5
     expect(exercise).to be_valid
   end
 
   it 'requires sentence_length higher than zero' do
-    exercise = build :exercise, sentence_length: -1
+    exercise = build :exercise, :in_sentences_state, sentence_length: -1
     expect(exercise).not_to be_valid
 
-    exercise = build :exercise, sentence_length: 0
+    exercise = build :exercise, :in_sentences_state, sentence_length: 0
     expect(exercise).not_to be_valid
 
-    exercise = build :exercise, sentence_length: 1
+    exercise = build :exercise, :in_sentences_state, sentence_length: 1
     expect(exercise).to be_valid
   end
 
   it 'requires to set sentence_difficulty' do
-    exercise = build :exercise, sentence_difficulty: nil
+    exercise = build :exercise, :in_sentences_state, sentence_difficulty: nil
     expect(exercise).not_to be_valid
 
-    exercise = build :exercise, sentence_difficulty: :easy
+    exercise = build :exercise, :in_sentences_state, sentence_difficulty: :easy
     expect(exercise).to be_valid
   end
 
   it 'requires valid value of sentence_difficulty' do
-    easy_exercise    = build :exercise, sentence_difficulty: :easy
-    medium_exercise = build :exercise, sentence_difficulty: :medium
-    hard_exercise   = build :exercise, sentence_difficulty: :hard
+    easy_exercise   = build :exercise, :in_sentences_state, sentence_difficulty: :easy
+    medium_exercise = build :exercise, :in_sentences_state, sentence_difficulty: :medium
+    hard_exercise   = build :exercise, :in_sentences_state, sentence_difficulty: :hard
 
-    another_exercise = build :exercise, sentence_difficulty: :difficult
+    another_exercise = build :exercise, :in_sentences_state, sentence_difficulty: :difficult
 
     expect(another_exercise).not_to be_valid
 
@@ -65,10 +74,10 @@ describe Exercise do
 
   it 'requires to have a valid status' do
     exercise_new        = build :exercise, status: :new
-    exercise_setup      = build :exercise, status: :setup
-    exercise_sentences  = build :exercise, status: :sentences
-    exercise_assignment = build :exercise, status: :assignment
-    exercise_active     = build :exercise, status: :active
+    exercise_setup      = build :exercise, :in_setup_state, status: :setup
+    exercise_sentences  = build :exercise, :in_sentences_state, status: :sentences
+    exercise_assignment = build :exercise, :in_assignment_state, status: :assignment
+    exercise_active     = build :exercise, :in_active_state, status: :active
 
     exercise_invalid = build :exercise, status: :invalid
     expect(exercise_invalid).not_to be_valid
@@ -85,7 +94,7 @@ describe Exercise do
       exercise = build :exercise, status: :new
       expect(exercise.active?).to eql(false)
 
-      exercise = build :exercise, status: :active
+      exercise = build :exercise, :in_active_state, status: :active
       expect(exercise.active?).to eql(true)
     end
   end
@@ -95,15 +104,15 @@ describe Exercise do
       exercise = build :exercise, status: :new
       expect(exercise.active_or_setup?).to eql(false)
 
-      exercise = build :exercise, status: :active
+      exercise = build :exercise, :in_active_state, status: :active
       expect(exercise.active_or_setup?).to eql(true)
     end
 
     it 'returns true if exercise is in setup step' do
-      exercise = build :exercise, status: :sentences
+      exercise = build :exercise, :in_sentences_state, status: :sentences
       expect(exercise.active_or_setup?).to eql(false)
 
-      exercise = build :exercise, status: :setup
+      exercise = build :exercise, :in_setup_state, status: :setup
       expect(exercise.active_or_setup?).to eql(true)
     end
   end
@@ -113,15 +122,15 @@ describe Exercise do
       exercise = build :exercise, status: :new
       expect(exercise.active_or_sentences?).to eql(false)
 
-      exercise = build :exercise, status: :active
+      exercise = build :exercise, :in_active_state, status: :active
       expect(exercise.active_or_sentences?).to eql(true)
     end
 
     it 'returns true if exercise is in sentences step' do
-      exercise = build :exercise, status: :assignment
+      exercise = build :exercise, :in_assignment_state, status: :assignment
       expect(exercise.active_or_sentences?).to eql(false)
 
-      exercise = build :exercise, status: :sentences
+      exercise = build :exercise, :in_sentences_state, status: :sentences
       expect(exercise.active_or_sentences?).to eql(true)
     end
   end
@@ -131,15 +140,15 @@ describe Exercise do
       exercise = build :exercise, status: :new
       expect(exercise.active_or_assignment?).to eql(false)
 
-      exercise = build :exercise, status: :active
+      exercise = build :exercise, :in_active_state, status: :active
       expect(exercise.active_or_assignment?).to eql(true)
     end
 
     it 'returns true if exercise is in assignment step' do
-      exercise = build :exercise, status: :sentences
+      exercise = build :exercise, :in_sentences_state, status: :sentences
       expect(exercise.active_or_assignment?).to eql(false)
 
-      exercise = build :exercise, status: :assignment
+      exercise = build :exercise, :in_assignment_state, status: :assignment
       expect(exercise.active_or_assignment?).to eql(true)
     end
   end
