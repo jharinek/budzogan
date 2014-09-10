@@ -10,14 +10,14 @@ class Exercise < ActiveRecord::Base
 
   has_many :tasks, dependent: :destroy
 
-  validates :description, format: { with: // }, presence: true
-  validates :sentence_length, numericality: { only_integer: true, greater_than: 0 }, presence: true
+  validates :description, format: { with: // }, presence: true, if: :active_or_setup?
 
-  validates :sentence_difficulty, presence: true
-  symbolize :sentence_difficulty, in: LEVELS
+  with_options if: :active_or_sentences? do |exercise|
+    exercise.validates :sentence_length, numericality: { only_integer: true, greater_than: 0 }, presence: true
+    exercise.validates :sentence_difficulty, inclusion: { in: LEVELS }, presence: true
+  end
 
-  validates :status, presence: true
-  symbolize :status, in: STATUSES
+  validates :status, inclusion: { in: STATUSES }, presence: true
 
   def active?
     status == :active
