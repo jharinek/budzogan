@@ -4,19 +4,23 @@ FactoryGirl.define do
     association :workgroup
 
     sentence_length 10
-    sentence_difficulty :simple
+    sentence_difficulty :easy
     sentence_source :custom
 
+    description 'Danú vetu nakreslite v syntaktickom strome'
+
+    status :new
+
     trait 'with_simple_sentences' do
-      sentence_difficulty :simple
+      sentence_difficulty :easy
     end
 
     trait 'with_medium_sentences' do
       sentence_difficulty :medium
     end
 
-    trait 'with_difficult_sentences' do
-      sentence_difficulty :difficult
+    trait 'with_hard_sentences' do
+      sentence_difficulty :hard
     end
   end
 end
