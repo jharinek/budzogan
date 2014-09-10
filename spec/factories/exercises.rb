@@ -3,24 +3,42 @@ FactoryGirl.define do
     association :template, factory: :exercise_template
     association :workgroup
 
-    sentence_length 10
-    sentence_difficulty :easy
-    sentence_source :custom
-
-    description 'Danú vetu nakreslite v syntaktickom strome'
-
     status :new
 
-    trait 'with_simple_sentences' do
+    trait :in_setup_state do
+      status :setup
+
+      description 'Danú vetu nakreslite v syntaktickom strome'
+    end
+
+    trait :in_sentences_state do
+      status :sentences
+
+      description 'Danú vetu nakreslite v syntaktickom strome'
+
+      sentence_length 10
       sentence_difficulty :easy
+      sentence_source :custom
     end
 
-    trait 'with_medium_sentences' do
-      sentence_difficulty :medium
+    trait :in_assignment_state do
+      status :assignment
+
+      description 'Danú vetu nakreslite v syntaktickom strome'
+
+      sentence_length 10
+      sentence_difficulty :easy
+      sentence_source :custom
     end
 
-    trait 'with_hard_sentences' do
-      sentence_difficulty :hard
+    trait :in_active_state do
+      status :active
+
+      description 'Danú vetu nakreslite v syntaktickom strome'
+
+      sentence_length 10
+      sentence_difficulty :easy
+      sentence_source :custom
     end
   end
 end
