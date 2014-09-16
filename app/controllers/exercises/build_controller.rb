@@ -10,13 +10,15 @@ class Exercises::BuildController < ApplicationController
 
   def update
     @exercise = Exercise.find(params[:exercise_id])
-    @exercise.update(exercise_params)
+    params[:exercise][:status] = step.to_s
+    params[:exercise][:status] = :active if step == steps.last
+    @exercise.update_attributes(exercise_params)
 
     render_wizard @exercise
   end
 
   private
   def exercise_params
-    params.require(:exercise).permit(:description, :sentence_length, :sentence_difficulty, :sentence_source, :state)
+    params.require(:exercise).permit(:description, :sentence_length, :sentence_difficulty, :sentence_source, :status)
   end
 end
