@@ -10,7 +10,7 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li><%= link_to t('task.navigation'), tasks_path %></li>
-            <li><%= link_to t('task.new.title'), new_exercise_path  if user_signed_in? && can?(:administrate, Exercise) %></li>
+            <li><%= link_to t('task.new.title'), exercises_path, method: :post  if user_signed_in? && can?(:administrate, Exercise) %></li>
             <li><%= link_to t('workgroup.new.title'), new_workgroup_path if user_signed_in? && can?(:administrate, Workgroup) %></li>
             <li><%= link_to t('workgroup.navigation'), workgroups_path if user_signed_in? && can?(:administrate, Workgroup) %></li>
           </ul>
