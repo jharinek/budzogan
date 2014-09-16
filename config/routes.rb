@@ -7,7 +7,7 @@ Budzogan::Application.routes.draw do
 
   resources :workgroups
 
-  resources :exercises, only: [:new, :create, :edit, :index] do
+  resources :exercises, only: [:create, :edit, :index] do
     resources :build, controller: 'exercises/build'
   end
 
