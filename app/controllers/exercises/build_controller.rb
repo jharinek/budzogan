@@ -10,7 +10,7 @@ class Exercises::BuildController < ApplicationController
 
   def update
     @exercise = Exercise.find(params[:exercise_id])
-    params[:exercise][:status] = step.to_s
+    params[:exercise][:status] = step.to_sym
     params[:exercise][:status] = :active if step == steps.last
     @exercise.update_attributes(exercise_params)
 
@@ -19,6 +19,6 @@ class Exercises::BuildController < ApplicationController
 
   private
   def exercise_params
-    params.require(:exercise).permit(:description, :sentence_length, :sentence_difficulty, :sentence_source, :status)
+    params.require(:exercise).permit(:template_id, :description, :sentence_length, :sentence_difficulty, :sentence_source, :status)
   end
 end
