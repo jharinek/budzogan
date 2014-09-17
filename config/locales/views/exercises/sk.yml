@@ -1,0 +1,6 @@
+sk:
+  exercise:
+    build:
+      setup:
+        choose_exercise: 'Vyberte typ cvičenia'
+        task_title: 'Znenie úlohy'
