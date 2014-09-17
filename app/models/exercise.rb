@@ -10,7 +10,10 @@ class Exercise < ActiveRecord::Base
 
   has_many :tasks, dependent: :destroy
 
-  validates :description, format: { with: // }, presence: true, if: :active_or_setup?
+  with_options if: :active_or_setup? do |exercise|
+    exercise.validates :description, format: { with: // }, presence: true
+    exercise.validates :template_id, numericality: true, presence: true
+  end
 
   with_options if: :active_or_sentences? do |exercise|
     exercise.validates :sentence_length, numericality: { only_integer: true, greater_than: 0 }, presence: true
