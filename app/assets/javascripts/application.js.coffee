@@ -20,5 +20,7 @@
 #= require jquery.sortElements
 #= require analysis_graph
 #= require remote
+#= require select2
+#= require select2_locale_"sk"
 #
 #= require_tree .

@@ -24,6 +24,7 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'uglifier', '>= 1.3.0'
 gem "d3js-rails", "~> 3.1.6"
+gem 'select2-rails', '~> 3.4.9'
 
 # internationalization
 gem 'rails-i18n', '~> 4.0.0'
