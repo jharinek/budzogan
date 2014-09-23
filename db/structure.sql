@@ -172,7 +172,9 @@ CREATE TABLE exercises (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     description character varying(255) DEFAULT ''::character varying NOT NULL,
-    status character varying(255) DEFAULT ''::character varying NOT NULL
+    status character varying(255) DEFAULT ''::character varying NOT NULL,
+    start_time timestamp without time zone,
+    end_time timestamp without time zone
 );
 
 
@@ -712,4 +714,8 @@ INSERT INTO schema_migrations (version) VALUES ('20140820195853');
 INSERT INTO schema_migrations (version) VALUES ('20140820201902');
 
 INSERT INTO schema_migrations (version) VALUES ('20140821151852');
+
+INSERT INTO schema_migrations (version) VALUES ('20140923145934');
+
+INSERT INTO schema_migrations (version) VALUES ('20140923150145');
 
