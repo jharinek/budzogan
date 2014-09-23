@@ -1708,7 +1708,7 @@
         <dia:point val="19.1465,26.659"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="19.0965,26.609;30.4765,38.709"/>
+        <dia:rectangle val="19.0965,26.609;30.4765,40.309"/>
       </dia:attribute>
       <dia:attribute name="elem_corner">
         <dia:point val="19.1465,26.659"/>
@@ -1717,7 +1717,7 @@
         <dia:real val="11.279999999999999"/>
       </dia:attribute>
       <dia:attribute name="elem_height">
-        <dia:real val="12.000000000000002"/>
+        <dia:real val="13.600000000000003"/>
       </dia:attribute>
       <dia:attribute name="name">
         <dia:string>#Exercises#</dia:string>
@@ -2052,6 +2052,52 @@
           </dia:attribute>
           <dia:attribute name="visibility">
             <dia:enum val="3"/>
+          </dia:attribute>
+          <dia:attribute name="abstract">
+            <dia:boolean val="false"/>
+          </dia:attribute>
+          <dia:attribute name="class_scope">
+            <dia:boolean val="false"/>
+          </dia:attribute>
+        </dia:composite>
+        <dia:composite type="umlattribute">
+          <dia:attribute name="name">
+            <dia:string>#start_time#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="type">
+            <dia:string>#datetime#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="value">
+            <dia:string>##</dia:string>
+          </dia:attribute>
+          <dia:attribute name="comment">
+            <dia:string>##</dia:string>
+          </dia:attribute>
+          <dia:attribute name="visibility">
+            <dia:enum val="0"/>
+          </dia:attribute>
+          <dia:attribute name="abstract">
+            <dia:boolean val="false"/>
+          </dia:attribute>
+          <dia:attribute name="class_scope">
+            <dia:boolean val="false"/>
+          </dia:attribute>
+        </dia:composite>
+        <dia:composite type="umlattribute">
+          <dia:attribute name="name">
+            <dia:string>#end_time#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="type">
+            <dia:string>#datetime#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="value">
+            <dia:string>##</dia:string>
+          </dia:attribute>
+          <dia:attribute name="comment">
+            <dia:string>##</dia:string>
+          </dia:attribute>
+          <dia:attribute name="visibility">
+            <dia:enum val="0"/>
           </dia:attribute>
           <dia:attribute name="abstract">
             <dia:boolean val="false"/>
