@@ -22,6 +22,9 @@ class Exercise < ActiveRecord::Base
 
   validates :status, inclusion: { in: STATUSES }, presence: true
 
+  symbolize :status
+  symbolize :sentence_difficulty
+
   def active?
     status == :active
   end
