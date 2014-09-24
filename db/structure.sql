@@ -546,6 +546,13 @@ CREATE INDEX index_element_assignments_on_element_id ON element_assignments USIN
 
 
 --
+-- Name: index_element_assignments_on_element_id_and_elementable_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_element_assignments_on_element_id_and_elementable_id ON element_assignments USING btree (element_id, elementable_id);
+
+
+--
 -- Name: index_element_assignments_on_template_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -718,4 +725,6 @@ INSERT INTO schema_migrations (version) VALUES ('20140821151852');
 INSERT INTO schema_migrations (version) VALUES ('20140923145934');
 
 INSERT INTO schema_migrations (version) VALUES ('20140923150145');
+
+INSERT INTO schema_migrations (version) VALUES ('20140923172138');
 
