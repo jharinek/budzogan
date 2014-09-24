@@ -11,7 +11,7 @@ class Exercise < ActiveRecord::Base
   has_many :tasks, dependent: :destroy
 
   with_options if: :active_or_setup? do |exercise|
-    exercise.validates :description, format: { with: // }, presence: true
+    exercise.validates :description, format: { with: /[\s\w\<\>\?\.\,\:\;\'\"\{\}\(\)]*/ }, presence: true
     exercise.validates :template_id, numericality: true, presence: true
   end
 
