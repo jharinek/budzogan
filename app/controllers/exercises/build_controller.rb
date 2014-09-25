@@ -13,7 +13,7 @@ class Exercises::BuildController < ApplicationController
     params[:exercise][:status] = step.to_sym
     params[:exercise][:status] = :active if step == steps.last
 
-    @exercise.update_attributes(exercise_params)
+    @exercise.update_attributes(step.to_sym == :assignment ? exercise_params.merge(inject_time_boundaries) : exercise_params)
     assign_elements if step == :setup
 
     render_wizard @exercise
@@ -26,13 +26,21 @@ class Exercises::BuildController < ApplicationController
     @exercise.elements << elements
   end
 
-  def exercise_params
+  def create_timestamp(year, month, day, hour, minute)
+    return DateTime.new(year, month, day, hour, minute) unless year.zero?
+    ''
+  end
+
+  def inject_time_boundaries
     date_params = params.require(:exercise)
-    params.require(:exercise).permit(:template_id, :description, :sentence_length, :sentence_difficulty, :sentence_source, :status).merge(
-      start_time: DateTime.new(date_params["start_time(1i)"].to_i, date_params["start_time(2i)"].to_i, date_params["start_time(3i)"].to_i,
-                               date_params["start_time(4i)"].to_i, date_params["start_time(5i)"].to_i),
-      end_time:   DateTime.new(date_params["end_time(1i)"].to_i, date_params["end_time(2i)"].to_i, date_params["end_time(3i)"].to_i,
-                               date_params["end_time(4i)"].to_i, date_params["end_time(5i)"].to_i)
-    )
+    { start_time: create_timestamp(date_params["start_time(1i)"].to_i, date_params["start_time(2i)"].to_i, date_params["start_time(3i)"].to_i,
+                                   date_params["start_time(4i)"].to_i, date_params["start_time(5i)"].to_i),
+      end_time: create_timestamp(date_params["end_time(1i)"].to_i, date_params["end_time(2i)"].to_i, date_params["end_time(3i)"].to_i,
+                                 date_params["end_time(4i)"].to_i, date_params["end_time(5i)"].to_i)
+    }
+  end
+
+  def exercise_params
+    params.require(:exercise).permit(:template_id, :description, :sentence_length, :sentence_difficulty, :sentence_source, :status)
   end
 end
