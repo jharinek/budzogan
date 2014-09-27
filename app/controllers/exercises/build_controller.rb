@@ -5,6 +5,8 @@ class Exercises::BuildController < ApplicationController
 
   def show
     @exercise = Exercise.find(params[:exercise_id])
+    @workgroups = Workgroup.all
+
     render_wizard
   end
 
@@ -41,6 +43,7 @@ class Exercises::BuildController < ApplicationController
   end
 
   def exercise_params
-    params.require(:exercise).permit(:template_id, :description, :sentence_length, :sentence_difficulty, :sentence_source, :status)
+    params.require(:exercise).permit(:template_id, :description, :sentence_length, :sentence_difficulty,
+                                     :sentence_source, :status).merge(workgroup: Workgroup.find(params[:exercise][:workgroup]))
   end
 end
