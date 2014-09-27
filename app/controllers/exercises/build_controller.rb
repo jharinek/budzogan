@@ -44,6 +44,6 @@ class Exercises::BuildController < ApplicationController
 
   def exercise_params
     params.require(:exercise).permit(:template_id, :description, :sentence_length, :sentence_difficulty,
-                                     :sentence_source, :status).merge(workgroup: Workgroup.find(params[:exercise][:workgroup]))
+                                     :sentence_source, :status).merge(workgroup: Workgroup.find_by(id: params[:exercise][:workgroup]))
   end
 end
