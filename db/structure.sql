@@ -174,7 +174,9 @@ CREATE TABLE exercises (
     description character varying(255) DEFAULT ''::character varying NOT NULL,
     status character varying(255) DEFAULT ''::character varying NOT NULL,
     start_time timestamp without time zone,
-    end_time timestamp without time zone
+    end_time timestamp without time zone,
+    distribution_strategy character varying(255) DEFAULT ''::character varying NOT NULL,
+    distributed boolean DEFAULT false NOT NULL
 );
 
 
@@ -727,4 +729,6 @@ INSERT INTO schema_migrations (version) VALUES ('20140923145934');
 INSERT INTO schema_migrations (version) VALUES ('20140923150145');
 
 INSERT INTO schema_migrations (version) VALUES ('20140923172138');
+
+INSERT INTO schema_migrations (version) VALUES ('20140927160123');
 
