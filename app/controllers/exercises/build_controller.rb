@@ -4,8 +4,18 @@ class Exercises::BuildController < ApplicationController
   steps :setup, :sentences, :assignment
 
   def show
-    @exercise = Exercise.find(params[:exercise_id])
-    @workgroups = Workgroup.all
+    @exercise     = Exercise.find(params[:exercise_id])
+    @workgroups   = Workgroup.all
+    @strategies   = { one_to_one:        'Každý študent jedna veta',
+                      every_to_everyone: 'Každý študent všetky vety',
+                      custom:            'Iné' }
+    @difficulties = { easy:   'ľahká',
+                      medium: 'stredná',
+                      hard:   'ťažká' }
+    @sources      = { sme:  'sme.sk',
+                      juls: 'Národný korpus' }
+
+    @sentences = Sentence.all
 
     render_wizard
   end
@@ -17,7 +27,7 @@ class Exercises::BuildController < ApplicationController
 
     @exercise.update_attributes(step.to_sym == :assignment ? exercise_params.merge(inject_time_boundaries) : exercise_params)
     assign_elements if step == :setup
-
+binding.pry
     render_wizard @exercise
   end
 
