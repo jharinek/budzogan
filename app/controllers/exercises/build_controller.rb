@@ -27,7 +27,7 @@ class Exercises::BuildController < ApplicationController
 
     @exercise.update_attributes(step.to_sym == :assignment ? exercise_params.merge(inject_time_boundaries) : exercise_params)
     assign_elements if step == :setup
-binding.pry
+
     render_wizard @exercise
   end
 
@@ -54,6 +54,6 @@ binding.pry
 
   def exercise_params
     params.require(:exercise).permit(:template_id, :description, :sentence_length, :sentence_difficulty,
-                                     :sentence_source, :status).merge(workgroup: Workgroup.find_by(id: params[:exercise][:workgroup]))
+                                     :sentence_source, :status, :distribution_strategy).merge(workgroup: Workgroup.find_by(id: params[:exercise][:workgroup]))
   end
 end
