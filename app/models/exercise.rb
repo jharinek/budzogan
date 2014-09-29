@@ -1,6 +1,7 @@
 class Exercise < ActiveRecord::Base
-  STATUSES = [:new, :setup, :sentences, :assignment, :active]
-  LEVELS   = [:easy, :medium, :hard]
+  STATUSES   = [:new, :setup, :sentences, :assignment, :active]
+  LEVELS     = [:easy, :medium, :hard]
+  STRATEGIES = [:one_to_one, :every_to_everyone, :custom]
 
   belongs_to :template, class_name: :ExerciseTemplate
   belongs_to :workgroup
@@ -16,9 +17,11 @@ class Exercise < ActiveRecord::Base
   end
 
   with_options if: :active_or_sentences? do |exercise|
-    exercise.validates :sentence_length, numericality: { only_integer: true, greater_than: 0 }, presence: true
-    exercise.validates :sentence_difficulty, inclusion: { in: LEVELS }, presence: true
+    exercise.validates :sentence_length, numericality: { only_integer: true }, allow_blank: true
+    exercise.validates :sentence_difficulty, inclusion: { in: LEVELS }, allow_blank: true
   end
+
+  validates :distribution_strategy, presence: true, inclusion: { in: STRATEGIES }
 
   validates :status, inclusion: { in: STATUSES }, presence: true
 
