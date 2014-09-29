@@ -27,6 +27,7 @@ class Exercise < ActiveRecord::Base
 
   symbolize :status
   symbolize :sentence_difficulty
+  symbolize :distribution_strategy
 
   def active?
     status == :active
