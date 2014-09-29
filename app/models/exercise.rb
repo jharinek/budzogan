@@ -21,7 +21,7 @@ class Exercise < ActiveRecord::Base
     exercise.validates :sentence_difficulty, inclusion: { in: LEVELS }, allow_blank: true
   end
 
-  validates :distribution_strategy, presence: true, inclusion: { in: STRATEGIES }
+  validates :distribution_strategy, presence: true, inclusion: { in: STRATEGIES }, if: :active_or_assignment?
 
   validates :status, inclusion: { in: STATUSES }, presence: true
 
