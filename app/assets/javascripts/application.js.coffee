@@ -18,9 +18,11 @@
 #= require jquery.ui.all
 #= require d3
 #= require jquery.sortElements
-#= require analysis_graph
 #= require remote
 #= require select2
 #= require select2_locale_"sk"
+#= require select
+#= require exercise_form
+#= require analysis_graph
 #
 #= require_tree .
