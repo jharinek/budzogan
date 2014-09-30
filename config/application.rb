@@ -36,5 +36,8 @@ module Budzogan
 
     # Export DB schema in SQL format
     config.active_record.schema_format = :sql
+
+    # Load lib files
+    config.autoload_paths << Rails.root.join('lib')
   end
 end
