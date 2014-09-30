@@ -1,0 +1,28 @@
+<%= link_to 'Generuj 10 nových viet', '#', class: 'btn btn-default' %>
+
+<table class="table">
+  <thead>
+    <tr class="active">
+      <th>Poradové číslo</th>
+      <th>Veta</th>
+      <th>Zdroj vety</th>
+      <th>Akcie</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @sentences.each_with_index do |sentence, i| %>
+      <tr>
+        <td><%= i + 1 %></td>
+        <td><%= sentence.content %></td>
+        <td>sentence.source</td>
+        <td>actions</td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div id="new-sentence" class="form-group">
+  <input class="form-control" type="text"/>
+  <%= link_to 'Pridaj vetu', '#' %>
+</div>
