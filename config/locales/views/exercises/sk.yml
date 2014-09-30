@@ -4,3 +4,5 @@ sk:
       setup:
         choose_exercise: 'Vyberte typ cvičenia'
         task_title: 'Znenie úlohy'
+        available_elements_to_drag: 'Ťahanie z panelu - dostupné prvky'
+        prepared_elements: 'Predpripravené krabičky pre vetné členy'
