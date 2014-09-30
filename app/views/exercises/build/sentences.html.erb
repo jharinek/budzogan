@@ -1,1 +1,39 @@
-sentences
+<h1 class="form-title">Nová úloha 2/3</h1>
+<h3 class="form-subtitle">Priradenie viet k úlohe</h3>
+
+<%= form_for @exercise, url: wizard_path do |f| %>
+  <% if @exercise.errors.any? %>
+    <div class="error_messages">
+      <h2><%= pluralize(@exercise.errors.count, "error") %> prohibited this user from being saved:</h2>
+      <ul>
+        <% @exercise.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :sentence_length, 'Dĺžka viet' %>
+    <%= f.text_field :sentence_length, placeholder: 'Nezáleží' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :sentence_difficulty, 'Náročnosť viet' %>
+    <%= f.collection_select :sentence_difficulty, @difficulties, :first, :last, { include_blank: 'Nezáleží' } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :sentence_source, 'Zdroj viet' %>
+    <%= f.collection_select :sentence_source, @sources, :first, :last, { include_blank: 'Nezáleží' } %>
+  </div>
+
+  <div class="sentence-generator">
+    <%= render 'sentences/sentence_generator' %>
+  </div>
+
+  <div class="form-actions">
+    <%= link_to t('form.previous'), previous_wizard_path, method: :get, class: 'btn btn-default' %>
+    <button type="submit" class="btn btn-primary"><%= t('form.next') %></button>
+  </div>
+<% end %>
