@@ -11,6 +11,7 @@ Budzogan::Application.routes.draw do
     resources :build, controller: 'exercises/build'
   end
 
+  get 'sentences/generate', controller: 'sentences/generate'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
