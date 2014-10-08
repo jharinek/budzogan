@@ -6,7 +6,7 @@ var counter = 0;
 //TODO (jharinek) supply custom Element view
 var paper = new joint.dia.Paper({
   el: $('#paper'),
-  gridSize: 80,
+  gridSize: 70,
   model: graph
 });
 
@@ -75,6 +75,8 @@ graph.on('add', function () {
       activeElement.remove();
       activeElement = null;
     });
+
+  //not present yet
   d3.selectAll('.toolbox-button')
     .on("mousedown", function () {
       //TODO edit element properties
@@ -212,7 +214,9 @@ var element = function (elm, x, y, color) {
 
   var cell = new elm({ position: { x: x, y: y }, attrs: { rect: { class: 'properties ' + sentenceElement + ' 1' }, text: { text: '', id: 'txt-' + counter }, polygon: { fill: color, stroke: color }}});
 
+//  TODO set mouse position
   graph.addCell(cell);
+  cell.on('change:position', function() {})
   counter++;
 
   return cell;
@@ -391,11 +395,13 @@ $(document).ready(function(){
   });
 });
 
-
 $(document).ready(function () {
-  loadGraph(JSON.parse($("div[data-value]").attr('data-value')));
-  initializeGraph();
-  initializeText();
+  graphString = $("div[data-value]").attr('data-value');
+  if(isJsonString(graphString)){
+    loadGraph(JSON.parse(graphString));
+    initializeGraph();
+    initializeText();
+  }
 });
 
 var getColor = function () {
@@ -476,7 +482,7 @@ joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
     attrs: {
       '.delete-button': {
         fill: 'red', stroke: 'black',
-        ref: '.outer', 'ref-x': 0, 'ref-y': 0,
+        ref: '.outer', 'ref-x': 150, 'ref-y': 0,
         r: 5
       },
       '.delete-text': {
@@ -554,6 +560,8 @@ $(document).ready(function worker() {
   });
 });
 
+// utilities
+
 function componentToHex(c) {
   var hex = c.toString(16);
   return hex.length == 1 ? "0" + hex : hex;
@@ -573,4 +581,13 @@ function rgbToHex(rgbString) {
 function hexToRgb(hex) {
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return "rgb(" + parseInt(result[1], 16) + ", " + parseInt(result[2], 16) + ", " + parseInt(result[3], 16) + ")";
+}
+
+function isJsonString(str) {
+  try {
+    JSON.parse(str);
+  } catch(e) {
+    return false;
+  }
+  return true;
 }
