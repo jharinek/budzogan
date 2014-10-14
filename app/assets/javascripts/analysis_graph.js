@@ -6,7 +6,7 @@ var counter = 0;
 //TODO (jharinek) supply custom Element view
 var paper = new joint.dia.Paper({
   el: $('#paper'),
-  gridSize: 70,
+  gridSize: 1,
   model: graph
 });
 
@@ -407,7 +407,7 @@ $(document).ready(function () {
 $(document).ready(function () {
   var canvas = $('svg');
   canvas.attr('width', canvas.parent().width());
-  canvas.attr('length', canvas.parent().length());
+  canvas.attr('height', canvas.parent().height());
 });
 
 var getColor = function () {
