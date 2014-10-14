@@ -404,6 +404,12 @@ $(document).ready(function () {
   }
 });
 
+$(document).ready(function () {
+  var canvas = $('svg');
+  canvas.attr('width', canvas.parent().width());
+  canvas.attr('length', canvas.parent().length());
+});
+
 var getColor = function () {
   color = $('.ui-draggable-dragging').css("background-color");
 };
