@@ -20694,65 +20694,65 @@ joint.dia.LinkView = joint.dia.CellView.extend({
     // This method ads a new vertex to the `vertices` array of `.connection`. This method
     // uses a heuristic to find the index at which the new `vertex` should be placed at assuming
     // the new vertex is somewhere on the path.
-    addVertex: function(vertex) {
-
-        this.model.set('attrs', this.model.get('attrs') || {});
-        var attrs = this.model.get('attrs');
-        
-        // As it is very hard to find a correct index of the newly created vertex,
-        // a little heuristics is taking place here.
-        // The heuristics checks if length of the newly created
-        // path is lot more than length of the old path. If this is the case,
-        // new vertex was probably put into a wrong index.
-        // Try to put it into another index and repeat the heuristics again.
-
-        var vertices = (this.model.get('vertices') || []).slice();
-        // Store the original vertices for a later revert if needed.
-        var originalVertices = vertices.slice();
-
-        // A `<path>` element used to compute the length of the path during heuristics.
-        var path = this._V.connection.node.cloneNode(false);
-        
-        // Length of the original path.        
-        var originalPathLength = path.getTotalLength();
-        // Current path length.
-        var pathLength;
-        // Tolerance determines the highest possible difference between the length
-        // of the old and new path. The number has been chosen heuristically.
-        var pathLengthTolerance = 20;
-        // Total number of vertices including source and target points.
-        var idx = vertices.length + 1;
-
-        // Loop through all possible indexes and check if the difference between
-        // path lengths changes significantly. If not, the found index is
-        // most probably the right one.
-        while (idx--) {
-
-            vertices.splice(idx, 0, vertex);
-            V(path).attr('d', this.getPathData(vertices));
-
-            pathLength = path.getTotalLength();
-
-            // Check if the path lengths changed significantly.
-            if (pathLength - originalPathLength > pathLengthTolerance) {
-
-                // Revert vertices to the original array. The path length has changed too much
-                // so that the index was not found yet.
-                vertices = originalVertices.slice();
-                
-            } else {
-
-                break;
-            }
-        }
-
-        this.model.set('vertices', vertices);
-
-        // In manhattan routing, if there are no vertices, the path length changes significantly
-        // with the first vertex added. Shall we check vertices.length === 0? at beginning of addVertex()
-        // in order to avoid the temporary path construction and other operations?
-        return Math.max(idx, 0);
-    },
+//    addVertex: function(vertex) {
+//
+//        this.model.set('attrs', this.model.get('attrs') || {});
+//        var attrs = this.model.get('attrs');
+//
+//        // As it is very hard to find a correct index of the newly created vertex,
+//        // a little heuristics is taking place here.
+//        // The heuristics checks if length of the newly created
+//        // path is lot more than length of the old path. If this is the case,
+//        // new vertex was probably put into a wrong index.
+//        // Try to put it into another index and repeat the heuristics again.
+//
+//        var vertices = (this.model.get('vertices') || []).slice();
+//        // Store the original vertices for a later revert if needed.
+//        var originalVertices = vertices.slice();
+//
+//        // A `<path>` element used to compute the length of the path during heuristics.
+//        var path = this._V.connection.node.cloneNode(false);
+//
+//        // Length of the original path.
+//        var originalPathLength = path.getTotalLength();
+//        // Current path length.
+//        var pathLength;
+//        // Tolerance determines the highest possible difference between the length
+//        // of the old and new path. The number has been chosen heuristically.
+//        var pathLengthTolerance = 20;
+//        // Total number of vertices including source and target points.
+//        var idx = vertices.length + 1;
+//
+//        // Loop through all possible indexes and check if the difference between
+//        // path lengths changes significantly. If not, the found index is
+//        // most probably the right one.
+//        while (idx--) {
+//
+//            vertices.splice(idx, 0, vertex);
+//            V(path).attr('d', this.getPathData(vertices));
+//
+//            pathLength = path.getTotalLength();
+//
+//            // Check if the path lengths changed significantly.
+//            if (pathLength - originalPathLength > pathLengthTolerance) {
+//
+//                // Revert vertices to the original array. The path length has changed too much
+//                // so that the index was not found yet.
+//                vertices = originalVertices.slice();
+//
+//            } else {
+//
+//                break;
+//            }
+//        }
+//
+//        this.model.set('vertices', vertices);
+//
+//        // In manhattan routing, if there are no vertices, the path length changes significantly
+//        // with the first vertex added. Shall we check vertices.length === 0? at beginning of addVertex()
+//        // in order to avoid the temporary path construction and other operations?
+//        return Math.max(idx, 0);
+//    },
 
     // Return the `d` attribute value of the `<path>` element representing the link between `source` and `target`.
     getPathData: function(vertices) {
