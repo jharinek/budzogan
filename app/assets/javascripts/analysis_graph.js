@@ -90,6 +90,10 @@ graph.on('add', function () {
       });
 
       activeElement.attr({'text': { text: "" }});
+
+      var txt = $("text:contains('" + activeElement.attr('text').text + "')");
+      var x = txt.width()
+      activeElement.attr({ '.delete-text': { 'ref-x': x } })
     });
 //  d3.selectAll('.link')
 //    .on('dblclick', function(){
@@ -194,6 +198,10 @@ var initializeGraph = function () {
       });
       
       activeElement.attr({'text': { text: "" }});
+
+      var txt = $("text:contains('" + activeElement.attr('text').text + "')");
+      var x = txt.width()
+      activeElement.attr({ '.delete-text': { 'ref-x': x } })
     });
 //  d3.selectAll('.link')
 //    .on('dblclick', function(){
@@ -460,6 +468,11 @@ var appendText = function (id, text) {
 //    });
     var new_text = activeElement.attr('text').text + " " + text
     activeElement.attr({ text: { text: new_text, id: id }});
+
+    var txt = $("text:contains('" + activeElement.attr('text').text + "')");
+    var x = txt.width()
+    activeElement.attr({ '.delete-text': { 'ref-x': x } })
+
     dropped = true;
   }
 };
@@ -501,7 +514,7 @@ joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
         r: 5
       },
       '.delete-text': {
-        fill: 'orange', stroke: 'black',
+        fill: 'red', stroke: 'black',
         ref: '.box-content', 'ref-x': 0, 'ref-y': 0,
         r: 4
       },
