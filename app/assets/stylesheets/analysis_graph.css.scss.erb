@@ -63,6 +63,11 @@ circle {
     visibility: hidden;
 }
 
+.highlighted {
+  outline: 0px solid #FF0000; /* `outline` doesn't work in Firefox, Opera and IE9+ correctly. */
+  opacity: 0.7 \9; /* It targets only IE9. */
+}
+
 /*.connection, .connection-wrap { pointer-events: none; }*/
 
 /*#paper {*/
