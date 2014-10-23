@@ -10,10 +10,10 @@ var paper = new joint.dia.Paper({
   model: graph
 });
 
+
 //paper.on('cell:pointerdblclick', function(cellView, evt, x, y) {
 //    link(cellView.model);
 //});
-
 // identify active element
 graph.on('add', function () {
   var last = $('.EntityDeletable').last();
@@ -126,6 +126,13 @@ var initializeText = function () {
 var initializeGraph = function () {
   var boxes = $('.EntityDeletable');
 
+  var canvas = $('svg');
+  canvas.attr('width', canvas.parent().width());
+  canvas.attr('height', canvas.parent().height());
+
+//  var background = new joint.shapes.erd.EntityBoundary({ size: { width: canvas.parent().width(), height: canvas.parent().height() },position: { x: 0, y: 0 }, attrs: { polygon: { fill: 'white', stroke: 'white' }}});
+//  graph.addCell(background);
+
   boxes.each(function (index) {
     d3.select(this)
       .on("mouseover", function () {
@@ -215,6 +222,7 @@ var element = function (elm, x, y, color) {
   var cell = new elm({ position: { x: x, y: y }, attrs: { rect: { class: 'properties ' + sentenceElement + ' 1' }, text: { text: '', id: 'txt-' + counter }, polygon: { fill: color, stroke: color }}});
 
 //  TODO set mouse position
+
   graph.addCell(cell);
   cell.on('change:position', function() {})
   counter++;
@@ -404,11 +412,11 @@ $(document).ready(function () {
   }
 });
 
-$(document).ready(function () {
-  var canvas = $('svg');
-  canvas.attr('width', canvas.parent().width());
-  canvas.attr('height', canvas.parent().height());
-});
+//$(document).ready(function () {
+//  var canvas = $('svg');
+//  canvas.attr('width', canvas.parent().width());
+//  canvas.attr('height', canvas.parent().height());
+//});
 
 var getColor = function () {
   color = $('.ui-draggable-dragging').css("background-color");
@@ -473,6 +481,7 @@ joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
     '<g class="scalable">',
     '<polygon class="outer"/>',
     '<polygon class="inner"/>',
+//    '<path class="delete-cross" transform="scale(.8) translate(-16, -16)" d="M24.778,21.419 19.276,15.917 24.777,10.415 21.949,7.585 16.447,13.087 10.945,7.585 8.117,10.415 13.618,15.917 8.116,21.419 10.946,24.248 16.447,18.746 21.948,24.248z"></path>',
     '</g>',
     '<text class="box-content"/>',
     '<rect/>',
@@ -499,8 +508,41 @@ joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
       'rect': {
         ref: '.box-content', 'ref-x': 0, 'ref-y': 0,
         class: 'properties'
+      },
+      '.delete-cross': {
+        fill: 'white',
+        ref: '.outer', 'ref-x': 150, 'ref-y': 0
       }
     }
+
+  }, joint.shapes.erd.Entity.prototype.defaults),
+
+  initialize: function () {
+
+    _.bindAll(this, 'format');
+    this.format();
+    joint.shapes.erd.Entity.prototype.initialize.apply(this, arguments);
+  },
+
+  format: function () {
+    var attrs = this.get('attrs');
+  }
+});
+
+joint.shapes.erd.EntityBoundary = joint.shapes.erd.Entity.extend({
+  markup: [
+    '<g class="rotatable">',
+    '<g class="scalable">',
+    '<polygon class="outer"/>',
+    '<polygon class="inner"/>',
+    '</g>',
+    '</g>'
+  ].join(''),
+
+  defaults: joint.util.deepSupplement({
+
+    type: 'erd.EntityBoundary',
+    size: { width: 500, height: 500 }
 
   }, joint.shapes.erd.Entity.prototype.defaults),
 
