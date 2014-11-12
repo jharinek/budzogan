@@ -35,6 +35,9 @@ graph.on('add', function () {
         });
         validContainer = true;
 
+        // bring activeElement to top
+        activeElement.toFront();
+
         //on mouseover show delete button
         deleteBox.css('visibility', 'visible');
 
@@ -177,6 +180,9 @@ var initializeGraph = function () {
           polygon: { stroke: 'orange' }
         });
         validContainer = true;
+
+        // bring activeElement to top
+        activeElement.toFront();
 
         //on mouseover show delete button
         $(d3.select('#' + this.id).select('.delete-button').node()).css('visibility', 'visible');
