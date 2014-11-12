@@ -212,7 +212,6 @@ var initializeGraph = function () {
         initializeBoxModal(activeElement);
       })
       .on("click", function () {
-        console.log("I am heeere");
         if(selected_element != null) {
           selected_element.attr({
             polygon: { stroke: selected_element.attr('polygon').fill }
@@ -316,11 +315,18 @@ var link = function (elm) {
 //d3js and jquery to handle drag and drop events to svg canvas
 
 var items = [
-  ["podmet", "#6599ff"],
-  ["prísudok", "#ff9900"],
-  ["predmet", "#097054"],
-  ["prívlastok", "#ffde00"]
+  ["podmet", "#428bc0"],
+  ["prísudok", "#b642c0"],
+  ["predmet", "#c07742"],
+  ["prívlastok", "#4cc042"]
 ];
+
+//["podmet", "#6599ff"],
+//  ["prísudok", "#ff9900"],
+//  ["predmet", "#097054"],
+//  ["prívlastok", "#ffde00"]
+
+
 var connections = ["prisudzovací", "určovací", "priraďovací"];
 var boxes_menu = d3.select('div .itemized#boxes');
 var lines_menu = d3.select('div .itemized#lines');
