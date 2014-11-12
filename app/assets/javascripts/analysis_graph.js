@@ -185,25 +185,48 @@ var initializeGraph = function () {
         $(d3.select('#' + this.id).select('.delete-text').node()).css('visibility', 'visible');
       })
       .on("mouseout", function () {
-        activeElement.attr({
-          polygon: { stroke: originalColor }
-        });
+        if(selected_element != activeElement) {
+          activeElement.attr({
+            polygon: { stroke: originalColor }
+          });
 
-        //on mouseout hide delete button
-        $(d3.select('#' + this.id).select('.delete-button').node()).css('visibility', 'hidden');
+          //on mouseout hide delete button
+          deleteBox.css('visibility', 'hidden');
 
-        //on mouseout hide delete text button
-        $(d3.select('#' + this.id).select('.delete-text').node()).css('visibility', 'hidden');
+          //on mouseout hide delete text button
+          deleteText.css('visibility', 'hidden');
 
-        activeElement = null;
-        originalColor = null;
+          activeElement = null;
+          originalColor = null;
+        }
         validContainer = false;
 
       })
       .on("dblclick", function () {
         initializeBoxModal(activeElement);
+      })
+      .on("click", function () {
+        console.log("I am heeere");
+        if(selected_element != null) {
+          selected_element.attr({
+            polygon: { stroke: selected_element.attr('polygon').fill }
+          });
+
+          var element = getElementFromModel(selected_element)
+          //on mouseout hide delete button
+          $('#'+element.id + ' circle.delete-button').css('visibility', 'hidden');
+
+          //on mouseout hide delete text button
+          $('#'+element.id + ' circle.delete-text').css('visibility', 'hidden');
+
+          selected_element = null;
+        }
+
+        selected_flag    = true;
+        selected_element = toModel(this);
+
+
       });
-    ;
   });
   d3.selectAll('.delete-button')
     .on("mousedown", function () {
