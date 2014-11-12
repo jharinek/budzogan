@@ -1,6 +1,8 @@
 //jointjs to handle svg canvas and actions on it
 var graph = new joint.dia.Graph;
 var counter = 0;
+var selected_flag = false;
+var selected_element = null;
 
 
 //TODO (jharinek) supply custom Element view
@@ -9,6 +11,8 @@ var paper = new joint.dia.Paper({
   gridSize: 1,
   model: graph
 });
+
+
 
 
 //paper.on('cell:pointerdblclick', function(cellView, evt, x, y) {
@@ -38,23 +42,33 @@ graph.on('add', function () {
         deleteText.css('visibility', 'visible');
       })
       .on("mouseout", function () {
-        activeElement.attr({
-          polygon: { stroke: originalColor }
-        });
+        if(selected_element != activeElement) {
+          activeElement.attr({
+            polygon: { stroke: originalColor }
+          });
 
-        //on mouseout hide delete button
-        deleteBox.css('visibility', 'hidden');
+          //on mouseout hide delete button
+          deleteBox.css('visibility', 'hidden');
 
-        //on mouseout hide delete text button
-        deleteText.css('visibility', 'hidden');
+          //on mouseout hide delete text button
+          deleteText.css('visibility', 'hidden');
 
-        activeElement = null;
-        originalColor = null;
+          activeElement = null;
+          originalColor = null;
+        }
         validContainer = false;
-
+      })
+      .on("dragend", function () {
+        alert();
       })
       .on("dblclick", function () {
         initializeBoxModal(activeElement);
+      })
+      .on("click", function () {
+        selected_flag    = true;
+        selected_element = toModel(this);
+
+
       });
 //        d3.select('#'+txt.attr('id'))
 //            .on("mouseover", function() {
@@ -67,6 +81,8 @@ graph.on('add', function () {
   }
   d3.selectAll('.delete-button')
     .on("mousedown", function () {
+//      TODO move to a function
+
       activeElement.attr('text').text.split(" ").map(function(item){
         $('span.text-draggable').filter(function () {
           return $(this).text() == item
@@ -418,6 +434,22 @@ $(document).ready(function () {
     initializeGraph();
     initializeText();
   }
+});
+
+$(document).ready(function() {
+  $('body').keypress(function(event) {
+    if(event.charCode == 127){
+//      TODO move to a function
+      selected_element.attr('text').text.split(" ").map(function(item){
+        $('span.text-draggable').filter(function () {
+          return $(this).text() == item
+        }).draggable('enable');
+      });
+
+      selected_element.remove();
+      selected_element = null;
+    }
+  });
 });
 
 //$(document).ready(function () {
