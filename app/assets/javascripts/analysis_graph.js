@@ -65,6 +65,21 @@ graph.on('add', function () {
         initializeBoxModal(activeElement);
       })
       .on("click", function () {
+        if(selected_element != null) {
+          selected_element.attr({
+            polygon: { stroke: selected_element.attr('polygon').fill }
+          });
+
+          var element = getElementFromModel(selected_element)
+          //on mouseout hide delete button
+          $('#'+element.id + ' circle.delete-button').css('visibility', 'hidden');
+
+          //on mouseout hide delete text button
+          $('#'+element.id + ' circle.delete-text').css('visibility', 'hidden');
+
+          selected_element = null;
+        }
+
         selected_flag    = true;
         selected_element = toModel(this);
 
@@ -481,6 +496,18 @@ var createElement = function () {
   });
 };
 
+var getElementFromModel = function(model){
+  var element = null;
+
+  $.each($('.element'), function(key, value){
+    if(value.attributes['model-id'].value == model.id){
+      element = value;
+    }
+  });
+
+  return element;
+};
+
 var toModel = function (element) {
   var model = null;
   graph.get('cells').find(function (cell) {
@@ -488,6 +515,7 @@ var toModel = function (element) {
       model = cell;
     }
   });
+
   return model;
 };
 
