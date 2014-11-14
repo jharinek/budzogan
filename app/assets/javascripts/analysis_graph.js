@@ -18,6 +18,25 @@ var paper = new joint.dia.Paper({
 //paper.on('cell:pointerdblclick', function(cellView, evt, x, y) {
 //    link(cellView.model);
 //});
+paper.on('blank:pointerdown', function(evt, x, y) {
+  if(selected_element != null) {
+    selected_element.attr({
+      polygon: { stroke: selected_element.attr('polygon').fill }
+    });
+
+    var element = getElementFromModel(selected_element)
+    //on mouseout hide delete button
+    $('#'+element.id + ' circle.delete-button').css('visibility', 'hidden');
+
+    //on mouseout hide delete text button
+    $('#'+element.id + ' circle.delete-text').css('visibility', 'hidden');
+
+    selected_element = null;
+    selected_flag = false;
+  }
+});
+
+
 // identify active element
 graph.on('add', function () {
   var last = $('.EntityDeletable').last();
@@ -61,7 +80,7 @@ graph.on('add', function () {
         }
         validContainer = false;
       })
-      .on("dragend", function () {
+      .on("dragstop", function () {
         alert();
       })
       .on("dblclick", function () {
@@ -79,12 +98,17 @@ graph.on('add', function () {
 
           //on mouseout hide delete text button
           $('#'+element.id + ' circle.delete-text').css('visibility', 'hidden');
+        }
 
+        if(selected_element != toModel(this)){
+          selected_flag    = true;
+          selected_element = toModel(this);
+        }
+        else{
+          selected_flag    = false;
           selected_element = null;
         }
 
-        selected_flag    = true;
-        selected_element = toModel(this);
 
 
       });
@@ -125,9 +149,7 @@ graph.on('add', function () {
 
       activeElement.attr({'text': { text: "" }});
 
-      var txt = $("text:contains('" + activeElement.attr('text').text + "')");
-      var x = txt.width()
-      activeElement.attr({ '.delete-text': { 'ref-x': x } })
+      activeElement.attr({ '.delete-text': { 'ref-x': 0, 'ref-y': 0 } })
     });
 //  d3.selectAll('.link')
 //    .on('dblclick', function(){
@@ -488,7 +510,7 @@ $(document).ready(function () {
 
 $(document).ready(function() {
   $('body').keypress(function(event) {
-    if(event.charCode == 127){
+    if(event.charCode == 127 && selected_element){
 //      TODO move to a function
       selected_element.attr('text').text.split(" ").map(function(item){
         $('span.text-draggable').filter(function () {
