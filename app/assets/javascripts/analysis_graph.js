@@ -12,8 +12,11 @@ var paper = new joint.dia.Paper({
   model: graph
 });
 
-
-
+// colors
+var subject   = "#428bc0";
+var object    = "#c07742";
+var predicate = "#b642c0";
+var attribute = "#4cc042";
 
 //paper.on('cell:pointerdblclick', function(cellView, evt, x, y) {
 //    link(cellView.model);
@@ -166,6 +169,7 @@ var initializeBoxModal = function(activeEl) {
   var properties = activeEl.attr('rect').class.split(' ');
 
   if($(d3.select('#' + id).node()).attr('class').indexOf("EntityDeletable") >= 0) {
+    debugger
     $('#box').attr('class', editableId);
 
     $('#sentence-element').val(properties[1]);
@@ -337,10 +341,10 @@ var link = function (elm) {
 //d3js and jquery to handle drag and drop events to svg canvas
 
 var items = [
-  ["podmet", "#428bc0"],
-  ["prísudok", "#b642c0"],
-  ["predmet", "#c07742"],
-  ["prívlastok", "#4cc042"]
+  ["podmet", subject],
+  ["prísudok", predicate],
+  ["predmet", object],
+  ["prívlastok", attribute]
 ];
 
 //["podmet", "#6599ff"],
@@ -474,13 +478,13 @@ $(document).ready(function(){
     var clr = '';
 
     switch($('#sentence-element').val()) {
-      case 'subject': clr = hexToRgb('#6599ff');
+      case 'subject': clr = hexToRgb(subject);
         break;
-      case 'predicate': clr = hexToRgb('#ff9900');
+      case 'predicate': clr = hexToRgb(predicate);
         break;
-      case 'object': clr = hexToRgb('#097054');
+      case 'object': clr = hexToRgb(object);
         break;
-      case 'attribute': clr = hexToRgb('#ffde00');
+      case 'attribute': clr = hexToRgb(attribute);
         break;
     }
 
