@@ -1,5 +1,10 @@
 Budzogan::Application.routes.draw do
-  root 'tasks#index'
+
+  authenticated :user do
+    root 'tasks#index', as: :authenticated
+  end
+
+  root 'static_pages#home'
 
   devise_for :users, path: '', path_names: { sign_up: :join, sign_in: :login, sign_out: :logout }
 
