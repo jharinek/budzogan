@@ -3,6 +3,7 @@ var graph = new joint.dia.Graph;
 var counter = 0;
 var selected_flag = false;
 var selected_element = null;
+var selected_element_properties_id = null;
 
 //TODO (jharinek) supply custom Element view
 var paper = new joint.dia.Paper({
@@ -184,10 +185,10 @@ graph.on('add', function () {
 
           var element = getElementFromModel(selected_element)
           //on mouseout hide delete button
-          $('#'+element.id + ' circle.delete-button').css('visibility', 'hidden');
+          $('#' + element.id + ' circle.delete-button').css('visibility', 'hidden');
 
           //on mouseout hide delete text button
-          $('#'+element.id + ' circle.delete-text').css('visibility', 'hidden');
+          $('#' + element.id + ' circle.delete-text').css('visibility', 'hidden');
 
           deactivateEditBox();
         }
@@ -198,13 +199,14 @@ graph.on('add', function () {
 
           // make edit-properties visible
           var properties = selected_element.attr('rect').class.split(' ').filter(Boolean);
+          selected_element_properties_id = $('#' + this.id + ' .properties').attr('id');
 
           activateEditBox(properties[1], properties[2], properties[3]);
-
         }
         else{
           selected_flag    = false;
           selected_element = null;
+          selected_element_properties_id = null;
 
           deactivateEditBox();
         }
@@ -256,7 +258,7 @@ graph.on('add', function () {
 //    });
 });
 
-// initialize callbacks on select menus
+// initialize callbacks on select menus and save button
 $(document).ready(function() {
   $('#level-1-select').on('change', function (e) {
     populateProperties('level-2', 'PropertyName', buildData(boxProperties[e.val]['level-2']));
@@ -264,13 +266,26 @@ $(document).ready(function() {
   });
 
   $('#level-2-select').on('change', function (e) {
-    debugger;
     var level_1 = $('#level-1-select').select2('val');
     populateProperties('level-3', 'PropertyName', buildData(boxProperties[level_1]['level-2'][e.val]['level-3']));
   });
 
   $('#level-3-select').on('change', function (e) {
 
+  });
+
+  $('#save-properties').click(function(){
+    properties = 'properties';
+    properties += ' ' + ($('#level-1-select').select2('val') || '0');
+    properties += ' ' + ($('#level-2-select').select2('val') || '0');
+    properties += ' ' + ($('#level-3-select').select2('val') || '0');
+
+    $('#' + selected_element_properties_id).attr('class', properties);
+
+    var newColor = items[$('#level-1-select').select2('val')];
+
+    selected_element.attr('polygon').fill   = newColor;
+    selected_element.attr('polygon').stroke = newColor;
   });
 });
 
@@ -292,7 +307,7 @@ var activateEditBox = function(level_1, level_2,  level_3){
   $('#properties-title').removeClass('text-muted');
   $('#save-properties').removeAttr('disabled');
   $('#level-1-properties').removeAttr('hidden');
-  
+
   populateProperties('level-1', 'Vetný člen', buildData(boxProperties), level_1);
   populateProperties('level-2', 'Property name', buildData(boxProperties[level_1]['level-2']), level_2);
   if(level_2 != '0') {
@@ -301,6 +316,8 @@ var activateEditBox = function(level_1, level_2,  level_3){
 };
 
 var deactivateEditBox = function(){
+  $('#properties-title').addClass('text-muted');
+
   $('#level-1-select').select2('destroy');
   $('#level-2-select').select2('destroy');
   $('#level-3-select').select2('destroy');
@@ -308,6 +325,7 @@ var deactivateEditBox = function(){
   $('#level-1-properties').attr('hidden', 'hidden');
   $('#level-2-properties').attr('hidden', 'hidden');
   $('#level-3-properties').attr('hidden', 'hidden');
+
   $('#save-properties').attr('disabled', 'disabled');
 };
 
@@ -497,10 +515,10 @@ var link = function (elm) {
 //d3js and jquery to handle drag and drop events to svg canvas
 
 var items = [
-  ["podmet", subject],
-  ["prísudok", predicate],
-  ["predmet", object],
-  ["prívlastok", attribute]
+  ["1", subject],
+  ["2", predicate],
+  ["3", object],
+  ["4", attribute]
 ];
 
 var connections = ["prisudzovací", "určovací", "priraďovací"];
