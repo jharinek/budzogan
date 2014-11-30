@@ -4,7 +4,6 @@ var counter = 0;
 var selected_flag = false;
 var selected_element = null;
 
-
 //TODO (jharinek) supply custom Element view
 var paper = new joint.dia.Paper({
   el: $('#paper'),
@@ -17,6 +16,93 @@ var subject   = "#428bc0";
 var object    = "#c07742";
 var predicate = "#b642c0";
 var attribute = "#4cc042";
+
+// ["podmet", "#6599ff"],
+// ["prísudok", "#ff9900"],
+// ["predmet", "#097054"],
+// ["prívlastok", "#ffde00"]
+
+
+// Hash of properties
+var boxProperties = {
+  '1': {
+    'value': 'podmet',
+    'level-2': {
+      '1': {'value': 'vyjadrený'},
+      '2': {'value': 'nevyjadrený'}
+    }
+  },
+
+  '2': {
+    'value': 'prísudok',
+    'level-2': {
+      '1': {
+        'value': 'slovesný',
+        'level-3': {
+          '1': {'value': 'plonovyznamové'},
+          '2': {'value': 'neplnovyznamové'}
+        }
+      },
+      '2': {
+        'value': 'slovesno-menný'
+      }
+    }
+  },
+
+  '3': {
+    'value': 'predmet',
+    'level-2': {
+      '1': {'value': 'nominatív'},
+      '2': {'value': 'genitív'},
+      '3': {'value': 'datív'},
+      '4': {'value': 'akuzatív'},
+      '5': {'value': 'lokál'},
+      '6': {'value': 'inštrumentál'}
+    }
+  },
+
+  '4': {
+    'value': 'prívlastok',
+    'level-2': {
+      '1': {'value': 'zhodný'},
+      '2': {'value': 'nezhodný'}
+    }
+  },
+
+  '5': {
+    'value': 'príslovkové určenie',
+    'level-2': {
+      '1': {'value': 'miesto'},
+      '2': {'value': 'čas'},
+      '3': {'value': 'spôsob'},
+      '4': {'value': 'príčina'}
+    }
+  }
+};
+
+var connectionProperties = {
+  'prisudzovaci': {},
+  'priradovaci': {},
+  'podradovaci': {}
+};
+
+
+var buildData = function(data){
+  var result = [];
+
+  if(data) {
+    $.each(data, function (key, value) {
+      result.push(
+        {
+          id: key,
+          text: value['value']
+        }
+      );
+    });
+  }
+
+  return result;
+};
 
 //paper.on('cell:pointerdblclick', function(cellView, evt, x, y) {
 //    link(cellView.model);
@@ -36,6 +122,7 @@ paper.on('blank:pointerdown', function(evt, x, y) {
 
     selected_element = null;
     selected_flag = false;
+    deactivateEditBox();
   }
 });
 
@@ -86,9 +173,9 @@ graph.on('add', function () {
       .on("dragstop", function () {
         alert();
       })
-      .on("dblclick", function () {
-        initializeBoxModal(activeElement);
-      })
+      //.on("dblclick", function () {
+      //  initializeBoxModal(activeElement);
+      //})
       .on("click", function () {
         if(selected_element != null) {
           selected_element.attr({
@@ -101,18 +188,26 @@ graph.on('add', function () {
 
           //on mouseout hide delete text button
           $('#'+element.id + ' circle.delete-text').css('visibility', 'hidden');
+
+          deactivateEditBox();
         }
 
         if(selected_element != toModel(this)){
           selected_flag    = true;
           selected_element = toModel(this);
+
+          // make edit-properties visible
+          var properties = selected_element.attr('rect').class.split(' ').filter(Boolean);
+
+          activateEditBox(properties[1], properties[2], properties[3]);
+
         }
         else{
           selected_flag    = false;
           selected_element = null;
+
+          deactivateEditBox();
         }
-
-
 
       });
 //        d3.select('#'+txt.attr('id'))
@@ -161,27 +256,81 @@ graph.on('add', function () {
 //    });
 });
 
-var initializeBoxModal = function(activeEl) {
-  var txt = d3.select('g>#' + activeEl.attributes.attrs.text.id);
+// initialize callbacks on select menus
+$(document).ready(function() {
+  $('#level-1-select').on('change', function (e) {
+    populateProperties('level-2', 'PropertyName', buildData(boxProperties[e.val]['level-2']));
+    $('#level-3-properties').attr('hidden', 'hidden');
+  });
 
-  var editableId = txt.node().parentNode.parentNode.id
-  var id = txt.node().parentNode.parentNode.id;
-  var properties = activeEl.attr('rect').class.split(' ');
+  $('#level-2-select').on('change', function (e) {
+    debugger;
+    var level_1 = $('#level-1-select').select2('val');
+    populateProperties('level-3', 'PropertyName', buildData(boxProperties[level_1]['level-2'][e.val]['level-3']));
+  });
 
-  if($(d3.select('#' + id).node()).attr('class').indexOf("EntityDeletable") >= 0) {
-    debugger
-    $('#box').attr('class', editableId);
+  $('#level-3-select').on('change', function (e) {
 
-    $('#sentence-element').val(properties[1]);
-    $('#gramatical-case').val(properties[2]);
-  }else{
-    $('#connection').attr('class', editableId);
+  });
+});
 
-    $('#connection-type').val(properties[1]);
+var populateProperties = function(identifier, title, data, value){
+  if(data.length > 0) {
+    var selectElement = $('#' + identifier + '-select');
+
+    $('#' + identifier + '-title').text(title);
+
+    selectElement.select2('destroy');
+    selectElement.select2({data: data});
+    selectElement.select2('val', value);
+
+    $('#' + identifier + '-properties').removeAttr('hidden');
   }
-
-  $('#box-editing').modal('show');
 };
+
+var activateEditBox = function(level_1, level_2,  level_3){
+  $('#properties-title').removeClass('text-muted');
+  $('#save-properties').removeAttr('disabled');
+  $('#level-1-properties').removeAttr('hidden');
+  
+  populateProperties('level-1', 'Vetný člen', buildData(boxProperties), level_1);
+  populateProperties('level-2', 'Property name', buildData(boxProperties[level_1]['level-2']), level_2);
+  if(level_2 != '0') {
+    populateProperties('level-3', 'Property name', buildData(boxProperties[level_1]['level-2'][level_2]['level-3']), level_3);
+  }
+};
+
+var deactivateEditBox = function(){
+  $('#level-1-select').select2('destroy');
+  $('#level-2-select').select2('destroy');
+  $('#level-3-select').select2('destroy');
+
+  $('#level-1-properties').attr('hidden', 'hidden');
+  $('#level-2-properties').attr('hidden', 'hidden');
+  $('#level-3-properties').attr('hidden', 'hidden');
+  $('#save-properties').attr('disabled', 'disabled');
+};
+
+//var initializeBoxModal = function(activeEl) {
+//  var txt = d3.select('g>#' + activeEl.attributes.attrs.text.id);
+//
+//  var editableId = txt.node().parentNode.parentNode.id
+//  var id = txt.node().parentNode.parentNode.id;
+//  var properties = activeEl.attr('rect').class.split(' ');
+//
+//  if($(d3.select('#' + id).node()).attr('class').indexOf("EntityDeletable") >= 0) {
+//    $('#box').attr('class', editableId);
+//
+//    $('#sentence-element').val(properties[1]);
+//    $('#gramatical-case').val(properties[2]);
+//  }else{
+//    $('#connection').attr('class', editableId);
+//
+//    $('#connection-type').val(properties[1]);
+//  }
+//
+//  $('#box-editing').modal('show');
+//};
 
 var initializeText = function () {
   $('.text-draggable.disabled').draggable("disable")
@@ -234,9 +383,9 @@ var initializeGraph = function () {
         validContainer = false;
 
       })
-      .on("dblclick", function () {
-        initializeBoxModal(activeElement);
-      })
+      //.on("dblclick", function () {
+      //  initializeBoxModal(activeElement);
+      //})
       .on("click", function () {
         if(selected_element != null) {
           selected_element.attr({
@@ -249,12 +398,19 @@ var initializeGraph = function () {
 
           //on mouseout hide delete text button
           $('#'+element.id + ' circle.delete-text').css('visibility', 'hidden');
-
-          selected_element = null;
         }
 
-        selected_flag    = true;
-        selected_element = toModel(this);
+        if(selected_element != toModel(this)){
+          selected_flag    = true;
+          selected_element = toModel(this);
+        }
+        else{
+          selected_flag    = false;
+          selected_element = null;
+
+          // set up correct attributes to edit in properties editor
+        }
+
 
 
       });
@@ -302,17 +458,17 @@ var element = function (elm, x, y, color) {
   var sentenceElement = '';
 
   switch(rgbToHex(color)) {
-    case '#6599ff': sentenceElement = 'subject'
+    case subject: sentenceElement = '1';
       break;
-    case '#ff9900': sentenceElement = 'predicate'
+    case predicate: sentenceElement = '2';
       break;
-    case '#097054': sentenceElement = 'object'
+    case object: sentenceElement = '3';
       break;
-    case '#ffde00': sentenceElement = 'attribute'
+    case attribute: sentenceElement = '4';
       break;
   }
 
-  var cell = new elm({ position: { x: x, y: y }, attrs: { rect: { class: 'properties ' + sentenceElement + ' 1' }, text: { text: '', id: 'txt-' + counter }, polygon: { fill: color, stroke: color }}});
+  var cell = new elm({ position: { x: x, y: y }, attrs: { rect: { class: 'properties ' + sentenceElement + ' 0 0' }, text: { text: '', id: 'txt-' + counter }, polygon: { fill: color, stroke: color }}});
 
 //  TODO set mouse position
 
@@ -346,12 +502,6 @@ var items = [
   ["predmet", object],
   ["prívlastok", attribute]
 ];
-
-//["podmet", "#6599ff"],
-//  ["prísudok", "#ff9900"],
-//  ["predmet", "#097054"],
-//  ["prívlastok", "#ffde00"]
-
 
 var connections = ["prisudzovací", "určovací", "priraďovací"];
 var boxes_menu = d3.select('div .itemized#boxes');
