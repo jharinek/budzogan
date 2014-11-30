@@ -40,7 +40,12 @@
       </div>
     </div>
   </div>
-  <div class="col-md-10 myContainer" id="paper" data-value="<%= @task.student_solution.to_json %>">
+
+  <div class="col-md-8 myContainer" id="paper" data-value="<%= @task.student_solution.to_json %>">
+  </div>
+
+  <div class="col-md-2 well" id="properties">
+    <%= render 'properties' %>
   </div>
 </div>
 <div class="row">
