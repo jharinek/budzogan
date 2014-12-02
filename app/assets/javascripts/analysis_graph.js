@@ -537,7 +537,7 @@ var element = function (elm, x, y, color) {
   return cell;
 };
 
-var link = function (elm) {
+var link = function (elm, id) {
   var coordinates = elm.get('position');
 
   var newLink = new joint.dia.Link({
@@ -545,6 +545,14 @@ var link = function (elm) {
     target: {
       x: coordinates.x + 220,
       y: coordinates.y - 20
+    }
+  });
+
+  newLink.label(0, {
+    position: .5,
+    attrs: {
+      rect: { fill: 'white' },
+      text: { fill: '#428bc0', text: connections[id] }
     }
   });
   graph.addCell(newLink);
@@ -571,7 +579,12 @@ var items_hash = {
   "5": adverb
 };
 
-var connections = ["prisudzovací", "určovací", "priraďovací"];
+var connections = {
+  'assignative': "prisudzovací",
+  'determinative': "určovací",
+  'predicative': "priraďovací"
+};
+
 var boxes_menu = d3.select('div .itemized#boxes');
 var lines_menu = d3.select('div .itemized#lines');
 var color = null;
@@ -769,7 +782,8 @@ var createElement = function () {
       });
   }
   if ((activeElement != null) && ($('.ui-draggable-dragging').prop("class").indexOf("line-draggable") >= 0)) {
-    link(activeElement);
+    var id = $('.ui-draggable-dragging span').attr('id');
+    link(activeElement, id);
   }
 
 
