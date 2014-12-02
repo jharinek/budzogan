@@ -105,6 +105,12 @@ var buildData = function(data){
   return result;
 };
 
+var clearSelectedElementReference = function(){
+  selected_flag = false;
+  selected_element = null;
+  selected_element_properties_id = null;
+};
+
 //paper.on('cell:pointerdblclick', function(cellView, evt, x, y) {
 //    link(cellView.model);
 //});
@@ -121,9 +127,8 @@ paper.on('blank:pointerdown', function(evt, x, y) {
     //on mouseout hide delete text button
     $('#'+element.id + ' circle.delete-text').css('visibility', 'hidden');
 
-    selected_element = null;
-    selected_flag = false;
-    deactivateEditBox();
+   clearSelectedElementReference();
+   deactivateEditBox();
   }
 });
 
@@ -165,14 +170,10 @@ graph.on('add', function () {
 
           //on mouseout hide delete text button
           deleteText.css('visibility', 'hidden');
-
-          activeElement = null;
-          originalColor = null;
         }
         validContainer = false;
-      })
-      .on("dragstop", function () {
-        alert();
+        activeElement = null;
+        originalColor = null;
       })
       //.on("dblclick", function () {
       //  initializeBoxModal(activeElement);
@@ -183,12 +184,15 @@ graph.on('add', function () {
             polygon: { stroke: selected_element.attr('polygon').fill }
           });
 
-          var element = getElementFromModel(selected_element)
+          var element = getElementFromModel(selected_element);
           //on mouseout hide delete button
           $('#' + element.id + ' circle.delete-button').css('visibility', 'hidden');
 
           //on mouseout hide delete text button
           $('#' + element.id + ' circle.delete-text').css('visibility', 'hidden');
+
+          selected_flag = false;
+          selected_element_properties_id = null;
 
           deactivateEditBox();
         }
@@ -232,6 +236,11 @@ graph.on('add', function () {
       });
       activeElement.remove();
       activeElement = null;
+
+      if(selected_element){
+        clearSelectedElementReference();
+        deactivateEditBox();
+      }
     });
 
   //not present yet
@@ -291,8 +300,8 @@ $(document).ready(function() {
     selected_element.attr('polygon').fill   = newColor;
     selected_element.attr('polygon').stroke = newColor;
 
-    //graph.fromJSON(graph.toJSON());
-    //initializeGraph();
+    graph.fromJSON(graph.toJSON());
+    initializeGraph();
   });
 });
 
@@ -358,7 +367,7 @@ var deactivateEditBox = function(){
 //};
 
 var initializeText = function () {
-  $('.text-draggable.disabled').draggable("disable")
+  $('.text-draggable.disabled').draggable("disable");
 }
 
 var initializeGraph = function () {
@@ -396,16 +405,15 @@ var initializeGraph = function () {
             polygon: { stroke: originalColor }
           });
 
-          //on mouseout hide delete button
-          deleteBox.css('visibility', 'hidden');
+          //on mouseover show delete button
+          $(d3.select('#' + this.id).select('.delete-button').node()).css('visibility', 'hidden');
 
-          //on mouseout hide delete text button
-          deleteText.css('visibility', 'hidden');
-
-          activeElement = null;
-          originalColor = null;
+          //on mouseover delete text button visible
+          $(d3.select('#' + this.id).select('.delete-text').node()).css('visibility', 'hidden');
         }
         validContainer = false;
+        activeElement = null;
+        originalColor = null;
 
       })
       //.on("dblclick", function () {
@@ -423,17 +431,29 @@ var initializeGraph = function () {
 
           //on mouseout hide delete text button
           $('#'+element.id + ' circle.delete-text').css('visibility', 'hidden');
+
+          selected_flag = false;
+          selected_element_properties_id = null;
+
+          deactivateEditBox();
         }
 
         if(selected_element != toModel(this)){
           selected_flag    = true;
           selected_element = toModel(this);
+
+          // make edit-properties visible
+          var properties = selected_element.attr('rect').class.split(' ').filter(Boolean);
+          selected_element_properties_id = $('#' + this.id + ' .properties').attr('id');
+
+          activateEditBox(properties[1], properties[2], properties[3]);
         }
         else{
           selected_flag    = false;
           selected_element = null;
+          selected_element_properties_id = null;
 
-          // set up correct attributes to edit in properties editor
+          deactivateEditBox();
         }
 
 
@@ -442,6 +462,8 @@ var initializeGraph = function () {
   });
   d3.selectAll('.delete-button')
     .on("mousedown", function () {
+    //      TODO move to a function
+
       activeElement.attr('text').text.split(" ").map(function(item){
         $('span.text-draggable').filter(function () {
           return $(this).text() == item
@@ -450,6 +472,11 @@ var initializeGraph = function () {
 
       activeElement.remove();
       activeElement = null;
+
+      if(selected_element){
+        clearSelectedElementReference();
+        deactivateEditBox();
+      }
     });
   d3.selectAll('.toolbox-button')
     .on("mousedown", function () {
@@ -462,12 +489,13 @@ var initializeGraph = function () {
           return $(this).text() == item
         }).draggable('enable');
       });
-      
+
       activeElement.attr({'text': { text: "" }});
 
-      var txt = $("text:contains('" + activeElement.attr('text').text + "')");
-      var x = txt.width()
-      activeElement.attr({ '.delete-text': { 'ref-x': x } })
+      activeElement.attr({ '.delete-text': { 'ref-x': 0, 'ref-y': 0 } });
+      //var txt = $("text:contains('" + activeElement.attr('text').text + "')");
+      //var x = txt.width()
+      //activeElement.attr({ '.delete-text': { 'ref-x': x } })
     });
 //  d3.selectAll('.link')
 //    .on('dblclick', function(){
@@ -647,44 +675,44 @@ $(document).ready(function () {
 });
 
 
-$(document).ready(function(){
-  $('#save-connection').click(function(){
-  var modelId = $('#connections').attr('class');
-
-
-    $('#connection').removeClass(modelId);
-    $('#connection-editing').modal('hide');
-  });
-
-  $('#save-box').click(function(){
-    var modelId = $('#box').attr('class');
-    var clr = '';
-
-    switch($('#sentence-element').val()) {
-      case 'subject': clr = hexToRgb(subject);
-        break;
-      case 'predicate': clr = hexToRgb(predicate);
-        break;
-      case 'object': clr = hexToRgb(object);
-        break;
-      case 'attribute': clr = hexToRgb(attribute);
-        break;
-    }
-
-    var properties = "properties " + $('#sentence-element').val() + " " + $('#grammatical-case').val();
-
-    var model = toModel($('#' + modelId)[0]);
-    model.attr('polygon').fill = clr;
-    model.attr('polygon').stroke = clr;
-    model.attr('rect').class = properties;
-
-    graph.fromJSON(graph.toJSON());
-    initializeGraph();
-
-    $('#box').removeClass(modelId);
-    $('#box-editing').modal('hide');
-  });
-});
+//$(document).ready(function(){
+//  $('#save-connection').click(function(){
+//  var modelId = $('#connections').attr('class');
+//
+//
+//    $('#connection').removeClass(modelId);
+//    $('#connection-editing').modal('hide');
+//  });
+//
+//  $('#save-box').click(function(){
+//    var modelId = $('#box').attr('class');
+//    var clr = '';
+//
+//    switch($('#sentence-element').val()) {
+//      case 'subject': clr = hexToRgb(subject);
+//        break;
+//      case 'predicate': clr = hexToRgb(predicate);
+//        break;
+//      case 'object': clr = hexToRgb(object);
+//        break;
+//      case 'attribute': clr = hexToRgb(attribute);
+//        break;
+//    }
+//
+//    var properties = "properties " + $('#sentence-element').val() + " " + $('#grammatical-case').val();
+//
+//    var model = toModel($('#' + modelId)[0]);
+//    model.attr('polygon').fill = clr;
+//    model.attr('polygon').stroke = clr;
+//    model.attr('rect').class = properties;
+//
+//    graph.fromJSON(graph.toJSON());
+//    initializeGraph();
+//
+//    $('#box').removeClass(modelId);
+//    $('#box-editing').modal('hide');
+//  });
+//});
 
 $(document).ready(function () {
   graphString = $("div[data-value]").attr('data-value');
@@ -707,6 +735,10 @@ $(document).ready(function() {
 
       selected_element.remove();
       selected_element = null;
+      selected_element_id = null;
+      selected_flag = false;
+
+      deactivateEditBox();
     }
   });
 });
