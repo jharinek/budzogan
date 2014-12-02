@@ -17,6 +17,7 @@ var subject   = "#428bc0";
 var object    = "#c07742";
 var predicate = "#b642c0";
 var attribute = "#4cc042";
+var adverb    = "#424cc0";
 
 // ["podmet", "#6599ff"],
 // ["prísudok", "#ff9900"],
@@ -293,10 +294,10 @@ $(document).ready(function() {
     }else{
       properties += ' ' + '0';
     }
-    $('#' + selected_element_properties_id).attr('class', properties);
+
+    selected_element.attr({ rect: { class: properties }});
 
     var newColor = items_hash[$('#level-1-select').select2('val')];
-
     selected_element.attr('polygon').fill   = newColor;
     selected_element.attr('polygon').stroke = newColor;
 
@@ -314,6 +315,8 @@ var populateProperties = function(identifier, title, data, value){
     selectElement.select2('destroy');
     selectElement.select2({data: data});
     selectElement.select2('val', value);
+
+
 
     $('#' + identifier + '-properties').removeAttr('hidden');
   }
@@ -519,6 +522,8 @@ var element = function (elm, x, y, color) {
       break;
     case attribute: sentenceElement = '4';
       break;
+    case adverb: sentenceElement = '5';
+      break;
   }
 
   var cell = new elm({ position: { x: x, y: y }, attrs: { rect: { class: 'properties ' + sentenceElement + ' 0 0' }, text: { text: '', id: 'txt-' + counter }, polygon: { fill: color, stroke: color }}});
@@ -550,10 +555,11 @@ var link = function (elm) {
 //d3js and jquery to handle drag and drop events to svg canvas
 
 var items = [
-  ["1", subject],
-  ["2", predicate],
-  ["3", object],
-  ["4", attribute]
+  ["podmet", subject],
+  ["prísudok", predicate],
+  ["predmet", object],
+  ["prívlastok", attribute],
+  ["príslovkové určenie", adverb]
 ];
 
 
@@ -561,7 +567,8 @@ var items_hash = {
   "1": subject,
   "2": predicate,
   "3": object,
-  "4": attribute
+  "4": attribute,
+  "5": adverb
 };
 
 var connections = ["prisudzovací", "určovací", "priraďovací"];
