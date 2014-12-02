@@ -1,6 +1,14 @@
 <div class="row task-header">
   <div class="col-md-2">
-    <%= link_to 'Naspäť', :back, class: 'btn btn-lg btn-primary btn-block' %>
+    <div class="row btn-stacked">
+      <%= link_to 'Naspäť', :back, class: 'btn btn-lg btn-block btn-primary' %>
+    </div>
+    <div class="row btn-stacked">
+      <%= button_to 'Uložiť', { controller: :tasks, action: :update }, method: :patch, id: 'save', class: 'btn btn-lg btn-block btn-default', remote: true %>
+    </div>
+    <div class="row btn-stacked">
+      <%= button_to 'Odovzdať', '#', class: 'btn btn-lg btn-block btn-success' %>
+    </div>
   </div>
   <div class="col-md-10">
     <div class="well">
@@ -34,7 +42,7 @@
         <span id="predicative"></span>
       </div>
       <hr/>
-      <small>Podraďovací</small>
+      <small>Určovací</small>
       <div class="line-draggable">
         <span id="determinative"></span>
       </div>
@@ -46,16 +54,5 @@
 
   <div class="col-md-2 well" id="properties">
     <%= render 'properties' %>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-offset-11 col-md-1">
-    <%= button_to "Uložiť", { controller: :tasks, action: :update }, method: :patch, id: 'save', class: 'btn btn-default btn-lg', remote: true %>
-  </div>
-  <div id="item-properties">
-    <%= render 'box_details' %>
-  </div>
-  <div id="connection-properties">
-    <%= render 'connection_details' %>
   </div>
 </div>
