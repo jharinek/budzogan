@@ -278,14 +278,21 @@ $(document).ready(function() {
     properties = 'properties';
     properties += ' ' + ($('#level-1-select').select2('val') || '0');
     properties += ' ' + ($('#level-2-select').select2('val') || '0');
-    properties += ' ' + ($('#level-3-select').select2('val') || '0');
-
+    var level_3 = $('#level-3-select').select2('val');
+    if(typeof level_3 == "string"){
+      properties += ' ' + level_3;
+    }else{
+      properties += ' ' + '0';
+    }
     $('#' + selected_element_properties_id).attr('class', properties);
 
-    var newColor = items[$('#level-1-select').select2('val')];
+    var newColor = items_hash[$('#level-1-select').select2('val')];
 
     selected_element.attr('polygon').fill   = newColor;
     selected_element.attr('polygon').stroke = newColor;
+
+    //graph.fromJSON(graph.toJSON());
+    //initializeGraph();
   });
 });
 
@@ -520,6 +527,14 @@ var items = [
   ["3", object],
   ["4", attribute]
 ];
+
+
+var items_hash = {
+  "1": subject,
+  "2": predicate,
+  "3": object,
+  "4": attribute
+};
 
 var connections = ["prisudzovací", "určovací", "priraďovací"];
 var boxes_menu = d3.select('div .itemized#boxes');
