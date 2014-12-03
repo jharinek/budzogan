@@ -271,13 +271,13 @@ graph.on('add', function () {
 // initialize callbacks on select menus and save button
 $(document).ready(function() {
   $('#level-1-select').on('change', function (e) {
-    populateProperties('level-2', 'PropertyName', buildData(boxProperties[e.val]['level-2']));
+    populateProperties('level-2', 'Doplňujúca vlastnosť', buildData(boxProperties[e.val]['level-2']));
     $('#level-3-properties').attr('hidden', 'hidden');
   });
 
   $('#level-2-select').on('change', function (e) {
     var level_1 = $('#level-1-select').select2('val');
-    populateProperties('level-3', 'PropertyName', buildData(boxProperties[level_1]['level-2'][e.val]['level-3']));
+    populateProperties('level-3', 'Doplňujúca vlastnosť', buildData(boxProperties[level_1]['level-2'][e.val]['level-3']));
   });
 
   $('#level-3-select').on('change', function (e) {
@@ -315,8 +315,6 @@ var populateProperties = function(identifier, title, data, value){
     selectElement.select2('destroy');
     selectElement.select2({data: data});
     selectElement.select2('val', value);
-
-
 
     $('#' + identifier + '-properties').removeAttr('hidden');
   }
