@@ -283,7 +283,8 @@ CREATE TABLE tasks (
     student_solution json,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    state integer DEFAULT 0 NOT NULL
+    state integer DEFAULT 0 NOT NULL,
+    user_id integer
 );
 
 
@@ -611,6 +612,13 @@ CREATE INDEX index_task_assignments_on_user_id ON task_assignments USING btree (
 
 
 --
+-- Name: index_tasks_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_tasks_on_user_id ON tasks USING btree (user_id);
+
+
+--
 -- Name: index_users_on_confirmation_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -731,4 +739,6 @@ INSERT INTO schema_migrations (version) VALUES ('20140923150145');
 INSERT INTO schema_migrations (version) VALUES ('20140923172138');
 
 INSERT INTO schema_migrations (version) VALUES ('20140927160123');
+
+INSERT INTO schema_migrations (version) VALUES ('20141203233502');
 

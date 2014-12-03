@@ -3,9 +3,10 @@ class Task < ActiveRecord::Base
 
   belongs_to :exercise
   belongs_to :sentence
+  belongs_to :student, class_name: :User
 
-  has_many :task_assignments, dependent: :destroy
-  has_many :students, class_name: :User, through: :task_assignments
+  # has_many :task_assignments, dependent: :destroy
+  # has_many :students, class_name: :User, through: :task_assignments
 
   before_create :initialize_solution
 

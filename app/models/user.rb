@@ -16,8 +16,8 @@ class User < ActiveRecord::Base
   has_many :workgroups, through: :enrollments
   has_many :classes, class_name: :Workgroup, foreign_key: :teacher_id
 
-  has_many :task_assignments, dependent: :destroy
-  has_many :tasks, through: :task_assignments
+  # has_many :task_assignments, dependent: :destroy
+  has_many :tasks #, through: :task_assignments
 
   validates :login, format: { with: /\A[A-Za-z0-9_]+\z/ }, presence: true, uniqueness: { case_sensitive: false }
   validates :nick,  format: { with: /\A[A-Za-z0-9_]+\z/ }, presence: true, uniqueness: { case_sensitive: false }
