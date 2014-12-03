@@ -304,6 +304,10 @@ $(document).ready(function() {
     graph.fromJSON(graph.toJSON());
     initializeGraph();
   });
+
+  $('body').on('click', '#submit-task', function(){
+    saveResult('2');
+  });
 });
 
 var populateProperties = function(identifier, title, data, value){
@@ -926,14 +930,17 @@ joint.shapes.erd.EntityBoundary = joint.shapes.erd.Entity.extend({
   }
 });
 
-var saveResult = function () {
+var saveResult = function (state) {
   url = window.location.pathname.replace('edit', '');
   data = JSON.stringify(graph.toJSON());
 
   $.ajax({
     url: url,
     type: 'PATCH',
-    data: { graph: data },
+    data: {
+      graph: data,
+      state: state
+    },
     async: true
   });
 };

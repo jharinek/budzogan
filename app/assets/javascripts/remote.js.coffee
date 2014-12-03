@@ -2,5 +2,5 @@
 
 $(document).ready ->
   $("#save").parent().parent().on "ajax:before", ->
-    saveResult();
+    saveResult('1');
     return false;
