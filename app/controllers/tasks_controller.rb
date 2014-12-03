@@ -32,11 +32,7 @@ class TasksController < ApplicationController
     @task.student_solution = params[:graph].to_json || @task.student_solution
 
     # TODO weird task state representation
-    if @task.student_solution && @task.student_solution.size > 15
-      @task.state = 1
-    else
-      @task.state = 0
-    end
+    @task.state = params[:state].to_i || 0
 
     @task.save!
 
