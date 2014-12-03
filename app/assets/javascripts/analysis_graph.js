@@ -328,9 +328,9 @@ var activateEditBox = function(level_1, level_2,  level_3){
   $('#level-1-properties').removeAttr('hidden');
 
   populateProperties('level-1', 'Vetný člen', buildData(boxProperties), level_1);
-  populateProperties('level-2', 'Property name', buildData(boxProperties[level_1]['level-2']), level_2);
+  populateProperties('level-2', 'Doplňujúca vlastnosť', buildData(boxProperties[level_1]['level-2']), level_2);
   if(level_2 != '0') {
-    populateProperties('level-3', 'Property name', buildData(boxProperties[level_1]['level-2'][level_2]['level-3']), level_3);
+    populateProperties('level-3', 'Doplňujúca vlastnosť', buildData(boxProperties[level_1]['level-2'][level_2]['level-3']), level_3);
   }
 };
 
