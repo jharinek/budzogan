@@ -308,6 +308,9 @@ $(document).ready(function() {
   $('body').on('click', '#submit-task', function(){
     saveResult('2');
   });
+  $('body').on('click', '#back', function(){
+    saveResult('1');
+  })
 });
 
 var populateProperties = function(identifier, title, data, value){
@@ -974,7 +977,10 @@ $(document).ready(function worker() {
   $.ajax({
     url: url,
     type: 'PATCH',
-    data: { graph: data },
+    data: {
+      graph: data,
+      state: '1'
+    },
     async: true,
     complete: function () {
       // Schedule the next request when the current one's complete
