@@ -12,7 +12,7 @@
             <li><%= link_to t('task.navigation'), tasks_path %></li>
           </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><%= link_to current_user.name, '#' %></li>
+          <li><%= link_to current_user.nick, '#' %></li>
           <li><%= link_to t('user.sign_out'), destroy_user_session_path, method: :delete %></li>
         </ul>
     <% else %>

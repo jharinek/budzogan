@@ -1,22 +1,21 @@
 <div class="row">
   <div class="col-md-offset-1 col-md-10">
     <h1>Zoznam úloh</h1>
+    <p class="lead">Urob kompletný rozbor týchto viet.</p>
     <table class="table table-hover table-condensed">
       <thead>
         <tr>
           <th>#</th>
-          <th>Typ úlohy</th>
           <th>Stav úlohy</th>
           <th>Veta</th>
         </tr>
       </thead>
       <tbody>
-        <% @tasks.each do |task| %>
+        <% @tasks.each_with_index do |task, i| %>
           <tr>
-            <td><%= "#{task.id}" %></td>
-            <td><%= link_to task.exercise.template.name, edit_task_path(task.id) %></td>
+            <td><%= "#{ i+1 }" %></td>
             <td><%= render 'progress', task: task %></td>
-            <td><%= "#{task.sentence.content}" %></td>
+            <td><%= "#{ task.sentence.content }" %></td>
           </tr>
         <% end %>
       </tbody>
