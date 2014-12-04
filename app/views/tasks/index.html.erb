@@ -15,7 +15,7 @@
           <tr>
             <td><%= "#{ i+1 }" %></td>
             <td><%= render 'progress', task: task %></td>
-            <td><%= "#{ task.sentence.content }" %></td>
+            <td><%= link_to "#{ task.sentence.content }",  edit_task_path(task.id) %></td>
           </tr>
         <% end %>
       </tbody>
