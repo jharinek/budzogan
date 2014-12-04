@@ -8,9 +8,9 @@
     </div>
     <% if user_signed_in? %>
         <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li><%= link_to t('task.navigation'), tasks_path %></li>
-          </ul>
+          <!--<ul class="nav navbar-nav">-->
+            <!--<li><%= link_to t('task.navigation'), tasks_path %></li>-->
+          <!--</ul>-->
         <ul class="nav navbar-nav navbar-right">
           <li><%= link_to current_user.nick, '#' %></li>
           <li><%= link_to t('user.sign_out'), destroy_user_session_path, method: :delete %></li>
@@ -18,7 +18,7 @@
     <% else %>
         <ul class="nav navbar-nav navbar-right">
           <li><%= link_to t('user.sign_in'), new_user_session_path %></li>
-          <li><%= link_to t('user.sign_up'), new_user_registration_path %></li>
+          <!--<li><%= link_to t('user.sign_up'), new_user_registration_path %></li>-->
         </ul>
     <% end %>
     </div>
