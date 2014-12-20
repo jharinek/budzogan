@@ -10,6 +10,8 @@ class Task < ActiveRecord::Base
 
   before_create :initialize_solution
 
+  scope :started, lambda { where.not(state: 0) }
+
   def initialize_solution
     teacher_solution = student_solution = "{\"cells\":[]}"
   end
@@ -18,3 +20,4 @@ class Task < ActiveRecord::Base
     state = STATES.first
   end
 end
+
