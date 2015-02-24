@@ -1,0 +1,23 @@
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: budzogan_development
+  pool: 5
+  username: TODO
+  password: TODO
+
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: budzogan_test
+  pool: 5
+  username: TODO
+  password: TODO
+
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: budzogan_production
+  pool: 5
+  username: TODO
+  password: TODO
