@@ -12,6 +12,7 @@
 #
 #= require joint
 #= require joint.shapes.erd
+#= require joint.shapes.nlp
 #= require jquery
 #= require jquery_ujs
 #= require bootstrap
@@ -23,6 +24,5 @@
 #= require select2_locale_"sk"
 #= require select
 #= require exercise_form
-#= require analysis_graph
+#= require analysis_graph_2
 #
-#= require_tree .

@@ -5,7 +5,6 @@ var selected_flag = false;
 var selected_element = null;
 var selected_element_properties_id = null;
 
-//TODO (jharinek) supply custom Element view
 var paper = new joint.dia.Paper({
   el: $('#paper'),
   gridSize: 1,
@@ -18,12 +17,6 @@ var object    = "#c07742";
 var predicate = "#b642c0";
 var attribute = "#4cc042";
 var adverb    = "#424cc0";
-
-// ["podmet", "#6599ff"],
-// ["prísudok", "#ff9900"],
-// ["predmet", "#097054"],
-// ["prívlastok", "#ffde00"]
-
 
 // Hash of properties
 var boxProperties = {
@@ -112,9 +105,6 @@ var clearSelectedElementReference = function(){
   selected_element_properties_id = null;
 };
 
-//paper.on('cell:pointerdblclick', function(cellView, evt, x, y) {
-//    link(cellView.model);
-//});
 paper.on('blank:pointerdown', function(evt, x, y) {
   if(selected_element != null) {
     selected_element.attr({
@@ -136,7 +126,7 @@ paper.on('blank:pointerdown', function(evt, x, y) {
 
 // identify active element
 graph.on('add', function () {
-  var last = $('.EntityDeletable').last();
+  var last = $('.Element').last();
   var txt = $('.box-content').last();
   var deleteBox = $('.delete-button').last();
   var deleteText = $('.delete-text').last();
@@ -360,7 +350,7 @@ var deactivateEditBox = function(){
 //  var id = txt.node().parentNode.parentNode.id;
 //  var properties = activeEl.attr('rect').class.split(' ');
 //
-//  if($(d3.select('#' + id).node()).attr('class').indexOf("EntityDeletable") >= 0) {
+//  if($(d3.select('#' + id).node()).attr('class').indexOf("Element") >= 0) {
 //    $('#box').attr('class', editableId);
 //
 //    $('#sentence-element').val(properties[1]);
@@ -379,7 +369,7 @@ var initializeText = function () {
 }
 
 var initializeGraph = function () {
-  var boxes = $('.EntityDeletable');
+  var boxes = $('.Element');
 
   var canvas = $('svg');
   canvas.attr('width', canvas.parent().width());
@@ -512,8 +502,7 @@ var initializeGraph = function () {
 //    });
 };
 
-
-var diagram = joint.shapes.erd;
+var diagram = joint.shapes.nlp;
 
 var element = function (elm, x, y, color) {
   var sentenceElement = '';
@@ -598,15 +587,6 @@ var originalColor = null;
 var validContainer = false;
 var dropped = false;
 
-// create lines to represent connections between boxes
-//lines_menu.selectAll("div .item-line")
-//    .data(connections)
-//    .enter()
-//    .append('div')
-//    .attr('class', 'item-line line-draggable')
-//    .append('hr')
-//    .attr('size', '3');
-
 // create boxes in boxes_menu for sentence parts
 boxes_menu.selectAll("div .item-box")
   .data(items)
@@ -660,17 +640,6 @@ $(document).ready(function () {
   //dragable lines
   $(".line-draggable").draggable({
     helper: 'clone',
-//            function(){
-//            var el = $('<span>')
-//                .attr('class', 'glyphicon glyphicon-minus')
-//                .attr('id', '#dragged-line');
-////                .style({
-////                    position: 'absolute',
-////                    left: 1,
-////                    top: 2
-////                });
-//            return el;
-//        },
     revertDuration: '200',
     start: function (event, ui) {
       $(this).draggable("option", "revert", "invalid");
@@ -698,46 +667,6 @@ $(document).ready(function () {
 //        alert( "Load was performed." );
 //    });
 });
-
-
-//$(document).ready(function(){
-//  $('#save-connection').click(function(){
-//  var modelId = $('#connections').attr('class');
-//
-//
-//    $('#connection').removeClass(modelId);
-//    $('#connection-editing').modal('hide');
-//  });
-//
-//  $('#save-box').click(function(){
-//    var modelId = $('#box').attr('class');
-//    var clr = '';
-//
-//    switch($('#sentence-element').val()) {
-//      case 'subject': clr = hexToRgb(subject);
-//        break;
-//      case 'predicate': clr = hexToRgb(predicate);
-//        break;
-//      case 'object': clr = hexToRgb(object);
-//        break;
-//      case 'attribute': clr = hexToRgb(attribute);
-//        break;
-//    }
-//
-//    var properties = "properties " + $('#sentence-element').val() + " " + $('#grammatical-case').val();
-//
-//    var model = toModel($('#' + modelId)[0]);
-//    model.attr('polygon').fill = clr;
-//    model.attr('polygon').stroke = clr;
-//    model.attr('rect').class = properties;
-//
-//    graph.fromJSON(graph.toJSON());
-//    initializeGraph();
-//
-//    $('#box').removeClass(modelId);
-//    $('#box-editing').modal('hide');
-//  });
-//});
 
 $(document).ready(function () {
   graphString = $("div[data-value]").attr('data-value');
@@ -783,7 +712,7 @@ var createElement = function () {
     d3.select("#v_5")
       .on("mouseover", function () {
         var coordinates = d3.mouse(d3.select("#v_5")[0].pop());
-        element(diagram.EntityDeletable, coordinates[0], coordinates[1], color);
+        var el = element(diagram.Element, coordinates[0], coordinates[1], color);
       });
   }
   if ((activeElement != null) && ($('.ui-draggable-dragging').prop("class").indexOf("line-draggable") >= 0)) {
@@ -839,100 +768,6 @@ var appendText = function (id, text) {
   }
 };
 
-//$(document).mousedown(function(event) {
-//    $('#dragged-line').position({
-//        my: "left bottom",
-//        of: event,
-//        collision: "fit"
-//    });
-//});
-//$('body').mousemove(function(event){alert(event.pageX);})
-
-// Define custom Entity element
-
-joint.shapes.erd.EntityDeletable = joint.shapes.erd.Entity.extend({
-  markup: [
-    '<g class="rotatable">',
-    '<g class="scalable">',
-    '<polygon class="outer"/>',
-    '<polygon class="inner"/>',
-//    '<path class="delete-cross" transform="scale(.8) translate(-16, -16)" d="M24.778,21.419 19.276,15.917 24.777,10.415 21.949,7.585 16.447,13.087 10.945,7.585 8.117,10.415 13.618,15.917 8.116,21.419 10.946,24.248 16.447,18.746 21.948,24.248z"></path>',
-    '</g>',
-    '<text class="box-content"/>',
-    '<rect/>',
-    '<circle class="delete-button"/>',
-    '<circle class="delete-text"/>',
-    '</g>'
-  ].join(''),
-
-  defaults: joint.util.deepSupplement({
-
-    type: 'erd.EntityDeletable',
-    size: { width: 150, height: 60 },
-    attrs: {
-      '.delete-button': {
-        fill: 'red', stroke: 'black',
-        ref: '.outer', 'ref-x': 150, 'ref-y': 0,
-        r: 5
-      },
-      '.delete-text': {
-        fill: 'red', stroke: 'black',
-        ref: '.box-content', 'ref-x': 0, 'ref-y': 0,
-        r: 4
-      },
-      'rect': {
-        ref: '.box-content', 'ref-x': 0, 'ref-y': 0,
-        class: 'properties'
-      },
-      '.delete-cross': {
-        fill: 'white',
-        ref: '.outer', 'ref-x': 150, 'ref-y': 0
-      }
-    }
-
-  }, joint.shapes.erd.Entity.prototype.defaults),
-
-  initialize: function () {
-
-    _.bindAll(this, 'format');
-    this.format();
-    joint.shapes.erd.Entity.prototype.initialize.apply(this, arguments);
-  },
-
-  format: function () {
-    var attrs = this.get('attrs');
-  }
-});
-
-joint.shapes.erd.EntityBoundary = joint.shapes.erd.Entity.extend({
-  markup: [
-    '<g class="rotatable">',
-    '<g class="scalable">',
-    '<polygon class="outer"/>',
-    '<polygon class="inner"/>',
-    '</g>',
-    '</g>'
-  ].join(''),
-
-  defaults: joint.util.deepSupplement({
-
-    type: 'erd.EntityBoundary',
-    size: { width: 500, height: 500 }
-
-  }, joint.shapes.erd.Entity.prototype.defaults),
-
-  initialize: function () {
-
-    _.bindAll(this, 'format');
-    this.format();
-    joint.shapes.erd.Entity.prototype.initialize.apply(this, arguments);
-  },
-
-  format: function () {
-    var attrs = this.get('attrs');
-  }
-});
-
 var saveResult = function (state) {
   url = window.location.pathname.replace('edit', '');
   data = JSON.stringify(graph.toJSON());
@@ -952,23 +787,23 @@ var loadGraph = function (json) {
   graph.fromJSON(json);
 }
 
-var circleDelete = function (x, y) {
-  return new joint.shapes.basic.Circle({
-    position: { x: x, y: y },
-    size: { width: 16, height: 16 },
-    attrs: { text: { text: 'x' }, circle: { fill: 'red', class: 'delete-button' } },
-    name: 'deleteCircle'
-  });
-}
-
-var circleToolbox = function (x, y) {
-  return new joint.shapes.basic.Circle({
-    position: { x: x, y: y },
-    size: { width: 16, height: 16 },
-    attrs: { text: { text: 't' }, circle: { fill: 'green', class: 'toolbox-button' } },
-    name: 'toolboxCircle'
-  });
-}
+//var circleDelete = function (x, y) {
+//  return new joint.shapes.basic.Circle({
+//    position: { x: x, y: y },
+//    size: { width: 16, height: 16 },
+//    attrs: { text: { text: 'x' }, circle: { fill: 'red', class: 'delete-button' } },
+//    name: 'deleteCircle'
+//  });
+//}
+//
+//var circleToolbox = function (x, y) {
+//  return new joint.shapes.basic.Circle({
+//    position: { x: x, y: y },
+//    size: { width: 16, height: 16 },
+//    attrs: { text: { text: 't' }, circle: { fill: 'green', class: 'toolbox-button' } },
+//    name: 'toolboxCircle'
+//  });
+//}
 
 $(document).ready(function worker() {
   url = window.location.pathname.replace('edit', '');
