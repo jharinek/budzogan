@@ -1,5 +1,10 @@
 sk:
   exercise:
+    navigation: 'Cvičenia'
+
+    new:
+      title: 'Nové cvičenie'
+
     build:
       setup:
         choose_exercise: 'Vyberte typ cvičenia'
