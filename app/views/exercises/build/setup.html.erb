@@ -1,41 +1,46 @@
-<h1 class="form-title">Nové cvičenie 1/3</h1>
-<h3 class="form-subtite">Nastavenie parametrov cvičenia</h3>
+<div class="row">
+  <div class="col-md-offset-2 col-md-8">
+    <h1 class="form-title">Nové cvičenie 1/3</h1>
+    <h3 class="form-subtite">Nastavenie parametrov cvičenia</h3>
 
-<%= form_for @exercise, url: wizard_path do |f| %>
-  <% if @exercise.errors.any? %>
-    <div class="error_messages">
-      <h2><%= pluralize(@exercise.errors.count, "error") %> prohibited this user from being saved:</h2>
-      <ul>
-        <% @exercise.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
+    <%= form_for @exercise, url: wizard_path do |f| %>
+        <% if @exercise.errors.any? %>
+            <div class="error_messages">
+              <h2><%= pluralize(@exercise.errors.count, "error") %> prohibited this user from being saved:</h2>
+              <ul>
+                <% @exercise.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                <% end %>
+              </ul>
+            </div>
         <% end %>
-      </ul>
-    </div>
-  <% end %>
 
-  <div class="form-group">
-    <%= f.label :template, t('exercise.build.setup.choose_exercise') %>
-    <%= f.collection_select :template_id, ExerciseTemplate.all, :id, :name, { include_blank: true, data: { as: :select2 } } %>
-  </div>
+        <div class="form-group">
+          <%= f.label :template, t('exercise.build.setup.choose_exercise') %>
+          <%= f.collection_select :template_id, ExerciseTemplate.all, :id, :name, { include_blank: true }, { data: { as: :select2 } } %>
+        </div>
 
-  <%= f.radio_button :elements, :dragging %>
-  <%= f.label :available_elements_to_drag, t('exercise.build.setup.available_elements_to_drag') %>
-  <div class="form-group to-drag">
-    <%= f.collection_check_boxes :element_ids, Element.all, :id, :name %>
-  </div>
+        <%= f.radio_button :elements, :dragging %>
+        <%= f.label :available_elements_to_drag, t('exercise.build.setup.available_elements_to_drag') %>
 
-  <%= f.radio_button :elements, :prepared%>
-  <%= f.label :prepared_elements, t('exercise.build.setup.prepared_elements') %>
-  <div class="form-group prepared">
-    <%= f.collection_check_boxes :element_ids, Element.all, :id, :name %>
-  </div>
+        <div class="form-group to-drag">
+          <%= f.collection_check_boxes :element_ids, Element.all, :id, :name %>
+        </div>
 
-  <div class="form-group">
-    <%= f.label :description, t('exercise.build.setup.task_title') %>
-    <%= f.text_area :description, class: 'form-control' %>
-  </div>
+        <%= f.radio_button :elements, :prepared%>
+        <%= f.label :prepared_elements, t('exercise.build.setup.prepared_elements') %>
+        <div class="form-group prepared">
+          <%= f.collection_check_boxes :element_ids, Element.all, :id, :name %>
+        </div>
 
-  <div class="form-actions">
-    <button type="submit" class="btn btn-primary"><%= t('form.next') %></button>
+        <div class="form-group">
+          <%= f.label :description, t('exercise.build.setup.task_title') %>
+          <%= f.text_area :description, class: 'form-control', rows: 5 %>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary pull-right"><%= t('form.next') %></button>
+        </div>
+    <% end %>
   </div>
-<% end %>
+</div>

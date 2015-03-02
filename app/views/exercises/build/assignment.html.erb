@@ -1,40 +1,44 @@
-<h1 class="form-title">Nové cvičenie 3/3</h1>
-<h3 class="form-subtitle">Priradenie cvičenia triede</h3>
+<div class="row">
+  <div class="col-md-offset-2 col-md-8">
+    <h1 class="form-title">Nové cvičenie 3/3</h1>
+    <h3 class="form-subtitle">Priradenie cvičenia triede</h3>
 
-<%= form_for @exercise, url: wizard_path do |f| %>
-  <% if @exercise.errors.any? %>
-    <div class="error_messages">
-      <h2><%= pluralize(@exercise.errors.count, "error") %> prohibited this user from being saved:</h2>
-      <ul>
-        <% @exercise.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
+    <%= form_for @exercise, url: wizard_path do |f| %>
+        <% if @exercise.errors.any? %>
+            <div class="error_messages">
+              <h2><%= pluralize(@exercise.errors.count, "error") %> vo formulári</h2>
+              <ul>
+                <% @exercise.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                <% end %>
+              </ul>
+            </div>
         <% end %>
-      </ul>
-    </div>
-  <% end %>
 
-  <div class="form-group">
-    <%= f.label :workgroup, 'Trieda' %>
-    <%= f.collection_select :workgroup, @workgroups, :id, :name, { include_blank: true } %>
-  </div>
+        <div class="form-group">
+          <%= f.label :workgroup, 'Trieda' %>
+          <%= f.collection_select :workgroup, @workgroups, :id, :name, {include_blank: true}, {data: {as: :select2}} %>
+        </div>
 
-  <div class="form-group">
-    <%= f.label :start_time, 'Čas začiatku cvičenia' %>
-    <%= f.datetime_select :start_time %>
-  </div>
+        <div class="form-group">
+          <%= f.label :start_time, 'Čas začiatku cvičenia' %>
+          <%= f.datetime_select :start_time %>
+        </div>
 
-  <div class="form-group">
-    <%= f.label :end_time, 'Čas ukončenia cvičenia' %>
-    <%= f.datetime_select :end_time %>
-  </div>
+        <div class="form-group">
+          <%= f.label :end_time, 'Čas ukončenia cvičenia' %>
+          <%= f.datetime_select :end_time %>
+        </div>
 
-  <div class="form-group">
-    <%= f.label :distribution_strategy, 'Stratégia rozdelenia viet' %>
-    <%= f.collection_select :distribution_strategy, @strategies, :first, :last, { include_blank: 'Prosím vyberte možnosť' } %>
-  </div>
+        <div class="form-group">
+          <%= f.label :distribution_strategy, 'Stratégia rozdelenia viet' %>
+          <%= f.collection_select :distribution_strategy, @strategies, :first, :last, {include_blank: true}, {data: {as: :select2}} %>
+        </div>
 
-  <div class="form-actions">
-    <%= link_to t('form.previous'), previous_wizard_path, method: :get, class: 'btn btn-default' %>
-    <button type="submit" class="btn btn-primary"><%= t('form.submit') %></button>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary pull-right"><%= t('form.submit') %></button>
+          <%= link_to t('form.previous'), previous_wizard_path, method: :get, class: 'btn btn-default pull-right' %>
+        </div>
+    <% end %>
   </div>
-<% end %>
+</div>
