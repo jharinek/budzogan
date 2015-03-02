@@ -23,6 +23,8 @@ $(document).ready ->
   if $('.select2-chosen').text() == 'Urobte kompletny rozbor vety'
     $('#exercise_elements_dragging').click()
 
-  $('select').select2({ width: 'resolve' }).on 'change', ->
+  $('select').select2({
+    placeholder: 'Vyberte jednu z možností'
+  }).on 'change', ->
     if $('.select2-chosen').text() == 'Urobte kompletny rozbor vety'
       $('#exercise_elements_dragging').click()
