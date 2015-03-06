@@ -24,13 +24,55 @@
         <%= f.label :available_elements_to_drag, t('exercise.build.setup.available_elements_to_drag') %>
 
         <div class="form-group to-drag">
-          <%= f.collection_check_boxes :element_ids, Element.all, :id, :name %>
+          <div class="row">
+            <div class="col-md-6">
+              <strong>Vetné členy</strong>
+              <%= f.collection_check_boxes(:element_ids, Element.elements, :id, :name) do |b| %>
+                <div class="row">
+                    <div class="col-xs-1">
+                      <%= b.check_box(class: 'check_box') %>
+                    </div>
+                    <div class="col-xs-11">
+                      <label class="text-left"><%= b.object.name %></label>
+                    </div>
+                </div>
+              <% end %>
+            </div>
+
+            <div class="col-md-6">
+              <strong>Vetné sklady</strong>
+              <%= f.collection_check_boxes(:element_ids, Element.relations, :id, :name) do |b| %>
+                  <div class="row">
+                    <div class="col-xs-1">
+                      <%= b.check_box(class: 'check_box') %>
+                    </div>
+                    <div class="col-xs-11">
+                      <label class="text-left"><%= b.object.name %></label>
+                    </div>
+                  </div>
+              <% end %>
+            </div>
+          </div>
         </div>
 
         <%= f.radio_button :elements, :prepared%>
         <%= f.label :prepared_elements, t('exercise.build.setup.prepared_elements') %>
         <div class="form-group prepared">
-          <%= f.collection_check_boxes :element_ids, Element.all, :id, :name %>
+          <div class="row">
+            <div class="col-md-6">
+              <strong>Vetné členy</strong>
+              <%= f.collection_check_boxes(:element_ids, Element.elements, :id, :name) do |b| %>
+                  <div class="row">
+                    <div class="col-xs-1">
+                      <%= b.check_box(class: 'check_box') %>
+                    </div>
+                    <div class="col-xs-11">
+                      <label class="text-left"><%= b.object.name %></label>
+                    </div>
+                  </div>
+              <% end %>
+            </div>
+          </div>
         </div>
 
         <div class="form-group">
