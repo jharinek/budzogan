@@ -17,7 +17,7 @@
 
         <div class="form-group">
           <%= f.label :workgroup, 'Trieda' %>
-          <%= f.collection_select :workgroup, @workgroups, :id, :name, {include_blank: true}, {data: {as: :select2}} %>
+          <%= f.collection_select :workgroup, @workgroups, :id, :name, { include_blank: true }, { data: { as: :select2 } } %>
         </div>
 
         <div class="form-group">
@@ -32,7 +32,7 @@
 
         <div class="form-group">
           <%= f.label :distribution_strategy, 'Stratégia rozdelenia viet' %>
-          <%= f.collection_select :distribution_strategy, @strategies, :first, :last, {include_blank: true}, {data: {as: :select2}} %>
+          <%= f.collection_select :distribution_strategy, @strategies, :first, :last, { include_blank: true }, { data: {as: :select2 } } %>
         </div>
 
         <div class="form-actions">
