@@ -16,8 +16,9 @@
         <% end %>
 
         <div class="form-group">
-          <%= f.label :sentence_length, 'Dĺžka viet' %>
-          <%= f.text_field :sentence_length, class: :'form-control', placeholder: 'Nezáleží' %>
+          <%= f.label :sentence_length, 'Dĺžka viet (maximálny počet slov)' %>
+          <!--<%= f.text_field :sentence_length, class: :'form-control', placeholder: 'Nezáleží' %>-->
+          <%= f.collection_select :sentence_length, 1..10, :to_s, :to_s, {include_blank: 'Nezáleží'}, {data: {as: :select2}} %>
         </div>
 
         <div class="form-group">
