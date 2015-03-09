@@ -17,22 +17,26 @@
 
         <div class="form-group">
           <%= f.label :workgroup, 'Trieda' %>
-          <%= f.collection_select :workgroup, @workgroups, :id, :name, { include_blank: true }, { data: { as: :select2 } } %>
+          <%= f.collection_select :workgroup, @workgroups, :id, :name, { include_blank: true }, { data: { as: :select2 }, class: 'attribute-select' } %>
         </div>
 
         <div class="form-group">
           <%= f.label :start_time, 'Čas začiatku cvičenia' %>
-          <%= f.datetime_select :start_time %>
+          <div class="form-control">
+            <%= f.datetime_select :start_time %>
+          </div>
         </div>
 
         <div class="form-group">
           <%= f.label :end_time, 'Čas ukončenia cvičenia' %>
-          <%= f.datetime_select :end_time %>
+          <div class="form-control">
+            <%= f.datetime_select :end_time %>
+          </div>
         </div>
 
         <div class="form-group">
           <%= f.label :distribution_strategy, 'Stratégia rozdelenia viet' %>
-          <%= f.collection_select :distribution_strategy, @strategies, :first, :last, { include_blank: true }, { data: {as: :select2 } } %>
+          <%= f.collection_select :distribution_strategy, @strategies, :first, :last, { include_blank: true }, { data: {as: :select2 }, class: 'attribute-select' } %>
         </div>
 
         <div class="form-actions">

@@ -18,7 +18,7 @@
 
         <div class="form-group">
           <%= f.label :template, t('exercise.build.setup.choose_exercise') %>
-          <%= f.collection_select :template_id, ExerciseTemplate.all, :id, :name, { include_blank: true }, { data: { as: :select2 } } %>
+          <%= f.collection_select :template_id, ExerciseTemplate.all, :id, :name, { include_blank: true }, { data: { as: :select2 }, class: 'attribute-select' } %>
         </div>
 
 

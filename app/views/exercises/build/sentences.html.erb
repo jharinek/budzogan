@@ -18,17 +18,17 @@
         <div class="form-group">
           <%= f.label :sentence_length, 'Dĺžka viet (maximálny počet slov)' %>
           <!--<%= f.text_field :sentence_length, class: :'form-control', placeholder: 'Nezáleží' %>-->
-          <%= f.collection_select :sentence_length, 1..10, :to_s, :to_s, { include_blank: 'Nezáleží' }, { data: {as: :select2 } } %>
+          <%= f.collection_select :sentence_length, 1..10, :to_s, :to_s, { include_blank: 'Nezáleží' }, { data: {as: :select2 }, class: 'attribute-select' } %>
         </div>
 
         <div class="form-group">
           <%= f.label :sentence_difficulty, 'Náročnosť viet' %>
-          <%= f.collection_select :sentence_difficulty, @difficulties, :first, :last, { include_blank: 'Nezáleží' }, { data: {as: :select2 } } %>
+          <%= f.collection_select :sentence_difficulty, @difficulties, :first, :last, { include_blank: 'Nezáleží' }, { data: {as: :select2 }, class: 'attribute-select' } %>
         </div>
 
         <div class="form-group">
           <%= f.label :sentence_source, 'Zdroj viet' %>
-          <%= f.collection_select :sentence_source, @sources, :first, :last, { include_blank: 'Nezáleží' }, { data: { as: :select2 } } %>
+          <%= f.collection_select :sentence_source, @sources, :first, :last, { include_blank: 'Nezáleží' }, { data: { as: :select2 }, class: 'attribute-select' } %>
         </div>
 
         <div class="sentence-generator">

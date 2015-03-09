@@ -14,7 +14,7 @@ $(document).ready ->
   $("input:radio").change ->
     radio_changed()
 
-  $('select').select2({
+  $('select.attribute-select').select2({
     placeholder: 'Vyberte jednu z možností'
   }).on 'change', ->
     if $('.select2-chosen').text() == 'Urobte kompletny rozbor vety'
