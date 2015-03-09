@@ -1,0 +1,13 @@
+<div class="col-md-6">
+<strong class="group-title"><%= title %></strong>
+<%= f.collection_check_boxes(:element_ids, elements, :id, :name) do |b| %>
+  <div class="row element">
+    <div class="col-xs-1">
+      <%= b.check_box(class: 'check_box') %>
+    </div>
+    <div class="col-xs-11">
+      <label class="text-left checkbox-option"><%= b.object.name %></label>
+    </div>
+  </div>
+<% end %>
+</div>
