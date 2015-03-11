@@ -1,6 +1,6 @@
 class SentencesController < ApplicationController
   def generate
     @generator = SentenceGenerator::Generator.new
-    @sentences = Sentence.all # @generator.generate_sentences()
+    @sentences = Sentence.limit(10) # @generator.generate_sentences()
   end
 end
