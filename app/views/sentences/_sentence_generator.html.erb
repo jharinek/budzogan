@@ -15,14 +15,16 @@
       <tr>
         <td><%= i + 1 %></td>
         <td><%= sentence.content %></td>
-        <td>sentence.source</td>
-        <td>actions</td>
+        <td>TODO</td>
+        <td><%= link_to 'Zmaž vetu', '#', class: 'btn btn-danger' %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<div id="new-sentence" class="form-group">
+<div class="input-group">
   <input class="form-control" type="text"/>
-  <%= link_to 'Pridaj vetu', '#' %>
+  <span class="input-group-btn">
+    <%= button_tag 'Pridaj vetu', class: 'btn btn-success' %>
+  </span>
 </div>
