@@ -23,5 +23,6 @@
 #= require select2_locale_sk
 #= require exercise_form
 #= require analysis_graph
+#= require sentences
 #
 #= require_tree .
