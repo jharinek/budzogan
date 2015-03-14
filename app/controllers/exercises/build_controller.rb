@@ -14,8 +14,6 @@ class Exercises::BuildController < ApplicationController
     @sources      = { sme:  'sme.sk',
                       juls: 'Národný korpus' }
 
-    @sentences = Sentence.all
-
     render_wizard
   end
 
