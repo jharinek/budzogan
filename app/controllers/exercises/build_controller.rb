@@ -38,8 +38,8 @@ class Exercises::BuildController < ApplicationController
 
   def set_sentences
     sentences_ids = params['sentences-ids-list'].split(',').reject! { |id| id.empty?}
-    
-    @exercise.sentences Sentence.find(sentences_ids)
+
+    @exercise.sentences = Sentence.find(sentences_ids)
   end
 
   def create_timestamp(year, month, day, hour, minute)
