@@ -24,6 +24,7 @@ class Exercises::BuildController < ApplicationController
 
     @exercise.update_attributes(step.to_sym == :assignment ? exercise_params.merge(inject_time_boundaries) : exercise_params)
     assign_elements if step == :setup
+    set_sentences if step == :sentences
 
     render_wizard @exercise
   end
@@ -33,6 +34,12 @@ class Exercises::BuildController < ApplicationController
     elements = Element.find(params[:exercise][:element_ids].reject(&:empty?))
     @exercise.elements.each { |e| elements.delete e }
     @exercise.elements << elements
+  end
+
+  def set_sentences
+    sentences_ids = params['sentences-ids-list'].split(',').reject! { |id| id.empty?}
+    
+    @exercise.sentences Sentence.find(sentences_ids)
   end
 
   def create_timestamp(year, month, day, hour, minute)
