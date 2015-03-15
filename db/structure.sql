@@ -200,6 +200,16 @@ ALTER SEQUENCE exercises_id_seq OWNED BY exercises.id;
 
 
 --
+-- Name: exercises_sentences; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE exercises_sentences (
+    exercise_id integer,
+    sentence_id integer
+);
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -741,4 +751,6 @@ INSERT INTO schema_migrations (version) VALUES ('20140923172138');
 INSERT INTO schema_migrations (version) VALUES ('20140927160123');
 
 INSERT INTO schema_migrations (version) VALUES ('20141203233502');
+
+INSERT INTO schema_migrations (version) VALUES ('20150314184142');
 
