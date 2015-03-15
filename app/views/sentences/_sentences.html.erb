@@ -10,6 +10,13 @@
   </thead>
 
   <tbody>
+    <% @sentences.each do |sentence| %>
+      <tr>
+        <td sentence-id="<%= sentence.id %>"><%= sentence.content %></td>
+        <td>TODO</td>
+        <td><%= link_to 'Zmaž vetu', '#', class: 'btn btn-danger delete-sentence' %></td>
+      </tr>
+    <% end %>
   </tbody>
 </table>
 
