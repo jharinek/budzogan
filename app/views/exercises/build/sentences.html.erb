@@ -35,7 +35,7 @@
           <%= render 'sentences/sentences' %>
         </div>
 
-        <%= hidden_field_tag 'sentences-ids-list' %>
+        <%= hidden_field_tag 'sentences-ids-list', value= @exercise.sentences_ids %>
 
         <div class="form-actions">
           <button type="submit" id="sentences-submit" class="btn btn-primary pull-right"><%= t('form.next') %></button>
