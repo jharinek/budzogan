@@ -226,7 +226,8 @@ CREATE TABLE sentences (
     id integer NOT NULL,
     content character varying(255),
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    source character varying(255)
 );
 
 
@@ -608,6 +609,13 @@ CREATE INDEX index_exercises_on_workgroup_id ON exercises USING btree (workgroup
 
 
 --
+-- Name: index_sentences_on_source; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_sentences_on_source ON sentences USING btree (source);
+
+
+--
 -- Name: index_task_assignments_on_task_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -753,4 +761,6 @@ INSERT INTO schema_migrations (version) VALUES ('20140927160123');
 INSERT INTO schema_migrations (version) VALUES ('20141203233502');
 
 INSERT INTO schema_migrations (version) VALUES ('20150314184142');
+
+INSERT INTO schema_migrations (version) VALUES ('20150315163158');
 
