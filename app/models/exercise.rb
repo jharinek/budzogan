@@ -46,4 +46,8 @@ class Exercise < ActiveRecord::Base
   def active_or_assignment?
     status.eql?(:assignment) || active?
   end
+
+  def sentences_ids
+    self.sentences.ids
+  end
 end
