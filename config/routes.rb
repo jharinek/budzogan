@@ -7,6 +7,8 @@ Budzogan::Application.routes.draw do
 
   devise_for :users, path: '', path_names: { sign_up: :join, sign_in: :login, sign_out: :logout }
 
+  resources :sentences, only: [:create]
+
   resources :tasks
 
   resources :workgroups
