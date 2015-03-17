@@ -5,8 +5,7 @@ class SentencesController < ApplicationController
   end
 
   def create
-    @sentence = Sentence.new(sentence_params)
-    @sentence.save!
+    @sentence = Sentence.where(sentence_params).first_or_create!
   end
 
   private
