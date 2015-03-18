@@ -18,7 +18,9 @@
     <% else %>
         <ul class="nav navbar-nav navbar-right">
           <li><%= link_to t('user.sign_in'), new_user_session_path %></li>
-          <!--<li><%= link_to t('user.sign_up'), new_user_registration_path %></li>-->
+          <% if Configuration.enable.registrations? %>
+              <li><%= link_to t('user.sign_up'), new_user_registration_path %></li>
+          <% end %>
         </ul>
     <% end %>
     </div>
