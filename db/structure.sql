@@ -379,7 +379,8 @@ CREATE TABLE users (
     locked_at timestamp without time zone,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    organization_id integer
+    organization_id integer,
+    grade character varying(255)
 );
 
 
@@ -829,4 +830,6 @@ INSERT INTO schema_migrations (version) VALUES ('20150315163158');
 INSERT INTO schema_migrations (version) VALUES ('20150318100948');
 
 INSERT INTO schema_migrations (version) VALUES ('20150318101042');
+
+INSERT INTO schema_migrations (version) VALUES ('20150318171636');
 
