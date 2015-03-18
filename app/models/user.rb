@@ -19,6 +19,8 @@ class User < ActiveRecord::Base
   # has_many :task_assignments, dependent: :destroy
   has_many :tasks #, through: :task_assignments
 
+  belongs_to :organization
+
   validates :login, format: { with: /\A[A-Za-z0-9_]+\z/ }, presence: true, uniqueness: { case_sensitive: false }
   validates :nick,  format: { with: /\A[A-Za-z0-9_]+\z/ }, presence: true, uniqueness: { case_sensitive: false }
 
