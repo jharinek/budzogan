@@ -9,6 +9,16 @@
     </div>
 
     <div class="form-group">
+      <%= f.label :first %>
+      <%= f.text_field :first, class: 'form-control' %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :last %>
+      <%= f.text_field :last, class: 'form-control' %>
+    </div>
+
+    <div class="form-group">
       <%= f.label :email %>
       <%= f.email_field :email, class: 'form-control' %>
     </div>
@@ -25,8 +35,13 @@
 
   <div class="form-group">
     <%= f.label :organization %>
-    <%= f.collection_select :organization_id, Organization.all, :id, :name, {}, class: 'form-control' %>
+    <%= f.collection_select :organization_id, Organization.all, :id, :name, { include_blank: true }, class: 'form-control' %>
   </div>
+
+    <div class="form-group">
+      <%= f.label :grade %>
+      <%= f.collection_select :grade, (1..9), :to_s, :to_s, { include_blank: true }, class: 'form-control' %>
+    </div>
 
   <div class="form-group">
     <%= f.submit "Sign up" %>
