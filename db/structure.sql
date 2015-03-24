@@ -200,6 +200,47 @@ ALTER SEQUENCE exercises_id_seq OWNED BY exercises.id;
 
 
 --
+-- Name: exercises_sentences; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE exercises_sentences (
+    exercise_id integer,
+    sentence_id integer
+);
+
+
+--
+-- Name: organizations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE organizations (
+    id integer NOT NULL,
+    name character varying(255),
+    category character varying(255),
+    address character varying(255)
+);
+
+
+--
+-- Name: organizations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE organizations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: organizations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE organizations_id_seq OWNED BY organizations.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -216,7 +257,8 @@ CREATE TABLE sentences (
     id integer NOT NULL,
     content character varying(255),
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    source character varying(255)
 );
 
 
@@ -336,7 +378,9 @@ CREATE TABLE users (
     unlock_token character varying(255),
     locked_at timestamp without time zone,
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    organization_id integer,
+    grade character varying(255)
 );
 
 
@@ -368,7 +412,8 @@ CREATE TABLE workgroups (
     name character varying(255),
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    teacher_id integer DEFAULT 0 NOT NULL
+    teacher_id integer DEFAULT 0 NOT NULL,
+    organization_id integer
 );
 
 
@@ -430,6 +475,13 @@ ALTER TABLE ONLY exercises ALTER COLUMN id SET DEFAULT nextval('exercises_id_seq
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY organizations ALTER COLUMN id SET DEFAULT nextval('organizations_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY sentences ALTER COLUMN id SET DEFAULT nextval('sentences_id_seq'::regclass);
 
 
@@ -483,6 +535,14 @@ ALTER TABLE ONLY exercise_templates
 
 ALTER TABLE ONLY exercises
     ADD CONSTRAINT exercises_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: organizations_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY organizations
+    ADD CONSTRAINT organizations_pkey PRIMARY KEY (id);
 
 
 --
@@ -595,6 +655,27 @@ CREATE INDEX index_exercises_on_template_id ON exercises USING btree (template_i
 --
 
 CREATE INDEX index_exercises_on_workgroup_id ON exercises USING btree (workgroup_id);
+
+
+--
+-- Name: index_organizations_on_category; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_organizations_on_category ON organizations USING btree (category);
+
+
+--
+-- Name: index_organizations_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_organizations_on_name ON organizations USING btree (name);
+
+
+--
+-- Name: index_sentences_on_source; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_sentences_on_source ON sentences USING btree (source);
 
 
 --
@@ -741,4 +822,14 @@ INSERT INTO schema_migrations (version) VALUES ('20140923172138');
 INSERT INTO schema_migrations (version) VALUES ('20140927160123');
 
 INSERT INTO schema_migrations (version) VALUES ('20141203233502');
+
+INSERT INTO schema_migrations (version) VALUES ('20150314184142');
+
+INSERT INTO schema_migrations (version) VALUES ('20150315163158');
+
+INSERT INTO schema_migrations (version) VALUES ('20150318100948');
+
+INSERT INTO schema_migrations (version) VALUES ('20150318101042');
+
+INSERT INTO schema_migrations (version) VALUES ('20150318171636');
 
