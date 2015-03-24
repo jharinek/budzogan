@@ -35,6 +35,8 @@ class User < ActiveRecord::Base
 
   symbolize :role, in: ROLES
 
+  scope :students_for_current_school, lambda { |teacher| where(role: :student, organization: teacher.organization) }
+
   def login=(value)
     write_attribute :login, value.to_s.downcase
 
