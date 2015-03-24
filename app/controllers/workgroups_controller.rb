@@ -4,9 +4,9 @@ class WorkgroupsController < ApplicationController
   end
 
   def new
-    # TODO only students for actual school
-    @students = User.where(role: :student)
-    @workgroup    = Workgroup.new
+    @students  = User.students_for_current_school current_user
+    @students.order(grade: :asc)
+    @workgroup = Workgroup.new
   end
 
   def create
@@ -14,15 +14,16 @@ class WorkgroupsController < ApplicationController
 
     if @workgroup.save
       student_id_params.each do |id|
-        Enrollment.create(student_id: id, work_group_id: @workgroup.id)
+        Enrollment.create(student_id: id, workgroup_id: @workgroup.id)
       end
 
       flash[:notice] = "Skupina bola úspešne vytvorená"
     else
       flash_error_messages_for @workgroup
+      redirect_to new_workgroup_path
     end
 
-    redirect_to work_groups_path
+    redirect_to workgroups_path
   end
 
   def show

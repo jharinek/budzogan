@@ -10,13 +10,15 @@
 
       <h3>Vyberte žiakov:</h3>
       <% @students.each do |student| %>
-        <div class="form-group">
-          <%= check_box_tag 'student_' + student.id.to_s %>
-          <%= f.label :student, student.name %>
+        <div class="col-md-4">
+          <div class="form-group">
+            <%= check_box_tag 'student_' + student.id.to_s %>
+            <%= f.label :student, student.name + ' (' + student.grade + ' ročník)' %>
+          </div>
         </div>
       <% end %>
 
-      <button type="submit" class="btn btn-primary">Vytvoriť</button>
+      <button type="submit" class="btn btn-primary pull-right">Vytvoriť</button>
     <% end %>
   </div>
 </div>

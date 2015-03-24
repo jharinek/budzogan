@@ -11,7 +11,7 @@
           <ul class="nav navbar-nav">
             <!--<li><%= link_to t('task.navigation'), tasks_path %></li>-->
             <%= content_tag :li, link_to(t('exercise.new.title'), exercises_path, method: :post) if can?(:administrate, Exercise) %>
-            <%= content_tag :li, link_to(t('workgroup.new.title'), workgroups_path) if can?(:administrate, Workgroup) %>
+            <%= content_tag :li, link_to(t('workgroup.navigation'), workgroups_path) if can?(:administrate, Workgroup) %>
           </ul>
         <ul class="nav navbar-nav navbar-right">
           <%= content_tag :li, link_to(current_user.nick, '#') %>
