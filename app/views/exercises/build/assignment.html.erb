@@ -2,16 +2,7 @@
 <h3 class="form-subtitle">Priradenie úlohy triede</h3>
 
 <%= form_for @exercise, url: wizard_path do |f| %>
-  <% if @exercise.errors.any? %>
-    <div class="error_messages">
-      <h2><%= pluralize(@exercise.errors.count, "error") %> prohibited this user from being saved:</h2>
-      <ul>
-        <% @exercise.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <%= render 'shared/form_messages', model: @exercise %>
 
   <div class="form-group">
     <%= f.label :workgroup, 'Trieda' %>
