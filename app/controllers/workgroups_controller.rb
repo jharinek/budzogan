@@ -10,12 +10,12 @@ class WorkgroupsController < ApplicationController
   end
 
   def create
-    @workgroup = Workgroup.new(work_group_params)
+    @workgroup = Workgroup.new(workgroup_params)
 
     if @workgroup.save
-      student_id_params.each do |id|
-        Enrollment.create(student_id: id, workgroup_id: @workgroup.id)
-      end
+      # student_id_params.each do |id|
+      #   Enrollment.create(student_id: id, workgroup_id: @workgroup.id)
+      # end
 
       flash[:notice] = "Skupina bola úspešne vytvorená"
     else
@@ -26,8 +26,17 @@ class WorkgroupsController < ApplicationController
     redirect_to workgroups_path
   end
 
+  def update
+    @workgroup = Workgroup.find(params[:id])
+
+    @workgroup.update(workgroup_params)
+
+    redirect_to workgroup_path(@workgroup.id)
+  end
+
   def show
-    @group = Workgroup.find(params[:id])
+    @workgroup = Workgroup.find(params[:id])
+    @students  = @workgroup.students
   end
 
   def edit
@@ -36,11 +45,11 @@ class WorkgroupsController < ApplicationController
   end
 
   private
-  def work_group_params
-    params.require(:workgroup).permit(:name).merge(teacher: current_user)
+  def workgroup_params
+    params.require(:workgroup).permit(:name).merge(teacher: current_user, students: User.find(student_ids))
   end
 
-  def student_id_params
+  def student_ids
     student_ids = []
     (params.keys.select { |key| key.match /student_/ }).each { |key| student_ids.push(key.gsub(/student_/, '').to_i) }
     student_ids
