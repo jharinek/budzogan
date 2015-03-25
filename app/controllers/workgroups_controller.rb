@@ -13,17 +13,15 @@ class WorkgroupsController < ApplicationController
     @workgroup = Workgroup.new(workgroup_params)
 
     if @workgroup.save
-      # student_id_params.each do |id|
-      #   Enrollment.create(student_id: id, workgroup_id: @workgroup.id)
-      # end
-
       flash[:notice] = "Skupina bola úspešne vytvorená"
+
+      redirect_to workgroups_path
     else
       flash_error_messages_for @workgroup
-      redirect_to new_workgroup_path
+      @students  = User.students_for_current_school current_user
+      @students.order(grade: :asc)
+      render :new
     end
-
-    redirect_to workgroups_path
   end
 
   def update
