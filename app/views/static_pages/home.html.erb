@@ -3,6 +3,6 @@
     <h1 class="text-center">Budzogáň</h1>
     <h2></h2>
     <p class="lead text-center">Vitaj v aplikácií Budzogáň :)</p>
-    <p class="small text-center">Pre pokračovanie sa <%= link_to 'prihlás', new_user_session_path %> :)</p>
+    <p class="small text-center">Pre pokračovanie sa <%= link_to 'prihlás', new_user_session_path %> alebo <%= link_to('registruj', new_user_registration_path) if Configuration.enable.registrations? %>.</p>
   </div>
 </div>

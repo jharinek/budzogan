@@ -1,23 +1,29 @@
 <div class="row">
   <div class="col-md-offset-1 col-md-10">
     <h1>Zoznam tried učiteľa <%= "#{current_user.name}" %></h1>
-    <table class="table table-hover table-condensed">
-      <thead>
-      <tr>
-        <th>#</th>
-        <th>Názov triedy</th>
-        <th>Počet žiakov</th>
-      </tr>
-      </thead>
-      <tbody>
-      <% @groups.each_with_index do |group, index| %>
+    <% if !@groups.empty?  %>
+        <table class="table table-hover table-condensed">
+          <thead>
           <tr>
-            <td><%= index+1 %></td>
-            <td><%= link_to group.name, workgroup_path(id: group.id) %></td>
-            <td><%= group.students.count %></td>
+            <th>#</th>
+            <th>Názov triedy</th>
+            <th>Počet žiakov</th>
           </tr>
-      <% end %>
-      </tbody>
-    </table>
+          </thead>
+          <tbody>
+          <% @groups.each_with_index do |group, index| %>
+              <tr>
+                <td><%= index+1 %></td>
+                <td><%= link_to group.name, workgroup_path(id: group.id) %></td>
+                <td><%= group.students.count %></td>
+              </tr>
+          <% end %>
+          </tbody>
+        </table>
+    <% else %>
+        <div class="alert alert-warning">
+          Zatiaľ nemáte vytvorené žiadne triedy, <strong><%= link_to 'vytvorte prvú.', new_workgroup_path %></strong>
+        </div>
+  <% end  %>
   </div>
 </div>

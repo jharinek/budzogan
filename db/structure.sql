@@ -210,6 +210,40 @@ CREATE TABLE exercises_sentences (
 
 
 --
+<<<<<<< HEAD
+=======
+-- Name: organizations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE organizations (
+    id integer NOT NULL,
+    name character varying(255),
+    category character varying(255),
+    address character varying(255)
+);
+
+
+--
+-- Name: organizations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE organizations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: organizations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE organizations_id_seq OWNED BY organizations.id;
+
+
+--
+>>>>>>> master
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -347,7 +381,9 @@ CREATE TABLE users (
     unlock_token character varying(255),
     locked_at timestamp without time zone,
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    organization_id integer,
+    grade character varying(255)
 );
 
 
@@ -379,7 +415,8 @@ CREATE TABLE workgroups (
     name character varying(255),
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    teacher_id integer DEFAULT 0 NOT NULL
+    teacher_id integer DEFAULT 0 NOT NULL,
+    organization_id integer
 );
 
 
@@ -441,6 +478,13 @@ ALTER TABLE ONLY exercises ALTER COLUMN id SET DEFAULT nextval('exercises_id_seq
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY organizations ALTER COLUMN id SET DEFAULT nextval('organizations_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY sentences ALTER COLUMN id SET DEFAULT nextval('sentences_id_seq'::regclass);
 
 
@@ -494,6 +538,14 @@ ALTER TABLE ONLY exercise_templates
 
 ALTER TABLE ONLY exercises
     ADD CONSTRAINT exercises_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: organizations_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY organizations
+    ADD CONSTRAINT organizations_pkey PRIMARY KEY (id);
 
 
 --
@@ -609,6 +661,23 @@ CREATE INDEX index_exercises_on_workgroup_id ON exercises USING btree (workgroup
 
 
 --
+<<<<<<< HEAD
+=======
+-- Name: index_organizations_on_category; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_organizations_on_category ON organizations USING btree (category);
+
+
+--
+-- Name: index_organizations_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_organizations_on_name ON organizations USING btree (name);
+
+
+--
+>>>>>>> master
 -- Name: index_sentences_on_source; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -764,3 +833,12 @@ INSERT INTO schema_migrations (version) VALUES ('20150314184142');
 
 INSERT INTO schema_migrations (version) VALUES ('20150315163158');
 
+<<<<<<< HEAD
+=======
+INSERT INTO schema_migrations (version) VALUES ('20150318100948');
+
+INSERT INTO schema_migrations (version) VALUES ('20150318101042');
+
+INSERT INTO schema_migrations (version) VALUES ('20150318171636');
+
+>>>>>>> master

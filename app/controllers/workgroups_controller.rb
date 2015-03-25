@@ -4,29 +4,38 @@ class WorkgroupsController < ApplicationController
   end
 
   def new
-    # TODO only students for actual school
-    @students = User.where(role: :student)
-    @workgroup    = Workgroup.new
+    @students  = User.students_for_current_school current_user
+    @students.order(grade: :asc)
+    @workgroup = Workgroup.new
   end
 
   def create
-    @workgroup = Workgroup.new(work_group_params)
+    @workgroup = Workgroup.new(workgroup_params)
 
     if @workgroup.save
-      student_id_params.each do |id|
-        Enrollment.create(student_id: id, work_group_id: @workgroup.id)
-      end
-
       flash[:notice] = "Skupina bola úspešne vytvorená"
+
+      redirect_to workgroups_path
     else
       flash_error_messages_for @workgroup
-    end
 
-    redirect_to work_groups_path
+      @students  = User.students_for_current_school current_user
+      @students.order(grade: :asc)
+      render :new
+    end
+  end
+
+  def update
+    @workgroup = Workgroup.find(params[:id])
+
+    @workgroup.update(workgroup_params)
+
+    redirect_to workgroup_path(@workgroup.id)
   end
 
   def show
-    @group = Workgroup.find(params[:id])
+    @workgroup = Workgroup.find(params[:id])
+    @students  = @workgroup.students
   end
 
   def edit
@@ -35,11 +44,11 @@ class WorkgroupsController < ApplicationController
   end
 
   private
-  def work_group_params
-    params.require(:workgroup).permit(:name).merge(teacher: current_user)
+  def workgroup_params
+    params.require(:workgroup).permit(:name).merge(teacher: current_user, students: User.find(student_ids))
   end
 
-  def student_id_params
+  def student_ids
     student_ids = []
     (params.keys.select { |key| key.match /student_/ }).each { |key| student_ids.push(key.gsub(/student_/, '').to_i) }
     student_ids

@@ -2,13 +2,13 @@ class User < ActiveRecord::Base
   ROLES = [:student, :teacher, :admin]
 
   devise :database_authenticatable,
-         :confirmable,
-         :lockable,
+         # :confirmable,
+         # :lockable,
          :registerable,
-         :recoverable,
+         # :recoverable,
          :rememberable,
          :trackable,
-         :validatable,
+         # :validatable,
 
          authentication_keys: [:login]
 
@@ -19,17 +19,23 @@ class User < ActiveRecord::Base
   # has_many :task_assignments, dependent: :destroy
   has_many :tasks #, through: :task_assignments
 
+  belongs_to :organization
+
+  before_validation :set_default_role
+
   validates :login, format: { with: /\A[A-Za-z0-9_]+\z/ }, presence: true, uniqueness: { case_sensitive: false }
   validates :nick,  format: { with: /\A[A-Za-z0-9_]+\z/ }, presence: true, uniqueness: { case_sensitive: false }
 
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/ }, presence: true, uniqueness: { case_sensitive: false }
 
-  validates :first, format: { with: /\A\p{Lu}\p{Ll}*\z/u }, presence: true
-  validates :last,  format: { with: /\A\p{Lu}\p{Ll}*\z/u }, presence: true
+  validates :first, presence: true
+  validates :last, presence: true
 
   validates :role, presence: true
 
   symbolize :role, in: ROLES
+
+  scope :students_for_current_school, lambda { |teacher| where(role: :student, organization: teacher.organization) }
 
   def login=(value)
     write_attribute :login, value.to_s.downcase
@@ -60,5 +66,11 @@ class User < ActiveRecord::Base
     return where(conditions).first unless login
 
     where(conditions).where(["login = :value OR email = :value", { value: login.downcase }]).first
+  end
+
+  private
+
+  def set_default_role
+    self.role ||= :student
   end
 end
