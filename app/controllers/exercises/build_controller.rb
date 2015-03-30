@@ -5,7 +5,8 @@ class Exercises::BuildController < ApplicationController
 
   def show
     @exercise     = Exercise.find(params[:exercise_id])
-    @workgroups   = Workgroup.all
+    @workgroups   = Workgroup.for_current_school current_user
+
     @strategies   = { one_to_one:        'Každý študent jedna veta',
                       every_to_everyone: 'Každý študent všetky vety',
                       custom:            'Iné' }

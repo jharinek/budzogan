@@ -7,4 +7,6 @@ class Workgroup < ActiveRecord::Base
   belongs_to :organization
 
   validates :name, format: { with: /\A[\w.\-:\# ]*\z/ }, presence: true
+
+  scope :for_current_school, lambda{ |teacher| where(organization: teacher.organization) }
 end
