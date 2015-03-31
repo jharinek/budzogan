@@ -1,8 +1,10 @@
 <div class="row">
-  <div class="col-md-offset-3 col-md-6 well">
-    <h1 class="text-center">Budzogáň</h1>
-    <h2></h2>
-    <p class="lead text-center">Vitaj v aplikácií Budzogáň :)</p>
-    <p class="small text-center">Pre pokračovanie sa <%= link_to 'prihlás', new_user_session_path %> alebo <%= link_to('registruj', new_user_registration_path) if Configuration.enable.registrations? %>.</p>
+  <div class="col-md-12 well well-home">
+    <div class="col-md-offset-2 col-md-8">
+      <h1 class="text-center">Vitaj v aplikácií Budzogáň :)</h1>
+      <p class="text-justify large">Už vopred Ti ďakujem za Tvoj záujem a pomoc pri výskume. Údaje, ktoré vďaka Tebe získam mi veľmi pomôžu pri diplomovej práci. Pre pokračovanie je potrebné <%= link_to('zaregistrovať sa', new_user_registration_path) %>. Ak už máš vytvorené konto <%= link_to 'prihlás sa', new_user_session_path %>. </p>
+      <p class="text-center">Ďalšie inštrukcie nájdeš po prihlásení. </p>
+      <!--<p class="small text-center">Pre pokračovanie sa <%= link_to 'prihlás', new_user_session_path %> alebo <%= link_to('registruj', new_user_registration_path) if Configuration.enable.registrations? %>.</p>-->
+    </div>
   </div>
 </div>

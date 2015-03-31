@@ -27,3 +27,8 @@ body {
 .alert-error {
   @extend .alert-danger;
 }
+
+.well-home {
+  margin-top: 50px;
+  font-size: 14pt;
+}
