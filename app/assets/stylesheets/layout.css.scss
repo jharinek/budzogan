@@ -32,3 +32,7 @@ body {
   margin-top: 50px;
   font-size: 14pt;
 }
+
+.alert-alert {
+  @extend .alert-danger;
+}
