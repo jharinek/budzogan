@@ -36,3 +36,7 @@ body {
 .alert-alert {
   @extend .alert-danger;
 }
+
+#tasks {
+  margin-top: 50px;
+}
