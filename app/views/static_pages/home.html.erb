@@ -1,10 +1,21 @@
 <div class="row">
   <div class="col-md-12 well well-home">
     <div class="col-md-offset-2 col-md-8">
-      <h1 class="text-center">Vitaj v aplikácií Budzogáň :)</h1>
-      <p class="text-justify large">Už vopred Ti ďakujem za Tvoj záujem a pomoc pri výskume. Údaje, ktoré vďaka Tebe získam mi veľmi pomôžu pri diplomovej práci. Pre pokračovanie je potrebné <%= link_to('zaregistrovať sa', new_user_registration_path) %>. Ak už máš vytvorené konto <%= link_to 'prihlás sa', new_user_session_path %>. </p>
-      <p class="text-center">Ďalšie inštrukcie nájdeš po prihlásení. </p>
-      <!--<p class="small text-center">Pre pokračovanie sa <%= link_to 'prihlás', new_user_session_path %> alebo <%= link_to('registruj', new_user_registration_path) if Configuration.enable.registrations? %>.</p>-->
+      <p class="text-justify">
+        Čo od teba potrebujem je, aby si skúsil, tak ako najlepšie vieš, urobiť rozbor nasledujúcich viet.
+        Pre mňa je užitočné každé Tvoje snaženie, aj vtedy ak vieš vyriešiť len časť vety.
+        Budem Ti vďačný za každú jednu vyriešenú vetu, avšak vyrieš ich čo najviac ako môžeš.
+      </p>
+      <p class="text-justify">
+        Na začiatok máš vygenerovaných 10 úloh. Keď ich vyriešiš, klikni na tlačidlo
+        <span class="btn btn btn-primary disabled">Ďalších 10 úloh</span> v zozname úloh a môžeš riešiť ďalej.
+      </p>
     </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-offset-2 col-md-8">
+    <h3 class="text-center">Ak si pripravený, <%= link_to 'poď riešiť úlohy!', tasks_path, class: 'btn btn-lg btn-success' %></h3>
   </div>
 </div>
