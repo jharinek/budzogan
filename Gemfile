@@ -33,7 +33,7 @@ gem 'i18n-js'
 # pagination
 gem 'kaminari', '~> 0.15.1'
 gem 'kaminari-bootstrap', '~> 3.0.1'
-gem 'will_paginate', '~> 3.0'
+# gem 'will_paginate', '~> 3.0'
 
 # scheduling
 #gem 'whenever'
