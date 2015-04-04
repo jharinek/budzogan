@@ -1,5 +1,5 @@
 // load only on task-edit view
-if($('#edit-task').length != 0){
+if ($('#edit-task').length != 0) {
 //--------------------------------------------------------------
 // variables initialization
 
@@ -88,6 +88,58 @@ if($('#edit-task').length != 0){
     color = $('.ui-draggable-dragging').css("background-color");
   };
 
+  var buildData = function(data){
+    var result = [];
+
+    if(data) {
+      $.each(data, function (key, value) {
+        result.push(
+          {
+            id: key,
+            text: value['value']
+          }
+        );
+      });
+    }
+
+    return result;
+  };
+
+  var clearSelectedElementReference = function(){
+    selected_flag = false;
+    selected_element = null;
+    selected_element_properties_id = null;
+  };
+
+  function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+  }
+
+  function rgbToHex(rgbString) {
+    var s = rgbString.replace('rgb(', '');
+    s = s.replace(')', '');
+    s = s.replace(',', '');
+    s = s.replace(',', '');
+
+    var numericalValues = s.split(' ');
+
+    return "#" + componentToHex(parseInt(numericalValues[0])) + componentToHex(parseInt(numericalValues[1])) + componentToHex(parseInt(numericalValues[2]));
+  }
+
+  function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return "rgb(" + parseInt(result[1], 16) + ", " + parseInt(result[2], 16) + ", " + parseInt(result[3], 16) + ")";
+  }
+
+  function isJsonString(str) {
+    try {
+      JSON.parse(str);
+    } catch(e) {
+      return false;
+    }
+    return true;
+  }
 //--------------------------------------------------------------
 // svg canvas operations and initialization
 
@@ -98,7 +150,8 @@ if($('#edit-task').length != 0){
   });
 
   var element = function (elm, x, y, color, sentenceElement) {
-    var cell = new elm({position: {x: x, y: y},
+    var cell = new elm({
+      position: {x: x, y: y},
       attrs: {
         rect: {class: 'properties ' + sentenceElement + ' 0 0'},
         text: {text: ''},
@@ -158,6 +211,25 @@ if($('#edit-task').length != 0){
     });
   };
 
+  // TODO consider moving to document.ready
+  paper.on('blank:pointerdown', function(evt, x, y) {
+    if(selected_element != null) {
+      selected_element.attr({
+        polygon: { stroke: selected_element.attr('polygon').fill }
+      });
+
+      var element = getElementFromModel(selected_element)
+      //on mouseout hide delete button
+      $('#'+element.id + ' circle.delete-button').css('visibility', 'hidden');
+
+      //on mouseout hide delete text button
+      $('#'+element.id + ' circle.delete-text').css('visibility', 'hidden');
+
+      clearSelectedElementReference();
+      deactivateEditBox();
+    }
+  });
+
 //--------------------------------------------------------------
 // d3js to create elements in menu
 
@@ -203,7 +275,7 @@ if($('#edit-task').length != 0){
 //--------------------------------------------------------------
 // jquery to initialize environment
 
-  $(document).ready(function () {
+  var initializeDraggableElements = function () {
     //dragable rectangles
     $(".draggable").draggable({
       zIndex: 1000,
@@ -254,15 +326,97 @@ if($('#edit-task').length != 0){
       .on("dragstart", getColor)
       .on("dragstop", createElement);
 
-//droppable container
+    //droppable container
     $(".myContainer").droppable({
       accept: ".draggable"
     });
-  });
+  };
+//  ---------------------------------------------------
+// Updating element properties
+//  ---------------------------------------------------
+  var reflectPropertiesChange = function () {
+    properties = 'properties';
+    properties += ' ' + ($('#level-1-select').select2('val') || '0');
+    properties += ' ' + ($('#level-2-select').select2('val') || '0');
+    var level_3 = $('#level-3-select').select2('val');
+    if (typeof level_3 == "string") {
+      properties += ' ' + level_3;
+    } else {
+      properties += ' ' + '0';
+    }
 
+    selected_element.attr({rect: {class: properties}});
 
-//  AJAX events
-  var saveCanvas = function() {
+    var newColor = items_hash[$('#level-1-select').select2('val')];
+    selected_element.attr('polygon').fill = newColor;
+    selected_element.attr('polygon').stroke = newColor;
+
+    graph.fromJSON(graph.toJSON());
+    initializeGraph();
+  };
+
+  var initializePropertiesBox = function () {
+    $('#level-1-select').on('change', function (e) {
+      populateProperties('level-2', 'Doplňujúca vlastnosť', buildData(boxProperties[e.val]['level-2']));
+      $('#level-3-properties').attr('hidden', 'hidden');
+      reflectPropertiesChange();
+    });
+
+    $('#level-2-select').on('change', function (e) {
+      var level_1 = $('#level-1-select').select2('val');
+      populateProperties('level-3', 'Doplňujúca vlastnosť', buildData(boxProperties[level_1]['level-2'][e.val]['level-3']));
+      reflectPropertiesChange();
+    });
+
+    $('#level-3-select').on('change', function (e) {
+      reflectPropertiesChange();
+    });
+  };
+
+  var populateProperties = function (identifier, title, data, value) {
+    if (data.length > 0) {
+      var selectElement = $('#' + identifier + '-select');
+
+      $('#' + identifier + '-title').text(title);
+
+      selectElement.select2('destroy');
+      selectElement.select2({data: data});
+      selectElement.select2('val', value);
+
+      $('#' + identifier + '-properties').removeAttr('hidden');
+    }
+  };
+
+  var activateEditBox = function (level_1, level_2, level_3) {
+    $('#properties-title').removeClass('text-muted');
+    $('#save-properties').removeAttr('disabled');
+    $('#level-1-properties').removeAttr('hidden');
+
+    populateProperties('level-1', 'Vetný člen', buildData(boxProperties), level_1);
+    populateProperties('level-2', 'Doplňujúca vlastnosť', buildData(boxProperties[level_1]['level-2']), level_2);
+    if (level_2 != '0') {
+      populateProperties('level-3', 'Doplňujúca vlastnosť', buildData(boxProperties[level_1]['level-2'][level_2]['level-3']), level_3);
+    }
+  };
+
+  var deactivateEditBox = function () {
+    $('#properties-title').addClass('text-muted');
+
+    $('#level-1-select').select2('destroy');
+    $('#level-2-select').select2('destroy');
+    $('#level-3-select').select2('destroy');
+
+    $('#level-1-properties').attr('hidden', 'hidden');
+    $('#level-2-properties').attr('hidden', 'hidden');
+    $('#level-3-properties').attr('hidden', 'hidden');
+
+    $('#save-properties').attr('disabled', 'disabled');
+  };
+
+//  -----------------------------------------------------
+// AJAX events
+//  -----------------------------------------------------
+  var saveCanvas = function () {
     url = window.location.pathname.replace('edit', '');
     data = JSON.stringify(graph.toJSON());
 
@@ -281,12 +435,19 @@ if($('#edit-task').length != 0){
     });
   };
 
-  var updateProperties = function() {
+//  ------------------------------------------------------
+//  Run all that is needed on document.ready
+//  ------------------------------------------------------
+  $(document).ready(function () {
+    $('body').on('click', '#submit-task', function () {
+      saveResult('2');
+    });
+    $('body').on('click', '#back', function () {
+      saveResult('1');
+    });
 
-  }
-
-  $(document).ready(function(){
-      saveCanvas();
-      updateProperties();
+    initializeDraggableElements();
+    initializePropertiesBox();
+    saveCanvas();
   });
 }
