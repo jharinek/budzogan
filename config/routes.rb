@@ -9,7 +9,7 @@ Budzogan::Application.routes.draw do
 
   resources :sentences, only: [:create]
 
-  resources :tasks
+  resources :tasks, only: [:index, :edit, :update]
 
   resources :workgroups
 
@@ -18,4 +18,6 @@ Budzogan::Application.routes.draw do
   end
 
   get 'sentences/generate', controller: 'sentences/generate'
+
+  get 'tasks/generate', controller: 'tasks/generate'
 end
