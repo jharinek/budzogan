@@ -22,6 +22,6 @@
 #= require select2
 #= require select2_locale_sk
 #= require exercise_form
-#= require analysis_graph_2
+#= require analysis_graph.js
 #= require sentences
 #
