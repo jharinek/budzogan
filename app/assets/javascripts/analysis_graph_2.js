@@ -11,6 +11,7 @@ if ($('#edit-task').length != 0) {
   var selected_element = null;
   var selected_element_properties_id = null;
   var color = null;
+  var validContainer = false;
 
 // elements colors
   var subject = "#428bc0";
@@ -205,6 +206,25 @@ if ($('#edit-task').length != 0) {
   var initializeText = function () {
     $('.text-draggable.disabled').draggable("disable");
   };
+
+  var removeElementOnDeletePress = function() {
+    $('body').keypress(function(event) {
+      if(event.charCode == 127 && selected_element){
+        selected_element.attr('text').text.split(" ").map(function(item){
+          $('span.text-draggable').filter(function () {
+            return $(this).text() == item
+          }).draggable('enable');
+        });
+
+        selected_element.remove();
+        selected_element = null;
+        selected_element_id = null;
+        selected_flag = false;
+
+        deactivateEditBox();
+      }
+    });
+  };
 //--------------------------------------------------------------
 // svg canvas operations and initialization
 
@@ -243,13 +263,13 @@ if ($('#edit-task').length != 0) {
       }
     });
 
-    //newLink.label(0, {
-    //  position: .5,
-    //  attrs: {
-    //    rect: { fill: 'white' },
-    //    text: { fill: '#428bc0', text: connections[id] }
-    //  }
-    //});
+    newLink.label(0, {
+      position: .5,
+      attrs: {
+        rect: { fill: 'white' },
+        text: { fill: '#428bc0', text: connections[id] }
+      }
+    });
 
     graph.addCell(newLink);
 
@@ -281,7 +301,7 @@ if ($('#edit-task').length != 0) {
     }
     if ((activeElement != null) && ($('.ui-draggable-dragging').prop("class").indexOf("line-draggable") >= 0)) {
       var id = $('.ui-draggable-dragging span').attr('id');
-      link(activeElement, id);
+      link(joint.dia.Link, activeElement, id);
     }
 
 
@@ -776,6 +796,7 @@ if ($('#edit-task').length != 0) {
       initializeText();
     }
 
+    removeElementOnDeletePress();
     initializeDraggableElements();
     initializePropertiesBox();
     saveCanvas();
