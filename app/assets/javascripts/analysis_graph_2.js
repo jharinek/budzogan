@@ -134,7 +134,12 @@ if ($('#edit-task').length != 0) {
     } catch(e) {
       return false;
     }
-    return true;
+    if(str == "null"){
+      return false;
+    }else{
+      return true;
+    }
+
   };
 
   var clearSelectedElementReference = function(){
