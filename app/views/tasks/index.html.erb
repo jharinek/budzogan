@@ -1,24 +1,29 @@
 <div id="tasks" class="row">
   <div class="col-md-12">
-    <div class="col-md-8"><h3 class="pull-left">Urob kompletný rozbor týchto viet.</h3></div>
-    <div class="col-md-4"><%= link_to 'Ďalších 10 úloh', '#', class: 'btn btn-lg btn-primary pull-right' %></div>
-    <table class="table table-hover table-condensed">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Stav úlohy</th>
-          <th>Veta</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @tasks.each_with_index do |task, i| %>
-          <tr>
-            <td><%= "#{ i+1 }" %></td>
-            <td><%= render 'progress', task: task %></td>
-            <td><%= link_to "#{ task.sentence.content }",  edit_task_path(task.id) %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+    <% if @tasks.any?  %>
+        <div class="col-md-8"><h3 class="pull-left">Urob kompletný rozbor týchto viet.</h3></div>
+        <div class="col-md-4"><%= link_to 'Ďalších 10 úloh', tasks_generate_path, class: 'btn btn-lg btn-primary pull-right' %></div>
+
+        <table class="table table-hover table-condensed">
+          <thead>
+            <tr>
+              <th>Stav úlohy</th>
+              <th>Veta</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @tasks.each do |task| %>
+              <tr>
+                <td><%= render 'progress', task: task %></td>
+                <td><%= link_to "#{ task.sentence.content }",  edit_task_path(task.id) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+    <% else %>
+        <div class="alert alert-warning">
+          <p class="text-center">Ešte nemáš vygenerované žiadne úlohy, <%= link_to 'vygeneruj si prvých 10.', tasks_generate_path %></p>
+        </div>
+    <% end %>
   </div>
 </div>
