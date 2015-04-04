@@ -1,10 +1,10 @@
 <div class="row task-header">
   <div class="col-md-2">
     <div class="row btn-stacked">
-      <%= link_to 'Zoznam úloh', :root, class: 'btn btn-lg btn-block btn-primary', id: 'back' %>
+      <%= link_to 'Zoznam úloh', tasks_path, class: 'btn btn-lg btn-block btn-primary', id: 'back' %>
     </div>
     <div class="row btn-stacked">
-      <%= button_to 'Odovzdať', :root, id: 'submit-task', class: 'btn btn-lg btn-block btn-success' %>
+      <%= button_to 'Odovzdať', tasks_path, id: 'submit-task', class: 'btn btn-lg btn-block btn-success' %>
     </div>
   </div>
   <div class="col-md-10">

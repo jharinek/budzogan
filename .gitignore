@@ -15,6 +15,7 @@ config/configuration.yml
 config/database.yml
 
 db/*.sqlite3
+db/structure.sql
 log/*.log
 
 public/javascripts

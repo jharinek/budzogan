@@ -19,3 +19,24 @@ body {
 .well {
   overflow: hidden;
 }
+
+.alert-notice {
+  @extend .alert-info;
+}
+
+.alert-error {
+  @extend .alert-danger;
+}
+
+.well-home {
+  margin-top: 50px;
+  font-size: 14pt;
+}
+
+.alert-alert {
+  @extend .alert-danger;
+}
+
+#tasks {
+  margin-top: 50px;
+}

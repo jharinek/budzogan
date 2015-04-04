@@ -7,15 +7,14 @@ class Exercises::BuildController < ApplicationController
     @exercise     = Exercise.find(params[:exercise_id])
     @workgroups   = Workgroup.all
     @strategies   = { one_to_one:        'Každý študent jedna veta',
-                      every_to_everyone: 'Každý študent všetky vety',
-                      custom:            'Iné' }
+                      every_to_everyone: 'Každý študent všetky vety' }
     @difficulties = { easy:   'ľahká',
                       medium: 'stredná',
                       hard:   'ťažká' }
     @sources      = { sme:  'sme.sk',
                       juls: 'Národný korpus' }
 
-    @sentences = Sentence.all
+    @sentences = @exercise.sentences
 
     render_wizard
   end
@@ -27,6 +26,7 @@ class Exercises::BuildController < ApplicationController
 
     @exercise.update_attributes(step.to_sym == :assignment ? exercise_params.merge(inject_time_boundaries) : exercise_params)
     assign_elements if step == :setup
+    set_sentences if step == :sentences
 
     render_wizard @exercise
   end
@@ -36,6 +36,12 @@ class Exercises::BuildController < ApplicationController
     elements = Element.find(params[:exercise][:element_ids].reject(&:empty?))
     @exercise.elements.each { |e| elements.delete e }
     @exercise.elements << elements
+  end
+
+  def set_sentences
+    sentences_ids = params['sentences-ids-list'].split(',').reject! { |id| id.empty?}
+
+    @exercise.sentences = Sentence.find(sentences_ids)
   end
 
   def create_timestamp(year, month, day, hour, minute)

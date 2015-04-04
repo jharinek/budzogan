@@ -1,8 +1,21 @@
 <div class="row">
-  <div class="col-md-offset-3 col-md-6 well">
-    <h1 class="text-center">Budzogáň</h1>
-    <h2></h2>
-    <p class="lead text-center">Vitaj v aplikácií Budzogáň :)</p>
-    <p class="small text-center">Pre pokračovanie sa <%= link_to 'prihlás', new_user_session_path %> :)</p>
+  <div class="col-md-12 well well-home">
+    <div class="col-md-offset-2 col-md-8">
+      <p class="text-justify">
+        Čo od teba potrebujem je, aby si skúsil, tak ako najlepšie vieš, urobiť rozbor nasledujúcich viet.
+        Pre mňa je užitočné každé Tvoje snaženie, aj vtedy ak vieš vyriešiť len časť vety.
+        Budem Ti vďačný za každú jednu vyriešenú vetu, avšak vyrieš ich čo najviac ako môžeš.
+      </p>
+      <p class="text-justify">
+        Na začiatok máš vygenerovaných 10 úloh. Keď ich vyriešiš, klikni na tlačidlo
+        <span class="btn btn btn-primary disabled">Ďalších 10 úloh</span> v zozname úloh a môžeš riešiť ďalej.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-offset-2 col-md-8">
+    <h3 class="text-center">Ak si pripravený, <%= link_to 'poď riešiť úlohy!', tasks_path, class: 'btn btn-lg btn-success' %></h3>
   </div>
 </div>

@@ -5,8 +5,9 @@ class ExercisesController < ApplicationController
     if @exercise.save
       redirect_to exercise_build_path exercise_id: @exercise.id, id: :setup
     else
-      redirect_to root_path
       flash_error_messages_for @exercise
+
+      redirect_to root_path
     end
   end
 

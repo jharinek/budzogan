@@ -1,13 +1,15 @@
 Budzogan::Application.routes.draw do
   authenticated :user do
-    root 'tasks#index', as: :authenticated
+    root 'static_pages#home', as: :authenticated
   end
 
-  root 'static_pages#home'
+  root 'static_pages#landing'
 
   devise_for :users, path: '', path_names: { sign_up: :join, sign_in: :login, sign_out: :logout }
 
-  resources :tasks
+  resources :sentences, only: [:create]
+
+  resources :tasks, only: [:index, :edit, :update]
 
   resources :workgroups
 
@@ -16,4 +18,6 @@ Budzogan::Application.routes.draw do
   end
 
   get 'sentences/generate', controller: 'sentences/generate'
+
+  get 'tasks/generate', controller: 'tasks/generate'
 end

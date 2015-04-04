@@ -1,39 +1,38 @@
-<h1 class="form-title">Nová úloha 2/3</h1>
-<h3 class="form-subtitle">Priradenie viet k úlohe</h3>
+<div class="row">
+  <div class="col-md-offset-2 col-md-8">
+    <h1 class="form-title">Nové cvičenie 2/3</h1>
 
-<%= form_for @exercise, url: wizard_path do |f| %>
-  <% if @exercise.errors.any? %>
-    <div class="error_messages">
-      <h2><%= pluralize(@exercise.errors.count, "error") %> prohibited this user from being saved:</h2>
-      <ul>
-        <% @exercise.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+    <h3 class="form-subtitle">Priradenie viet k cvičeniu</h3>
 
-  <div class="form-group">
-    <%= f.label :sentence_length, 'Dĺžka viet' %>
-    <%= f.text_field :sentence_length, placeholder: 'Nezáleží' %>
+    <%= form_for @exercise, url: wizard_path do |f| %>
+        <%= render 'shared/form_messages', model: @exercise %>
+
+        <div class="form-group">
+          <%= f.label :sentence_length, 'Dĺžka viet (maximálny počet slov)' %>
+          <!--<%= f.text_field :sentence_length, class: :'form-control', placeholder: 'Nezáleží' %>-->
+          <%= f.collection_select :sentence_length, 1..10, :to_s, :to_s, {include_blank: 'Nezáleží'}, {data: {as: :select2}, class: 'attribute-select'} %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :sentence_difficulty, 'Náročnosť viet' %>
+          <%= f.collection_select :sentence_difficulty, @difficulties, :first, :last, {include_blank: 'Nezáleží'}, {data: {as: :select2}, class: 'attribute-select'} %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :sentence_source, 'Zdroj viet' %>
+          <%= f.collection_select :sentence_source, @sources, :first, :last, {include_blank: 'Nezáleží'}, {data: {as: :select2}, class: 'attribute-select'} %>
+        </div>
+
+        <div class="sentence-generator">
+          <%= render 'sentences/sentences' %>
+        </div>
+
+        <%= hidden_field_tag 'sentences-ids-list' %>
+
+        <div class="form-actions">
+          <button type="submit" id="sentences-submit" class="btn btn-primary pull-right"><%= t('form.next') %></button>
+          <%= link_to t('form.previous'), previous_wizard_path, method: :get, class: 'btn btn-default pull-right' %>
+        </div>
+    <% end %>
   </div>
-
-  <div class="form-group">
-    <%= f.label :sentence_difficulty, 'Náročnosť viet' %>
-    <%= f.collection_select :sentence_difficulty, @difficulties, :first, :last, { include_blank: 'Nezáleží' } %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :sentence_source, 'Zdroj viet' %>
-    <%= f.collection_select :sentence_source, @sources, :first, :last, { include_blank: 'Nezáleží' } %>
-  </div>
-
-  <div class="sentence-generator">
-    <%= render 'sentences/sentence_generator' %>
-  </div>
-
-  <div class="form-actions">
-    <%= link_to t('form.previous'), previous_wizard_path, method: :get, class: 'btn btn-default' %>
-    <button type="submit" class="btn btn-primary"><%= t('form.next') %></button>
-  </div>
-<% end %>
+</div>
