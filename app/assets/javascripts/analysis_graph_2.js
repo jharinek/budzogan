@@ -10,6 +10,7 @@ if ($('#edit-task').length != 0) {
   var selected_flag = false;
   var selected_element = null;
   var selected_element_properties_id = null;
+  var color = null;
 
 // elements colors
   var subject = "#428bc0";
@@ -105,18 +106,12 @@ if ($('#edit-task').length != 0) {
     return result;
   };
 
-  var clearSelectedElementReference = function(){
-    selected_flag = false;
-    selected_element = null;
-    selected_element_properties_id = null;
-  };
-
-  function componentToHex(c) {
+  var componentToHex = function(c) {
     var hex = c.toString(16);
     return hex.length == 1 ? "0" + hex : hex;
-  }
+  };
 
-  function rgbToHex(rgbString) {
+  var rgbToHex = function(rgbString) {
     var s = rgbString.replace('rgb(', '');
     s = s.replace(')', '');
     s = s.replace(',', '');
@@ -125,21 +120,91 @@ if ($('#edit-task').length != 0) {
     var numericalValues = s.split(' ');
 
     return "#" + componentToHex(parseInt(numericalValues[0])) + componentToHex(parseInt(numericalValues[1])) + componentToHex(parseInt(numericalValues[2]));
-  }
+  };
 
-  function hexToRgb(hex) {
+  var hexToRgb = function(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return "rgb(" + parseInt(result[1], 16) + ", " + parseInt(result[2], 16) + ", " + parseInt(result[3], 16) + ")";
-  }
+  };
 
-  function isJsonString(str) {
+  var isJsonString = function(str) {
     try {
       JSON.parse(str);
     } catch(e) {
       return false;
     }
     return true;
-  }
+  };
+
+  var clearSelectedElementReference = function(){
+    selected_flag = false;
+    selected_element = null;
+    selected_element_properties_id = null;
+  };
+
+  var appendText = function (id, text) {
+    if (activeElement != null) {
+//    activeElement.attr('text').text.split(" ").map(function(item){
+//      $('span.text-draggable').filter(function () {
+//        return $(this).text() == item
+//      }).draggable('enable');
+//    });
+      var new_text = activeElement.attr('text').text + " " + text
+      activeElement.attr({ text: { text: new_text, id: id }});
+
+      var txt = $("text:contains('" + activeElement.attr('text').text + "')");
+      var x = txt.width()
+      activeElement.attr({ '.delete-text': { 'ref-x': x } })
+
+      dropped = true;
+    }
+  };
+
+  var saveResult = function (state) {
+    url = window.location.pathname.replace('edit', '');
+    data = JSON.stringify(graph.toJSON());
+
+    $.ajax({
+      url: url,
+      type: 'PATCH',
+      data: {
+        graph: data,
+        state: state
+      },
+      async: true
+    });
+  };
+
+  var loadGraph = function (json) {
+    graph.fromJSON(json);
+  };
+
+  var toModel = function (element) {
+    var model = null;
+    graph.get('cells').find(function (cell) {
+      if (cell.id == element.attributes[1].value) {
+        model = cell;
+      }
+    });
+
+    return model;
+  };
+
+  var getElementFromModel = function(model){
+    var element = null;
+
+    $.each($('.element'), function(key, value){
+      if(value.attributes['model-id'].value == model.id){
+        element = value;
+      }
+    });
+
+    return element;
+  };
+
+  var initializeText = function () {
+    $('.text-draggable.disabled').draggable("disable");
+  };
 //--------------------------------------------------------------
 // svg canvas operations and initialization
 
@@ -193,10 +258,25 @@ if ($('#edit-task').length != 0) {
 
   var createElement = function () {
     if ($('.ui-draggable-dragging').prop("class").indexOf("item-box") >= 0) {
+      var sentenceElement = '0';
+
+      switch(rgbToHex(color)) {
+        case subject: sentenceElement = '1';
+          break;
+        case predicate: sentenceElement = '2';
+          break;
+        case object: sentenceElement = '3';
+          break;
+        case attribute: sentenceElement = '4';
+          break;
+        case adverb: sentenceElement = '5';
+          break;
+      }
+
       d3.select("#v_5")
         .on("mouseover", function () {
           var coordinates = d3.mouse(d3.select("#v_5")[0].pop());
-          var el = element(diagram.Element, coordinates[0], coordinates[1], color);
+          var el = element(diagram.Element, coordinates[0], coordinates[1], color, sentenceElement);
         });
     }
     if ((activeElement != null) && ($('.ui-draggable-dragging').prop("class").indexOf("line-draggable") >= 0)) {
@@ -229,6 +309,249 @@ if ($('#edit-task').length != 0) {
       deactivateEditBox();
     }
   });
+
+  // register events callbacks on graph elements
+  graph.on('add', function () {
+    var last = $('.Element').last();
+    var txt = $('.box-content').last();
+    var deleteBox = $('.delete-button').last();
+    var deleteText = $('.delete-text').last();
+
+    if (last.size() != 0) {
+      d3.select("#" + last[0].id)
+        .on("mouseover", function () {
+          activeElement = toModel(this);
+          originalColor = activeElement.attr("polygon").fill
+          activeElement.attr({
+            polygon: { stroke: 'orange' }
+          });
+          validContainer = true;
+
+          // bring activeElement to top
+          activeElement.toFront();
+
+          //on mouseover show delete button
+          deleteBox.css('visibility', 'visible');
+
+          //on mouseover delete text button visible
+          deleteText.css('visibility', 'visible');
+        })
+        .on("mouseout", function () {
+          if(selected_element != activeElement) {
+            activeElement.attr({
+              polygon: { stroke: originalColor }
+            });
+
+            //on mouseout hide delete button
+            deleteBox.css('visibility', 'hidden');
+
+            //on mouseout hide delete text button
+            deleteText.css('visibility', 'hidden');
+          }
+          validContainer = false;
+          activeElement = null;
+          originalColor = null;
+        })
+        .on("click", function () {
+          if(selected_element != null) {
+            selected_element.attr({
+              polygon: { stroke: selected_element.attr('polygon').fill }
+            });
+
+            var element = getElementFromModel(selected_element);
+            //on mouseout hide delete button
+            $('#' + element.id + ' circle.delete-button').css('visibility', 'hidden');
+
+            //on mouseout hide delete text button
+            $('#' + element.id + ' circle.delete-text').css('visibility', 'hidden');
+
+            selected_flag = false;
+            selected_element_properties_id = null;
+
+            deactivateEditBox();
+          }
+
+          if(selected_element != toModel(this)){
+            selected_flag    = true;
+            selected_element = toModel(this);
+
+            // make edit-properties visible
+            var properties = selected_element.attr('rect').class.split(' ').filter(Boolean);
+            selected_element_properties_id = $('#' + this.id + ' .properties').attr('id');
+
+            activateEditBox(properties[1], properties[2], properties[3]);
+          }
+          else{
+            selected_flag    = false;
+            selected_element = null;
+            selected_element_properties_id = null;
+
+            deactivateEditBox();
+          }
+
+        });
+
+    }
+    d3.selectAll('.delete-button')
+      .on("mousedown", function () {
+        activeElement.attr('text').text.split(" ").map(function(item){
+          $('span.text-draggable').filter(function () {
+            return $(this).text() == item
+          }).draggable('enable');
+        });
+        activeElement.remove();
+        activeElement = null;
+
+        if(selected_element){
+          clearSelectedElementReference();
+          deactivateEditBox();
+        }
+      });
+
+    d3.selectAll('.delete-text')
+      .on("mousedown", function () {
+        activeElement.attr('text').text.split(" ").map(function(item){
+          $('span.text-draggable').filter(function () {
+            return $(this).text() == item
+          }).draggable('enable');
+        });
+
+        activeElement.attr({'text': { text: "" }});
+
+        activeElement.attr({ '.delete-text': { 'ref-x': 0, 'ref-y': 0 } })
+      });
+  });
+
+  var initializeGraph = function () {
+    var boxes = $('.Element');
+
+    var canvas = $('svg');
+    canvas.attr('width', canvas.parent().width());
+    canvas.attr('height', canvas.parent().height());
+
+//  var background = new joint.shapes.erd.EntityBoundary({ size: { width: canvas.parent().width(), height: canvas.parent().height() },position: { x: 0, y: 0 }, attrs: { polygon: { fill: 'white', stroke: 'white' }}});
+//  graph.addCell(background);
+
+    boxes.each(function (index) {
+      d3.select(this)
+        .on("mouseover", function () {
+          activeElement = toModel(this);
+          originalColor = activeElement.attr("polygon").fill
+          activeElement.attr({
+            polygon: { stroke: 'orange' }
+          });
+          validContainer = true;
+
+          // bring activeElement to top
+          activeElement.toFront();
+
+          //on mouseover show delete button
+          $(d3.select('#' + this.id).select('.delete-button').node()).css('visibility', 'visible');
+
+          //on mouseover delete text button visible
+          $(d3.select('#' + this.id).select('.delete-text').node()).css('visibility', 'visible');
+        })
+        .on("mouseout", function () {
+          if(selected_element != activeElement) {
+            activeElement.attr({
+              polygon: { stroke: originalColor }
+            });
+
+            //on mouseover show delete button
+            $(d3.select('#' + this.id).select('.delete-button').node()).css('visibility', 'hidden');
+
+            //on mouseover delete text button visible
+            $(d3.select('#' + this.id).select('.delete-text').node()).css('visibility', 'hidden');
+          }
+          validContainer = false;
+          activeElement = null;
+          originalColor = null;
+
+        })
+        //.on("dblclick", function () {
+        //  initializeBoxModal(activeElement);
+        //})
+        .on("click", function () {
+          if(selected_element != null) {
+            selected_element.attr({
+              polygon: { stroke: selected_element.attr('polygon').fill }
+            });
+
+            var element = getElementFromModel(selected_element)
+            //on mouseout hide delete button
+            $('#'+element.id + ' circle.delete-button').css('visibility', 'hidden');
+
+            //on mouseout hide delete text button
+            $('#'+element.id + ' circle.delete-text').css('visibility', 'hidden');
+
+            selected_flag = false;
+            selected_element_properties_id = null;
+
+            deactivateEditBox();
+          }
+
+          if(selected_element != toModel(this)){
+            selected_flag    = true;
+            selected_element = toModel(this);
+
+            // make edit-properties visible
+            var properties = selected_element.attr('rect').class.split(' ').filter(Boolean);
+            selected_element_properties_id = $('#' + this.id + ' .properties').attr('id');
+
+            activateEditBox(properties[1], properties[2], properties[3]);
+          }
+          else{
+            selected_flag    = false;
+            selected_element = null;
+            selected_element_properties_id = null;
+
+            deactivateEditBox();
+          }
+
+
+
+        });
+    });
+    d3.selectAll('.delete-button')
+      .on("mousedown", function () {
+        //      TODO move to a function
+
+        activeElement.attr('text').text.split(" ").map(function(item){
+          $('span.text-draggable').filter(function () {
+            return $(this).text() == item
+          }).draggable('enable');
+        });
+
+        activeElement.remove();
+        activeElement = null;
+
+        if(selected_element){
+          clearSelectedElementReference();
+          deactivateEditBox();
+        }
+      });
+    d3.selectAll('.toolbox-button')
+      .on("mousedown", function () {
+        //TODO edit element properties
+      });
+    d3.selectAll('.delete-text')
+      .on("mousedown", function () {
+        activeElement.attr('text').text.split(" ").map(function(item){
+          $('span.text-draggable').filter(function () {
+            return $(this).text() == item
+          }).draggable('enable');
+        });
+
+        activeElement.attr({'text': { text: "" }});
+
+        activeElement.attr({ '.delete-text': { 'ref-x': 0, 'ref-y': 0 } });
+        //var txt = $("text:contains('" + activeElement.attr('text').text + "')");
+        //var x = txt.width()
+        //activeElement.attr({ '.delete-text': { 'ref-x': x } })
+      });
+  };
+
+
 
 //--------------------------------------------------------------
 // d3js to create elements in menu
@@ -445,6 +768,13 @@ if ($('#edit-task').length != 0) {
     $('body').on('click', '#back', function () {
       saveResult('1');
     });
+
+    var graphString = $("div[data-value]").attr('data-value');
+    if(isJsonString(graphString)){
+      loadGraph(JSON.parse(graphString));
+      initializeGraph();
+      initializeText();
+    }
 
     initializeDraggableElements();
     initializePropertiesBox();
