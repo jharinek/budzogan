@@ -1,6 +1,5 @@
-# TODO (jharinek) change this request call
-
 $(document).ready ->
-  $("#save").parent().parent().on "ajax:before", ->
-    saveResult('1');
-    return false;
+  if($('#edit-task').length != 0)
+    $("#save").parent().parent().on "ajax:before", ->
+      saveResult('1');
+      return false;

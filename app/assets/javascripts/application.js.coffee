@@ -19,7 +19,6 @@
 #= require jquery.ui.all
 #= require d3
 #= require jquery.sortElements
-#= require remote
 #= require select2
 #= require select2_locale_sk
 #= require exercise_form
