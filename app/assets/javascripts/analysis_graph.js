@@ -12,6 +12,7 @@ if ($('#edit-task').length != 0) {
   var selected_element_properties_id = null;
   var color = null;
   var validContainer = false;
+  var dropped = false;
   var lastSavedState = '';
 
 // elements colors
