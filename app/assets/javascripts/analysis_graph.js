@@ -805,10 +805,17 @@ if ($('#edit-task').length != 0) {
   $(document).ready(function () {
     $('body').on('click', '#submit-task', function () {
       saveResult('2');
-    });
-    $('body').on('click', '#back', function () {
+    })
+      .on('click', '#back', function () {
+      saveResult(resolveState(JSON.stringify(graph.toJSON())));
+    })
+      .on('click', '.nav li', function () {
+      saveResult(resolveState(JSON.stringify(graph.toJSON())));
+    })
+      .on('click', 'a.navbar-brand', function () {
       saveResult(resolveState(JSON.stringify(graph.toJSON())));
     });
+
 
     var graphString = $("div[data-value]").attr('data-value');
     if(isJsonString(graphString)){
