@@ -2,7 +2,7 @@ class Task < ActiveRecord::Base
   STATES = [:new, :in_progress, :solved]
 
   belongs_to :exercise
-  belongs_to :sentence
+  belongs_to :sentence, counter_cache: true
   belongs_to :user
 
   before_create :initialize_solution
