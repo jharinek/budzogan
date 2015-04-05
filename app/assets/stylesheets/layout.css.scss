@@ -12,6 +12,10 @@ body {
   margin-top: $navbar-height;
 }
 
+h5{
+  font-size: small;
+}
+
 .container > section:first-child{
   padding-top: $navbar-height;
 }
@@ -39,4 +43,16 @@ body {
 
 #tasks {
   margin-top: 50px;
+}
+
+.btn {
+  border-radius: 0;
+}
+
+.well {
+  border-radius: 0;
+}
+
+.progress {
+  border-radius: 0;
 }
