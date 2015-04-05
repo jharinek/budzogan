@@ -12,6 +12,7 @@ if ($('#edit-task').length != 0) {
   var selected_element_properties_id = null;
   var color = null;
   var validContainer = false;
+  var lastSavedState = '';
 
 // elements colors
   var subject = "#428bc0";
@@ -767,13 +768,14 @@ if ($('#edit-task').length != 0) {
   var saveCanvas = function () {
     url = window.location.pathname.replace('edit', '');
     data = JSON.stringify(graph.toJSON());
+    lastSavedState = data;
 
     $.ajax({
       url: url,
       type: 'PATCH',
       data: {
         graph: data,
-        state: '1'
+        state: resolveState(data)
       },
       async: true,
       complete: function () {
@@ -781,6 +783,15 @@ if ($('#edit-task').length != 0) {
         setTimeout(saveCanvas, 10000);
       }
     });
+  };
+
+  var resolveState = function(actualState) {
+    var state = $("div[data-state]").attr('data-state');
+    if(actualState == lastSavedState){
+      return state;
+    }else{
+      return '1';
+    }
   };
 
 //  ------------------------------------------------------
@@ -791,7 +802,7 @@ if ($('#edit-task').length != 0) {
       saveResult('2');
     });
     $('body').on('click', '#back', function () {
-      saveResult('1');
+      saveResult(resolveState(JSON.stringify(graph.toJSON())));
     });
 
     var graphString = $("div[data-value]").attr('data-value');
