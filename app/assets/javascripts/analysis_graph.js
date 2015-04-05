@@ -791,7 +791,11 @@ if ($('#edit-task').length != 0) {
     if(actualState == lastSavedState){
       return state;
     }else{
-      return '1';
+      if(graph.toJSON().cells.length == 0){
+        return '0';
+      }else{
+        return '1';
+      }
     }
   };
 
