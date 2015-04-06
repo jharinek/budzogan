@@ -38,7 +38,7 @@ if ($('#edit-task').length != 0) {
         '1': {
           'value': 'slovesný',
           'level-3': {
-            '1': {'value': 'plonovyznamové'},
+            '1': {'value': 'plnovyznamové'},
             '2': {'value': 'neplnovyznamové'}
           }
         },
