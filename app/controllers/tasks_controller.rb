@@ -10,7 +10,7 @@ class TasksController < ApplicationController
     @sentence = Task.find(params[:id]).sentence.content.split
 
     @used_words = []
-    @used_words = @task.student_solution["cells"].map {|cell| cell["attrs"]["text"]["text"] if cell["type"] == "erd.EntityDeletable"} if @task.student_solution
+    @used_words = @task.student_solution["cells"].map {|cell| cell["attrs"]["text"]["text"] if cell["type"] == "nlp.Element"} if @task.student_solution
     @used_words.compact!
     @used_words = @used_words.collect(&:split).flatten
   end

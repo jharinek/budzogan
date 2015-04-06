@@ -817,16 +817,17 @@ if ($('#edit-task').length != 0) {
     });
 
 
+    removeElementOnDeletePress();
+    initializeDraggableElements();
+    initializePropertiesBox();
+
     var graphString = $("div[data-value]").attr('data-value');
     if(isJsonString(graphString)){
       loadGraph(JSON.parse(graphString));
       initializeGraph();
       initializeText();
     }
-
-    removeElementOnDeletePress();
-    initializeDraggableElements();
-    initializePropertiesBox();
+    
     saveCanvas();
   });
 }
