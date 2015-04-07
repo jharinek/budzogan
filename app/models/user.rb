@@ -19,19 +19,19 @@ class User < ActiveRecord::Base
   # has_many :task_assignments, dependent: :destroy
   has_many :tasks #, through: :task_assignments
 
-  belongs_to :organization
-
   before_validation :set_default_role
 
   validates :login, format: { with: /\A[A-Za-z0-9_]+\z/ }, presence: true, uniqueness: { case_sensitive: false }
   validates :nick,  format: { with: /\A[A-Za-z0-9_]+\z/ }, presence: true, uniqueness: { case_sensitive: false }
 
-  validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/ }, presence: true, uniqueness: { case_sensitive: false }
+  validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/ }, allow_blank: true
 
   validates :first, presence: true
   validates :last, presence: true
 
   validates :role, presence: true
+
+  validates :organization, presence: true
 
   symbolize :role, in: ROLES
 
