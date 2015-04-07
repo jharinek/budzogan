@@ -20,4 +20,6 @@ Budzogan::Application.routes.draw do
   get 'sentences/generate', controller: 'sentences/generate'
 
   get 'tasks/generate', controller: 'tasks/generate'
+
+  get 'help', to: 'static_pages#help'
 end
