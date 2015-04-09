@@ -29,7 +29,7 @@ class TasksController < ApplicationController
   end
 
   def generate
-    @sentences = Sentence.get_bulk(10)
+    @sentences = Sentence.get_bulk(10, current_user)
 
     # TODO get reasonable exercise value
     Task.create_and_assign(@sentences, current_user, Exercise.first)
