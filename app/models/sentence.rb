@@ -3,23 +3,26 @@ class Sentence < ActiveRecord::Base
 
   has_many :tasks
 
-  scope :needed, lambda{ |ids_list| where('tasks_count < 6').where('id not in (?)', ids_list) }
+  scope :starters, lambda{ |bulk_size| order(id: :asc).limit(bulk_size) }
+  scope :needed,   lambda{ |ids_list| order(id: :asc).where('tasks_count < 20').where('id not in (?)', ids_list) }
 
-  scope :long,   lambda{ |count, user| needed(invalid_ids_for(user)).where('length > 10').limit(count) }
-  scope :medium, lambda{ |count, user| needed(invalid_ids_for(user)).where('length > 5').where('length < 11').limit(count) }
-  scope :short,  lambda{ |count, user| needed(invalid_ids_for(user)).where('length < 6').limit(count) }
+  scope :long,   lambda{ |count| where('length > 10').limit(count) }
+  scope :medium, lambda{ |count| where('length > 5').where('length < 11').limit(count) }
+  scope :short,  lambda{ |count| where('length < 6').limit(count) }
 
   before_create :compute_length
 
   def self.get_bulk(size, assignee)
+    tasks_pool = assignee.tasks.count == 0 ? self.starters(size) : self.needed(invalid_ids_for(assignee))
+
     remaining = size
     bulk_size = size/3
 
-    sentences = self.long(bulk_size, assignee)
+    sentences = tasks_pool.long(bulk_size)
     remaining -= bulk_size
-    self.medium(bulk_size, assignee).each { |s| sentences << s }
+    tasks_pool.medium(bulk_size).each { |s| sentences << s }
     remaining -= bulk_size
-    self.short(remaining, assignee).each { |s| sentences << s }
+    tasks_pool.short(remaining).each { |s| sentences << s }
 
     sentences
   end
