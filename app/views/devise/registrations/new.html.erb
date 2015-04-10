@@ -20,6 +20,11 @@
     </div>
 
     <div class="form-group">
+      <%= f.label 'Pohlavie' %>
+      <%= f.collection_select :sex, ['chlapec', 'dievča'], :to_s, :to_s, { include_blank: true }, class: 'form-control' %>
+    </div>
+
+    <div class="form-group">
       <%= f.label 'Email (ak nemáš email, môžeš nechať prázdne)' %>
       <%= f.email_field :email, class: 'form-control' %>
     </div>
@@ -42,6 +47,11 @@
     <div class="form-group">
       <%= f.label 'Ročník' %>
       <%= f.collection_select :grade, ['8.ročník ZŠ', '9.ročník ZŠ', '1.ročník SŠ', '2.ročník SŠ', '3.ročník SŠ', '4.ročník SŠ', 'iné'], :to_s, :to_s, { include_blank: true }, class: 'form-control' %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label 'Akou známkou zo slovenčiny by si sa ohodnotil?' %>
+      <%= f.collection_select :evaluation, [1,2,3,4,5], :to_s, :to_s, { include_blank: true }, class: 'form-control' %>
     </div>
 
   <div class="form-group">
