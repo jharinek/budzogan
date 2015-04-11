@@ -181,6 +181,8 @@ if ($('#edit-task').length != 0) {
       },
       async: true
     });
+
+    lastSavedState = data;
   };
 
   var loadGraph = function (json) {
@@ -769,7 +771,6 @@ if ($('#edit-task').length != 0) {
   var saveCanvas = function () {
     url = window.location.pathname.replace('edit', '');
     data = JSON.stringify(graph.toJSON());
-    lastSavedState = data;
 
     $.ajax({
       url: url,
@@ -784,6 +785,8 @@ if ($('#edit-task').length != 0) {
         setTimeout(saveCanvas, 10000);
       }
     });
+
+    lastSavedState = data;
   };
 
   var resolveState = function(actualState) {
