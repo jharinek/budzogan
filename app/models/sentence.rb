@@ -13,12 +13,19 @@ class Sentence < ActiveRecord::Base
   before_create :compute_length
 
   def self.get_bulk(size, assignee)
-    tasks_pool = assignee.tasks.count == 0 ? self.starters(size) : self.needed(invalid_ids_for(assignee))
+    tasks_pool = self.needed(invalid_ids_for(assignee))
+
+    if assignee.tasks.count == 0
+      sentences = self.starters(4)
+      size -= 4
+    else
+      sentences = []
+    end
 
     remaining = size
     bulk_size = size/3
 
-    sentences = tasks_pool.long(bulk_size)
+    tasks_pool.long(bulk_size).each { |s| sentences << s }
     remaining -= bulk_size
     tasks_pool.medium(bulk_size).each { |s| sentences << s }
     remaining -= bulk_size
