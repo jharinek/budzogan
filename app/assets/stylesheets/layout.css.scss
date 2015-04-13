@@ -12,10 +12,51 @@ body {
   margin-top: $navbar-height;
 }
 
+h5{
+  font-size: small;
+}
+
 .container > section:first-child{
   padding-top: $navbar-height;
 }
 
 .well {
   overflow: hidden;
+}
+
+.alert-notice {
+  @extend .alert-info;
+}
+
+.alert-error {
+  @extend .alert-danger;
+}
+
+.well-home {
+  margin-top: 50px;
+  font-size: 14pt;
+}
+
+.alert-alert {
+  @extend .alert-danger;
+}
+
+#tasks {
+  margin-top: 50px;
+}
+
+.btn {
+  border-radius: 0;
+}
+
+.well {
+  border-radius: 0;
+}
+
+.progress {
+  border-radius: 0;
+}
+
+.back-button{
+  margin-bottom: 50px;
 }

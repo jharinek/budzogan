@@ -23,7 +23,7 @@ module Concerns::Security
   end
 
   def permit_params
-    devise_parameter_sanitizer.for(:sign_up) { |u| u.permit :login, :email, :password, :password_confirmation }
-    devise_parameter_sanitizer.for(:account_update) { |u| u.permit :email, :password, :password_confirmation, :current_password }
+    devise_parameter_sanitizer.for(:sign_up) { |u| u.permit :login, :first, :last, :email, :password, :password_confirmation, :organization, :grade, :sex, :evaluation }
+    # devise_parameter_sanitizer.for(:account_update) { |u| u.permit :email, :password, :password_confirmation, :current_password }
   end
 end

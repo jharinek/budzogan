@@ -1,0 +1,24 @@
+<div class="row">
+  <div class="col-md-offset-2 col-md-8">
+    <h1>Skupina <%= @workgroup.name %></h1>
+
+    <%= form_for @workgroup do |f| %>
+        <div class="form-group">
+          <%= f.label :name, "Názov skupiny" %>
+          <%= f.text_field :name, class: :'form-control' %>
+        </div>
+
+        <h3>Vyberte žiakov:</h3>
+        <% @students.each do |student| %>
+            <div class="col-md-4">
+              <div class="form-group">
+                <%= check_box_tag 'student_' + student.id.to_s, 'student', checked: true %>
+                <%= f.label :student, student.name + ' (' + student.grade + ' ročník)' %>
+              </div>
+            </div>
+        <% end %>
+
+        <button type="submit" class="btn btn-primary pull-right">Uložiť</button>
+    <% end %>
+  </div>
+</div>

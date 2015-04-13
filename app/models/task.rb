@@ -2,13 +2,12 @@ class Task < ActiveRecord::Base
   STATES = [:new, :in_progress, :solved]
 
   belongs_to :exercise
-  belongs_to :sentence
-  belongs_to :student, class_name: :User
-
-  # has_many :task_assignments, dependent: :destroy
-  # has_many :students, class_name: :User, through: :task_assignments
+  belongs_to :sentence, counter_cache: true
+  belongs_to :user
 
   before_create :initialize_solution
+
+  validates :exercise, presence: true
 
   scope :started, lambda { where.not(state: 0) }
 
@@ -19,5 +18,10 @@ class Task < ActiveRecord::Base
   def initialize_state
     state = STATES.first
   end
-end
 
+  def self.create_and_assign(sentences, assignee, exercise)
+    sentences.each do |sentence|
+      Task.create(sentence: sentence, user: assignee, exercise: exercise)
+    end
+  end
+end

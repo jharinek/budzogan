@@ -3,6 +3,8 @@ class Exercise < ActiveRecord::Base
   LEVELS     = [:easy, :medium, :hard]
   STRATEGIES = [:one_to_one, :every_to_everyone, :custom]
 
+  has_and_belongs_to_many :sentences
+
   belongs_to :template, class_name: :ExerciseTemplate
   belongs_to :workgroup
 
@@ -43,5 +45,9 @@ class Exercise < ActiveRecord::Base
 
   def active_or_assignment?
     status.eql?(:assignment) || active?
+  end
+
+  def sentences_ids
+    self.sentences.ids
   end
 end

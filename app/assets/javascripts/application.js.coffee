@@ -12,17 +12,16 @@
 #
 #= require joint
 #= require joint.shapes.erd
+#= require joint.shapes.nlp
 #= require jquery
 #= require jquery_ujs
 #= require bootstrap
 #= require jquery.ui.all
 #= require d3
 #= require jquery.sortElements
-#= require remote
 #= require select2
-#= require select2_locale_"sk"
-#= require select
+#= require select2_locale_sk
 #= require exercise_form
-#= require analysis_graph
+#= require analysis_graph.js
+#= require sentences
 #
-#= require_tree .

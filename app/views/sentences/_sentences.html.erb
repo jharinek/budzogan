@@ -1,0 +1,28 @@
+<%= link_to 'Generuj 10 nových viet', sentences_generate_path, remote: true, class: 'btn btn-default pull-right' %>
+
+<table class="table" id="sentences-table">
+  <thead>
+    <tr class="active">
+      <th>Veta</th>
+      <th>Zdroj vety</th>
+      <th>Akcie</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @sentences.each do |sentence| %>
+      <tr>
+        <td sentence-id="<%= sentence.id %>"><%= sentence.content %></td>
+        <td><%= sentence.source %></td>
+        <td><%= link_to 'Zmaž vetu', '#', class: 'btn btn-danger delete-sentence' %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="input-group">
+  <input id="sentence-to-add" class="form-control" type="text"/>
+  <span class="input-group-btn">
+    <%= button_tag 'Pridaj vetu', type: '', class: 'btn btn-success add-sentence' %>
+  </span>
+</div>

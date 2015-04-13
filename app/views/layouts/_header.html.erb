@@ -8,17 +8,22 @@
     </div>
     <% if user_signed_in? %>
         <div class="collapse navbar-collapse">
-          <!--<ul class="nav navbar-nav">-->
-            <!--<li><%= link_to t('task.navigation'), tasks_path %></li>-->
-          <!--</ul>-->
+          <ul class="nav navbar-nav">
+            <%= content_tag :li, link_to(t('task.navigation'), tasks_path) %>
+            <%= content_tag :li, link_to('Pomoc', help_path) %>
+            <!--<%= content_tag :li, link_to(t('exercise.new.title'), exercises_path, method: :post) if can?(:administrate, Exercise) %>-->
+            <!--<%= content_tag :li, link_to(t('workgroup.navigation'), workgroups_path) if can?(:administrate, Workgroup) %>-->
+          </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><%= link_to current_user.nick, '#' %></li>
-          <li><%= link_to t('user.sign_out'), destroy_user_session_path, method: :delete %></li>
+          <%= content_tag :li, link_to(current_user.nick, '#') %>
+          <%= content_tag :li, link_to(t('user.sign_out'), destroy_user_session_path, method: :delete) %>
         </ul>
     <% else %>
         <ul class="nav navbar-nav navbar-right">
-          <li><%= link_to t('user.sign_in'), new_user_session_path %></li>
-          <!--<li><%= link_to t('user.sign_up'), new_user_registration_path %></li>-->
+          <%= content_tag :li, link_to(t('user.sign_in'), new_user_session_path) %>
+          <% if Configuration.enable.registrations? %>
+              <%= content_tag :li, link_to(t('user.sign_up'), new_user_registration_path) %>
+          <% end %>
         </ul>
     <% end %>
     </div>

@@ -1,19 +1,8 @@
 class TasksController < ApplicationController
 
   def index
-    @tasks = current_user.tasks.order(:created_at)
-  end
-
-  def new
-    @task = Task.new
-  end
-
-  def create
-    @task = Task.new(task_params)
-  end
-
-  def show
-    @task = Task.find(params[:id])
+    @tasks = current_user.tasks.order(created_at: :desc)
+    # @tasks.page(params[:page]).per(10)
   end
 
   def edit
@@ -21,7 +10,7 @@ class TasksController < ApplicationController
     @sentence = Task.find(params[:id]).sentence.content.split
 
     @used_words = []
-    @used_words = @task.student_solution["cells"].map {|cell| cell["attrs"]["text"]["text"] if cell["type"] == "erd.EntityDeletable"} if @task.student_solution
+    @used_words = @task.student_solution["cells"].map {|cell| cell["attrs"]["text"]["text"] if cell["type"] == "nlp.Element"} if @task.student_solution
     @used_words.compact!
     @used_words = @used_words.collect(&:split).flatten
   end
@@ -39,7 +28,17 @@ class TasksController < ApplicationController
     render nothing: true
   end
 
+  def generate
+    @sentences = Sentence.get_bulk(10, current_user)
+
+    # TODO get reasonable exercise value
+    Task.create_and_assign(@sentences, current_user, Exercise.first)
+
+    redirect_to tasks_path
+  end
+
   private
+
   def empty?
 
   end
