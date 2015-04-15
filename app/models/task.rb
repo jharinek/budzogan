@@ -1,6 +1,8 @@
 class Task < ActiveRecord::Base
   STATES = [:new, :in_progress, :solved]
 
+  serialize :solution, Hash
+
   belongs_to :exercise
   belongs_to :sentence, counter_cache: true
   belongs_to :user
