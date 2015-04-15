@@ -1,4 +1,6 @@
 class Sentence < ActiveRecord::Base
+  serialize :solution, Hash
+
   has_and_belongs_to_many :exercises
 
   has_many :tasks
