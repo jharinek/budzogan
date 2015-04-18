@@ -805,8 +805,10 @@ if ($('#edit-task').length != 0) {
       return state;
     }else{
       if(graph.toJSON().cells.length == 0){
+        $("div[data-state]").attr('data-state', '0');
         return '0';
       }else{
+        $("div[data-state]").attr('data-state', '1');
         return '1';
       }
     }
@@ -818,6 +820,7 @@ if ($('#edit-task').length != 0) {
   $(document).ready(function () {
     $('body').on('click', '#submit-task', function () {
       saveResult('2');
+      $("div[data-state]").attr('data-state', '2');
     })
       .on('click', '#back', function () {
       saveResult(resolveState(JSON.stringify(graph.toJSON())));
