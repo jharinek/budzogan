@@ -16,12 +16,10 @@ class Sentence < ActiveRecord::Base
 
   def self.get_bulk(size, assignee)
     tasks_pool = self.needed(invalid_ids_for(assignee))
+    sentences = []
 
     if assignee.tasks.count == 0
-      sentences = self.starters(4)
       size -= 4
-    else
-      sentences = []
     end
 
     remaining = size
@@ -33,6 +31,10 @@ class Sentence < ActiveRecord::Base
     remaining -= bulk_size
     tasks_pool.short(remaining).each { |s| sentences << s }
 
+    if assignee.tasks.count == 0
+      self.starters(4).each { |s| sentences << s }
+    end
+    
     sentences
   end
 
