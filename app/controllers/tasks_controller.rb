@@ -23,6 +23,8 @@ class TasksController < ApplicationController
     # TODO weird task state representation
     @task.state = params[:state].to_i || 0
 
+    @task.elapsed_time += 10
+
     @task.save!
 
     render nothing: true
