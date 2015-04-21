@@ -14,6 +14,8 @@ if ($('#edit-task').length != 0) {
   var validContainer = false;
   var dropped = false;
   var lastSavedState = '';
+  var timeStart = Date.now();
+  var timeEnd   = 0;
 
 // elements colors
   var subject = "#428bc0";
@@ -171,18 +173,22 @@ if ($('#edit-task').length != 0) {
   var saveResult = function (state) {
     url = window.location.pathname.replace('edit', '');
     data = JSON.stringify(graph.toJSON());
+    timeEnd = Date.now();
 
     $.ajax({
       url: url,
       type: 'PATCH',
       data: {
         graph: data,
-        state: state
+        state: state,
+        time: Math.round((timeEnd - timeStart)/1000)
       },
       async: true
     });
 
     lastSavedState = data;
+    timeEnd = 0;
+    timeStart = Date.now();
   };
 
   var loadGraph = function (json) {
@@ -771,13 +777,15 @@ if ($('#edit-task').length != 0) {
   var saveCanvas = function () {
     url = window.location.pathname.replace('edit', '');
     data = JSON.stringify(graph.toJSON());
+    timeEnd = Date.now();
 
     $.ajax({
       url: url,
       type: 'PATCH',
       data: {
         graph: data,
-        state: resolveState(data)
+        state: resolveState(data),
+        time: Math.round((timeEnd - timeStart)/1000)
       },
       async: true,
       complete: function () {
@@ -787,6 +795,8 @@ if ($('#edit-task').length != 0) {
     });
 
     lastSavedState = data;
+    timeEnd = 0;
+    timeStart = Date.now();
   };
 
   var resolveState = function(actualState) {
@@ -795,8 +805,10 @@ if ($('#edit-task').length != 0) {
       return state;
     }else{
       if(graph.toJSON().cells.length == 0){
+        $("div[data-state]").attr('data-state', '0');
         return '0';
       }else{
+        $("div[data-state]").attr('data-state', '1');
         return '1';
       }
     }
@@ -808,6 +820,7 @@ if ($('#edit-task').length != 0) {
   $(document).ready(function () {
     $('body').on('click', '#submit-task', function () {
       saveResult('2');
+      $("div[data-state]").attr('data-state', '2');
     })
       .on('click', '#back', function () {
       saveResult(resolveState(JSON.stringify(graph.toJSON())));
