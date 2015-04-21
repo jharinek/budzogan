@@ -103,10 +103,6 @@ def summarize_data
       sentence_data.each do |sample|
         processed_data[index][:samples_count] += 1
         sample[:nodes].each do |node|
-          # if index == 3
-          #   puts node[:text]
-          #
-          # end
           id = node[:word_id]
           processed_data[index][:elements][id] ||= {}
           processed_data[index][:elements][id][:word] = node[:text]
