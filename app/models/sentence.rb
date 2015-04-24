@@ -6,7 +6,7 @@ class Sentence < ActiveRecord::Base
   has_many :tasks
 
   scope :starters, lambda{ |bulk_size| order(id: :asc).limit(bulk_size) }
-  scope :needed,   lambda{ |ids_list| order(id: :asc).where('tasks_count < 20').where('id not in (?)', ids_list) }
+  scope :needed,   lambda{ |ids_list| order(id: :asc).where('tasks_count < 40').where('id not in (?)', ids_list) }
 
   scope :long,   lambda{ |count| where('length > 10').limit(count) }
   scope :medium, lambda{ |count| where('length > 5').where('length < 11').limit(count) }
