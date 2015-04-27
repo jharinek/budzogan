@@ -56,7 +56,6 @@ f.write(sentences_chopped.inspect)
 # structure_files = ARGV
 # sentences       = Hash.new
 
-
 # structure_files.each do |file_structure|
 #   file_words = file_structure.gsub(/\.a\z/, '.w')
 #   doc_words = Nokogiri::XML(File.open(file_words))
