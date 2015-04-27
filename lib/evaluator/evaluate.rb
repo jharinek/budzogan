@@ -1,10 +1,14 @@
 require 'json'
 require 'pry'
+require_relative './processed_task.rb'
+require_relative './token.rb'
 
 def process_task(task)
   solution = JSON.parse task.student_solution.to_json
   links    = []
   nodes    = []
+
+  processed_task = ProcessedTask.new(task.sentence, task)
 
   solution["cells"].each do |cell|
     cell["type"] == "link" ? links << cell : nodes << cell
@@ -17,6 +21,8 @@ def process_task(task)
 
   sentence = task.sentence
   words    = sentence.content.split ' '
+
+  words.each { |w| processed_task.tokens << Token.new(w) }
 
 # process nodes
   nodes.each_with_index do |node, i|
@@ -37,6 +43,21 @@ def process_task(task)
     ids_hash[node["id"].to_sym] = processed_node[:word_id]
 
     processed_nodes << processed_node
+
+    processed_node[:text].split(' ').each do |part|
+      part.gsub!('.', '')
+      part.gsub!('!', '')
+      part.gsub!('?', '')
+      part.gsub!(',', '')
+      part.gsub!(';', '')
+
+      i = processed_task.tokens.index { |t| t.text == part }
+
+      processed_task.tokens[i].properties[0] = properties[0]
+      processed_task.tokens[i].properties[1] = properties[1]
+      processed_task.tokens[i].properties[2] = properties[2]
+
+    end
   end
 
 # process links
@@ -70,9 +91,10 @@ def initialize_data_array
   data_array = Hash.new
   Sentence.all.each do |s|
     data_array[s.id] = Hash.new
-    data_array[s.id][:student_solutions] = []
-    data_array[s.id][:correct_solution]  = nil
-    data_array[s.id][:statistics]        = nil
+    data_array[s.id][:student_solutions]  = []
+    data_array[s.id][:extracted_solution] = nil
+    data_array[s.id][:correct_solution]   = nil
+    data_array[s.id][:statistics]         = nil
   end
 
   data_array
