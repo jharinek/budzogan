@@ -1,4 +1,5 @@
 require 'json'
+require 'pry'
 
 def process_task(task)
   solution = JSON.parse task.student_solution.to_json
@@ -66,8 +67,13 @@ def process_task(task)
 end
 
 def initialize_data_array
-  data_array = []
-  Sentence.all.each { |s| data_array[s.id] = [] }
+  data_array = Hash.new
+  Sentence.all.each do |s|
+    data_array[s.id] = Hash.new
+    data_array[s.id][:student_solutions] = []
+    data_array[s.id][:correct_solution]  = nil
+    data_array[s.id][:statistics]        = nil
+  end
 
   data_array
 end
@@ -82,7 +88,7 @@ def process_all_tasks
 
   tasks.each do |task|
     puts "id: #{task.sentence_id.to_s}"
-    processed_data[task.sentence_id] << process_task(task)
+    processed_data[task.sentence_id][:student_solutions] << process_task(task)
   end
 
   processed_data
