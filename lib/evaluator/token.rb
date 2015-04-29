@@ -8,7 +8,7 @@ class Token
     text.gsub!(',', '')
     text.gsub!(';', '')
     @text        = text
-    @properties  = []
+    @properties  = [0,0,0]
     @relations   = []
   end
 end
