@@ -30,7 +30,7 @@ def process_task(task)
     ids_hash[node["id"].to_sym] = []
     node_text = node["attrs"]["text"]["text"].strip.gsub(/\b[a-zA-Z][a-zA-Z]\b | \b[a-zA-Z][a-zA-Z]\b| \b[a-zA-z]\b|\b[a-zA-z]\b /, '')
 
-    node_text.split(' ').each do |part|
+    node_text.split(' ').sort.each do |part|
       part.gsub!('.', '')
       part.gsub!('!', '')
       part.gsub!('?', '')
@@ -82,9 +82,9 @@ def process_task(task)
   processed_task
 end
 
-def initialize_data_array
+def initialize_data_array(sentences)
   data_array = Hash.new
-  Sentence.all.each do |s|
+  sentences.each do |s|
     data_array[s.id] = Hash.new
     data_array[s.id][:student_solutions]  = []
     data_array[s.id][:extracted_solution] = nil
@@ -99,13 +99,13 @@ def resolve_word_index(sentence, word)
   (i=sentence.index word) ? i + 1 : 0
 end
 
-def process_all_tasks
-  tasks = Task.started
-  processed_data = initialize_data_array
+def process_all_tasks(tasks, sentences)
+  # tasks = Task.started
+  processed_data = initialize_data_array(sentences)
 
   tasks.each do |task|
-    puts "id: #{task.sentence_id.to_s}"
-    processed_data[task.sentence_id][:student_solutions] << process_task(task)
+    # puts "id: #{task.sentence_id.to_s}"
+    processed_data[task.sentence_id][:student_solutions] << process_task(task) if sentences.ids.include? task.sentence.id
   end
 
   processed_data
@@ -115,6 +115,8 @@ def summarize_data(data)
   processed_data = data
 
   processed_data.each do |key , sentence_data|
+    next if sentence_data[:student_solutions].empty?
+
     sentence_data[:extracted_solution] = ProcessedTask.new(sentence_data[:student_solutions].first.sentence, nil)
     sentence_data[:extracted_solution].sentence.content.split(' ').each { |word| sentence_data[:extracted_solution].tokens << Token.new(word) }
     summarized_data = {}
@@ -130,21 +132,29 @@ def summarize_data(data)
       end
 
       summarized_data.each do |key, value|
-        i = sentence_data[:extracted_solution].tokens.index {|t| t.text == key}
-        sentence_data[:extracted_solution].tokens[i].properties = evaluate_properties(value, sentence_data[:student_solutions].count, 0.7)
-        end
+        i = sentence_data[:extracted_solution].tokens.index { |t| t.text == key }
+        sentence_data[:extracted_solution].tokens[i].properties = evaluate_properties(value, 0.6, true)
+      end
     end
   end
+
+  nil
 end
 
-def evaluate_properties(properties, samples_count, treshold)
+def evaluate_properties(properties, treshold, drop_zero=false)
   result = []
 
   properties.each_with_index do |property, i|
-    property.map! { |p| Float(p)/Float(samples_count) }
+    if drop_zero
+      property[0] = 0
+      samples_count = property.sum
+    else
+      samples_count = property.sum
+    end
+
+    property.map! { |p| samples_count > 0 ? Float(p)/Float(samples_count) : 0 }
 
     candidate = property.each_with_index.max
-
     if candidate[0] >= treshold
       result[i] = candidate[1]
     else
@@ -193,58 +203,71 @@ def evaluate_connections(connections, samples_count)
   out
 end
 
+def extract_expert_solutions(data)
+  # sentences = Sentence.where(source: source)
+  expert = User.where(nick: :expert).first
+  tasks = expert.tasks.where(state: 2)
+
+  tasks.each do |task|
+    data[task.sentence.id][:correct_solution] = process_task task if data[task.sentence.id]
+  end
+end
+
 def extract_corpus_solutions(data)
 
   sentences_chopped = {}
 
   Sentence.find_each do |sentence|
     content = sentence.content
-    source  = sentence.source.gsub(/\.\z/, '')
+    source = sentence.source.gsub(/\.\z/, '')
 
-    unless ['dennikN', 'slovencina-8-rocnik'].member? source
-      data[sentence.id][:correct_solution] = ProcessedTask.new(sentence, nil)
+    unless ['dennikN', 'slovencina-8-rocnik'].member?(source)
+      if (data[sentence.id] != nil)
 
-      content.split(' ').each { |w| data[sentence.id][:correct_solution].tokens << Token.new(w) }
+        data[sentence.id][:correct_solution] = ProcessedTask.new(sentence, nil)
 
-      file_words = source.gsub('/media/jozef/Novýsvazek/Dokumenty/FIIT/ing/diplomova_praca', '/home/jozef/tmp')
+        content.split(' ').each { |w| data[sentence.id][:correct_solution].tokens << Token.new(w) }
 
-      file_structure = file_words.gsub(/\.w\z/, '.a')
-      doc_words = Nokogiri::XML(File.open(file_words))
-      sentences = Hash.new
+        file_words = source.gsub('/media/jozef/Novýsvazek/Dokumenty/FIIT/ing/diplomova_praca', '/home/jozef/tmp')
 
-      Nokogiri::XML(File.open(file_structure)).css('trees>LM').each do |node|
-        node_id = node[:id].gsub(/\Aa\-/, '')
+        file_structure = file_words.gsub(/\.w\z/, '.a')
+        doc_words = Nokogiri::XML(File.open(file_words))
+        sentences = Hash.new
 
-        sentences[node_id] = {}
-        i = node_id.split('-').last.gsub(/p\d*s/, '').to_i - 1
-        sentences[node_id][:sentence] = doc_words.search("w[id=\"#{ 'w-' + node_id + 'w1' }\"]").first.ancestors('para').first.text.split(/\.|\!|\?/)[i] #.gsub(/\s/, ' ').strip
-        sentences[node_id][:sentence] = sentences[node_id][:sentence].gsub(/\s/, ' ').strip.gsub(/ ,/, ',') if sentences[node_id][:sentence]
+        Nokogiri::XML(File.open(file_structure)).css('trees>LM').each do |node|
+          node_id = node[:id].gsub(/\Aa\-/, '')
 
-        if sentences[node_id][:sentence].include? content[0..-2]
-          sentences_chopped[content] = {}
+          sentences[node_id] = {}
+          i = node_id.split('-').last.gsub(/p\d*s/, '').to_i - 1
+          sentences[node_id][:sentence] = doc_words.search("w[id=\"#{ 'w-' + node_id + 'w1' }\"]").first.ancestors('para').first.text.split(/\.|\!|\?/)[i] #.gsub(/\s/, ' ').strip
+          sentences[node_id][:sentence] = sentences[node_id][:sentence].gsub(/\s/, ' ').strip.gsub(/ ,/, ',') if sentences[node_id][:sentence]
 
-          node.css('LM').each do |element|
-            element_id = element[:id].gsub(/\Aa\-/, '')
+          if sentences[node_id][:sentence].include? content[0..-2]
+            sentences_chopped[content] = {}
 
-            afun = (element.elements.find { |e| e.name == 'afun' }).text
-            key = doc_words.search("w[id=\"#{'w-' + element_id}\"]").text
-            parent = doc_words.search("w[id=\"#{ 'w-' + element.ancestors('LM').first[:id].gsub(/\Aa\-/, '') }\"]").text
+            node.css('LM').each do |element|
+              element_id = element[:id].gsub(/\Aa\-/, '')
 
-            sentences_chopped[content][key] = {}
-            sentences_chopped[content][key][:element] = afun
-            sentences_chopped[content][key][:parent] = parent
+              afun = (element.elements.find { |e| e.name == 'afun' }).text
+              key = doc_words.search("w[id=\"#{'w-' + element_id}\"]").text
+              parent = doc_words.search("w[id=\"#{ 'w-' + element.ancestors('LM').first[:id].gsub(/\Aa\-/, '') }\"]").text
 
-            key.gsub!('.', '')
-            key.gsub!('!', '')
-            key.gsub!('?', '')
-            key.gsub!(',', '')
-            key.gsub!(';', '')
+              sentences_chopped[content][key] = {}
+              sentences_chopped[content][key][:element] = afun
+              sentences_chopped[content][key][:parent] = parent
 
-            index = data[sentence.id][:correct_solution].tokens.index { |t| t.text == key }
+              key.gsub!('.', '')
+              key.gsub!('!', '')
+              key.gsub!('?', '')
+              key.gsub!(',', '')
+              key.gsub!(';', '')
 
-            if index
-              data[sentence.id][:correct_solution].tokens[index].properties[0] = resolve_property(afun)
-              data[sentence.id][:correct_solution].relations << Relation.new(key, parent, resolve_relation)
+              index = data[sentence.id][:correct_solution].tokens.index { |t| t.text == key }
+
+              if index
+                data[sentence.id][:correct_solution].tokens[index].properties[0] = resolve_property(afun)
+                data[sentence.id][:correct_solution].relations << Relation.new(key, parent, resolve_relation)
+              end
             end
           end
         end
@@ -256,10 +279,10 @@ end
 def resolve_property(property)
   blacklist = ['Atv', 'AtvV', 'Coord', 'Apos', 'AuxT', 'AuxR', 'AuxP', 'AuxC', 'AuxO', 'AuxZ', 'AuxX', 'AuxG', 'AuxY', 'AuxS', 'AuxK', 'ExD', 'AtrAtr', 'AtrAdv', 'AdvAtr', 'AtrObj', 'ObjAtr']
 
-  return 0 if blacklist.include? property
+  # return 0 if blacklist.include? property
 
   case property
-    when 'Pred' || 'Pnom' || 'AuxV'
+    when 'Pred' || 'Pnom'
       return 1
     when 'Sb'
       return 2
@@ -270,7 +293,7 @@ def resolve_property(property)
     when 'Adv'
       return 5
     else
-      return -1
+      return 0
   end
 end
 
@@ -279,35 +302,87 @@ def resolve_relation
 end
 
 def evaluate_tokens(data)
-  tokens_overall_positive = 0
-  tokens_overall_negative = 0
+  tokens_overall_positive  = 0
+  tokens_overall_negative  = 0
+  tokens_overall_undefined = 0
 
   data.each do |key, sentence|
+    next if sentence[:student_solutions].empty?
     next unless sentence[:correct_solution]
 
     tokens_positive = 0
     tokens_negative = 0
+    tokens_undefined = 0
     sentence[:extracted_solution].tokens.each_with_index do |token, index|
-      next if sentence[:correct_solution].tokens[index].properties[0] == 0 || token.properties[0] == 0
+      next if sentence[:correct_solution].tokens[index].properties[0] == 0# || token.properties[0] == 0
 
       if token.properties[0] == sentence[:correct_solution].tokens[index].properties[0]
         tokens_positive         += 1
         tokens_overall_positive += 1
       else
-        tokens_negative         += 1
-        tokens_overall_negative += 1
+        if token.properties[0] == 0
+          tokens_undefined         += 1
+          tokens_overall_undefined += 1
+        else
+          puts "#{token.text}:#{token.properties[0]} - #{sentence[:correct_solution].tokens[index].properties[0]} - #{sentence[:correct_solution].sentence.content}"
+          tokens_negative         += 1
+          tokens_overall_negative += 1
+        end
       end
     end
 
-    sentence[:tokens_positive] = tokens_positive
-    sentence[:tokens_negative] = tokens_negative
+    sentence[:tokens_positive]  = tokens_positive
+    sentence[:tokens_negative]  = tokens_negative
+    sentence[:tokens_undefined] = tokens_undefined
   end
 
   result = {}
-  result[:tokens_negative] = tokens_overall_negative
-  result[:tokens_positive] = tokens_overall_positive
+  result[:tokens_negative]  = tokens_overall_negative
+  result[:tokens_positive]  = tokens_overall_positive
+  result[:tokens_undefined] = tokens_overall_undefined
 
   result
+end
+
+def evaluate_relations(data)
+  relations_overall_positive  = 0
+  relations_overall_negative  = 0
+  relations_overall_undefined = 0
+
+  data.each do |key, sentence|
+    next if sentence[:student_solutions].empty?
+    next unless sentence[:correct_solution]
+
+    relations_positive  = 0
+    relations_negative  = 0
+    relations_undefined = 0
+    sentence[:extracted_solution].relations.each do |relation|
+      if valid_relation?(sentence[:correct_solution].relations, relation)
+        relations_positive         += 1
+        relations_overall_positive += 1
+      else
+        relations_negative         += 1
+        relations_overall_negative += 1
+      end
+    end
+
+    sentence[:relations_positive]  = relations_positive
+    sentence[:relations_negative]  = relations_negative
+    sentence[:relations_undefined] = relations_undefined
+  end
+
+  result = {}
+  result[:relations_negative]  = relations_overall_negative
+  result[:relations_positive]  = relations_overall_positive
+  result[:relations_undefined] = relations_overall_undefined
+
+  result
+end
+
+def valid_relation?(relations, relation)
+  return true if relations.find { |rel| rel.equal? relation }
+
+  false
 end
 
 def print_data(data)
@@ -315,5 +390,16 @@ def print_data(data)
     v[:extracted_solution].tokens.each {|t| puts "#{t.properties[0]} - #{t.properties[1]} - #{t.properties[2]}"}
   end
 
-  1
+  nil
 end
+
+def process_batch(tasks, sentences)
+  data = process_all_tasks tasks, sentences
+  summarize_data data
+  extract_corpus_solutions data
+  extract_expert_solutions data
+  evaluate_tokens data
+end
+# Commands
+# User.where(evaluation: "1", role: "student").each {|u| u.tasks.started.each {|t| tasks << t}}
+# load './lib/evaluator/evaluate.rb'
