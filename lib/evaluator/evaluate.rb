@@ -4,6 +4,8 @@ require_relative './processed_task.rb'
 require_relative './token.rb'
 require_relative './relation.rb'
 
+
+
 def process_task(task)
   solution = JSON.parse task.student_solution.to_json
   links    = []
@@ -120,6 +122,8 @@ def summarize_data(data)
     sentence_data[:extracted_solution] = ProcessedTask.new(sentence_data[:student_solutions].first.sentence, nil)
     sentence_data[:extracted_solution].sentence.content.split(' ').each { |word| sentence_data[:extracted_solution].tokens << Token.new(word) }
     summarized_data = {}
+    summarized_relations = []
+
     sentence_data[:extracted_solution].tokens.each {|token| summarized_data[token.text] = [Array.new(6,0), Array.new(7,0), Array.new(6,0)] }
 
     if sentence_data
@@ -129,6 +133,15 @@ def summarize_data(data)
           summarized_data[token.text][1][token.properties[1]] += 1
           summarized_data[token.text][2][token.properties[2]] += 1
         end
+
+        sample.relations.each do |relation|
+          rel = summarized_relations.find {|rel| rel[:relation].equals? relation} || (summarized_relations << {relation: relation, count: 0}).last
+          rel[:count] += 1
+        end
+      end
+
+      summarized_relations.each do |relation|
+        sentence_data[:extracted_solution].relations <<  relation[:relation] if valid? relation, sentence_data[:student_solutions].count
       end
 
       summarized_data.each do |key, value|
@@ -139,6 +152,12 @@ def summarize_data(data)
   end
 
   nil
+end
+
+def valid?(relation_hash, count)
+  return true if Float(relation_hash[:count])/count > 0.4
+
+  false
 end
 
 def evaluate_properties(properties, treshold, drop_zero=false)
@@ -380,7 +399,7 @@ def evaluate_relations(data)
 end
 
 def valid_relation?(relations, relation)
-  return true if relations.find { |rel| rel.equal? relation }
+  return true if relations.find { |rel| rel.equal_elements? relation }
 
   false
 end
@@ -394,12 +413,24 @@ def print_data(data)
 end
 
 def process_batch(tasks, sentences)
+  result = {}
   data = process_all_tasks tasks, sentences
   summarize_data data
   extract_corpus_solutions data
   extract_expert_solutions data
-  evaluate_tokens data
+  result[:tokens]    = evaluate_tokens data
+  result[:relations] = evaluate_relations data
+
+  result
 end
 # Commands
 # User.where(evaluation: "1", role: "student").each {|u| u.tasks.started.each {|t| tasks << t}}
 # load './lib/evaluator/evaluate.rb'
+def commands
+  load './lib/evaluator/evaluate.rb'
+
+sentences = Sentence.short(1000).where("source = 'dennikN' OR source = 'slovencina-8-rocnik'")
+  User.where(evaluation: "1", role: "student").each {|u| u.tasks.started.each {|t| tasks << t}}
+
+end
+
