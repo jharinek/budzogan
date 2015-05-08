@@ -97,16 +97,14 @@ def initialize_data_array(sentences)
   data_array
 end
 
-def resolve_word_index(sentence, word)
-  (i=sentence.index word) ? i + 1 : 0
-end
+# def resolve_word_index(sentence, word)
+#   (i=sentence.index word) ? i + 1 : 0
+# end
 
-def process_all_tasks(tasks, sentences)
-  # tasks = Task.started
+def process_all_tasks(tasks, sentences, options={})
   processed_data = initialize_data_array(sentences)
 
   tasks.each do |task|
-    # puts "id: #{task.sentence_id.to_s}"
     processed_data[task.sentence_id][:student_solutions] << process_task(task) if sentences.ids.include? task.sentence.id
   end
 
@@ -185,45 +183,44 @@ def evaluate_properties(properties, treshold, drop_zero=false)
   result
 end
 
-def evaluate_property(property_array, samples_count)
-  out = ''
-  array = []
+# def evaluate_property(property_array, samples_count)
+#   out = ''
+#   array = []
+#
+#   property_array.each_with_index do |el, i|
+#     next if el == 0
+#     tmp = []
+#     tmp[0] = i
+#     tmp[1] = el
+#     array << tmp
+#   end
+#
+#   array.sort! { |a, b| b[1] <=> a[1]}
+#
+#   array.each { |el| out += "#{el[0]}->#{el[1]}(#{(Float(el[1])/Float(samples_count)*100).round(3)}%);"}
+#
+#   out
+# end
 
-  property_array.each_with_index do |el, i|
-    next if el == 0
-    tmp = []
-    tmp[0] = i
-    tmp[1] = el
-    array << tmp
-  end
-
-  array.sort! { |a, b| b[1] <=> a[1]}
-
-  array.each { |el| out += "#{el[0]}->#{el[1]}(#{(Float(el[1])/Float(samples_count)*100).round(3)}%);"}
-
-  out
-end
-
-def evaluate_connections(connections, samples_count)
-  out = ''
-  array= []
-
-  connections.each do |key, value|
-    tmp = []
-    tmp[0] = key
-    tmp[1] = value
-    array << tmp
-  end
-
-  array.sort! { |a, b| b[1] <=> a[1] }
-
-  array.each { |a| out += "#{a[0]}:#{a[1]}(#{(Float(a[1])/Float(samples_count)*100).round(3)}%)"}
-
-  out
-end
+# def evaluate_connections(connections, samples_count)
+#   out = ''
+#   array= []
+#
+#   connections.each do |key, value|
+#     tmp = []
+#     tmp[0] = key
+#     tmp[1] = value
+#     array << tmp
+#   end
+#
+#   array.sort! { |a, b| b[1] <=> a[1] }
+#
+#   array.each { |a| out += "#{a[0]}:#{a[1]}(#{(Float(a[1])/Float(samples_count)*100).round(3)}%)"}
+#
+#   out
+# end
 
 def extract_expert_solutions(data)
-  # sentences = Sentence.where(source: source)
   expert = User.where(nick: :expert).first
   tasks = expert.tasks.where(state: 2)
 
@@ -412,24 +409,24 @@ def print_data(data)
   nil
 end
 
-def process_batch(tasks, sentences)
+def process_batch(tasks, sentences, options={})
   result = {}
-  data = process_all_tasks tasks, sentences
+  data = process_all_tasks tasks, sentences, options
   summarize_data data
   extract_corpus_solutions data
   extract_expert_solutions data
   result[:tokens]    = evaluate_tokens data
   result[:relations] = evaluate_relations data
+  result[:data]      = data
 
   result
 end
-# Commands
-# User.where(evaluation: "1", role: "student").each {|u| u.tasks.started.each {|t| tasks << t}}
-# load './lib/evaluator/evaluate.rb'
+
+
 def commands
   load './lib/evaluator/evaluate.rb'
 
-sentences = Sentence.short(1000).where("source = 'dennikN' OR source = 'slovencina-8-rocnik'")
+  sentences = Sentence.short(1000).where("source = 'dennikN' OR source = 'slovencina-8-rocnik'")
   User.where(evaluation: "1", role: "student").each {|u| u.tasks.started.each {|t| tasks << t}}
 
 end
