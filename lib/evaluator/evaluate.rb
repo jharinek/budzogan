@@ -239,27 +239,27 @@ end
 #   out
 # end
 
-def extract_expert_solutions(data)
+def extract_expert_solutions(data, allowed_tokens)
   expert = User.where(nick: :expert).first
   tasks = expert.tasks.where(state: 2)
 
   tasks.each do |task|
     if data[task.sentence.id]
       data[task.sentence.id][:correct_solution] = process_task task
-      data[task.sentence.id][:positives_t]      = count_tokens(data[task.sentence.id][:correct_solution].tokens)
+      data[task.sentence.id][:positives_t]      = count_tokens(data[task.sentence.id][:correct_solution].tokens, allowed_tokens)
       data[task.sentence.id][:positives_r]      = data[task.sentence.id][:correct_solution].relations.count
     end
   end
 end
 
-def count_tokens(tokens)
+def count_tokens(tokens, allowed_tokens)
   count = 0
-  tokens.each { |t| count += 1 unless t.properties[0] == 0 }
+  tokens.each { |t| count += 1 if (t.properties[0] != 0) && allowed_tokens.include?(properties[0]) }
 
   count
 end
 
-def extract_corpus_solutions(data)
+def extract_corpus_solutions(data, allowed_tokens)
 
   sentences_chopped = {}
 
@@ -316,7 +316,7 @@ def extract_corpus_solutions(data)
               end
             end
 
-            data[sentence.id][:positives_t] = count_tokens(data[sentence.id][:correct_solution].tokens)
+            data[sentence.id][:positives_t] = count_tokens(data[sentence.id][:correct_solution].tokens, allowed_tokens)
             data[sentence.id][:positives_r] = data[sentence.id][:correct_solution].relations.count
           end
         end
@@ -367,7 +367,7 @@ def evaluate_tokens(data, options={})
 
     sentence[:extracted_solution].tokens.each_with_index do |token, index|
       correct_token = sentence[:correct_solution].tokens.find { |t| t.text == token.text }
-      next if correct_token.properties[0] == 0# || token.properties[0] == 0 ...sentence[:correct_solution].tokens[index]
+      next if correct_token.properties[0] == 0 || !(options[:tokens].include? correct_token.properties[0])# || token.properties[0] == 0 ...sentence[:correct_solution].tokens[index]
 
       if token.properties[0] == correct_token.properties[0]
         tokens_positive         += 1
@@ -471,8 +471,8 @@ def process_batch(tasks, sentences, options={})
   result = {}
   data = process_all_tasks tasks, sentences
   summarize_data data, options
-  extract_corpus_solutions data
-  extract_expert_solutions data
+  extract_corpus_solutions data, options[:tokens]
+  extract_expert_solutions data, options[:tokens]
   result[:tokens]    = evaluate_tokens data
   result[:relations] = evaluate_relations data
   result[:data]      = data
