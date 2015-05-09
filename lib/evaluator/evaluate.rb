@@ -93,8 +93,8 @@ def initialize_data_array(sentences)
     data_array[s.id][:extracted_solution] = nil
     data_array[s.id][:correct_solution]   = nil
     data_array[s.id][:statistics]         = {}
-    data_array[s.id][:positives_t]          = 0
-    data_array[s.id][:positives_r]          = 0
+    data_array[s.id][:positives_t]        = 0
+    data_array[s.id][:positives_r]        = 0
   end
 
   data_array
@@ -161,7 +161,7 @@ def summarize_data(data, options)
     end
 
     summarized_relations.each do |relation|
-      sentence_data[:extracted_solution].relations << relation[:relation] if valid? relation, sentence_data[:student_solutions].count, options[:relations_treshold]
+      sentence_data[:extracted_solution].relations << relation[:relation] if valid? relation, sentence_data[:student_solutions].count, options[:relation_treshold]
     end
 
     summarized_data.each do |key, value|
@@ -458,14 +458,15 @@ end
 
 def process_batch(tasks, sentences, options={})
   # compulsory
-  # :relations_treshold (float), :token_treshold (float)
+  # :relation_treshold (float), :token_treshold (float)
 
   # optional
   # :with_evaluation_coeficient (bool), :drop_zero (bool), :tokens ([])
 
-  options[:relations_treshold] = 0.7
-  options[:token_treshold]     = 0.4
-  options[:drop_zero]          = true
+  options[:relation_treshold] = 0.4
+  options[:token_treshold]    = 0.7
+  options[:drop_zero]         = true
+  options[:tokens]            = [1,2,3,4,5]
 
   result = {}
   data = process_all_tasks tasks, sentences
