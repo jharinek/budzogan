@@ -80,7 +80,7 @@ def process_task(task, options={})
   end
 
   coeficient = options.delete(:coeficient) || 1
-  processed_task[:options][:coeficient] = coeficient
+  processed_task.options[:coeficient] = coeficient
 
   processed_task
 end
@@ -93,6 +93,8 @@ def initialize_data_array(sentences)
     data_array[s.id][:extracted_solution] = nil
     data_array[s.id][:correct_solution]   = nil
     data_array[s.id][:statistics]         = {}
+    data_array[s.id][:positives_t]          = 0
+    data_array[s.id][:positives_r]          = 0
   end
 
   data_array
@@ -149,9 +151,9 @@ def summarize_data(data, options)
     if sentence_data
       sentence_data[:student_solutions].each do |sample|
         sample.tokens.each do |token|
-          summarized_data[token.text][0][token.properties[0]] += 1*sentence_data[:coeficient]
-          summarized_data[token.text][1][token.properties[1]] += 1*sentence_data[:coeficient]
-          summarized_data[token.text][2][token.properties[2]] += 1*sentence_data[:coeficient]
+          summarized_data[token.text][0][token.properties[0]] += 1*sample.options[:coeficient]
+          summarized_data[token.text][1][token.properties[1]] += 1*sample.options[:coeficient]
+          summarized_data[token.text][2][token.properties[2]] += 1*sample.options[:coeficient]
           token_samples_count += 1
         end
 
@@ -167,7 +169,7 @@ def summarize_data(data, options)
 
       summarized_data.each do |key, value|
         i = sentence_data[:extracted_solution].tokens.index { |t| t.text == key }
-        sentence_data[:extracted_solution].tokens[i].properties = evaluate_properties(value, token_samples_count, options[:token_treshold], true)
+        sentence_data[:extracted_solution].tokens[i].properties = evaluate_properties(value, token_samples_count, options[:token_treshold], options[:drop_zero] || false)
       end
     end
   end
@@ -246,8 +248,18 @@ def extract_expert_solutions(data)
   tasks = expert.tasks.where(state: 2)
 
   tasks.each do |task|
-    data[task.sentence.id][:correct_solution] = process_task task if data[task.sentence.id]
+    if data[task.sentence.id]
+      data[task.sentence.id][:correct_solution] = process_task task
+      data[task.sentence.id][:positives_t]        = count_tokens(data[task.sentence.id][:correct_solution].tokens)
+    end
   end
+end
+
+def count_tokens(tokens)
+  count = 0
+  tokens.each { |t| count += 1 unless t.properties[0] == 0 }
+
+  count
 end
 
 def extract_corpus_solutions(data)
@@ -342,6 +354,7 @@ def evaluate_tokens(data, options={})
   tokens_overall_positive  = 0
   tokens_overall_negative  = 0
   tokens_overall_undefined = 0
+  positives_overall        = 0
 
   data.each do |key, sentence|
     next if sentence[:student_solutions].empty?
@@ -350,6 +363,8 @@ def evaluate_tokens(data, options={})
     tokens_positive = 0
     tokens_negative = 0
     tokens_undefined = 0
+    positives_overall += sentence[:positives_t]
+
     sentence[:extracted_solution].tokens.each_with_index do |token, index|
       next if sentence[:correct_solution].tokens[index].properties[0] == 0# || token.properties[0] == 0
 
@@ -374,9 +389,10 @@ def evaluate_tokens(data, options={})
   end
 
   result = {}
-  result[:tokens_negative]  = tokens_overall_negative
-  result[:tokens_positive]  = tokens_overall_positive
-  result[:tokens_undefined] = tokens_overall_undefined
+  result[:tokens_negative]   = tokens_overall_negative
+  result[:tokens_positive]   = tokens_overall_positive
+  result[:tokens_undefined]  = tokens_overall_undefined
+  result[:positives_overall] = positives_overall
 
   result
 end
@@ -435,7 +451,11 @@ def process_batch(tasks, sentences, options={})
   # :relations_treshold (float), :token_treshold (float)
 
   # optional
-  # :with_evaluation_coeficient (bool)
+  # :with_evaluation_coeficient (bool), :drop_zero (bool), :tokens ([])
+
+  options[:relations_treshold] = 0.7
+  options[:token_treshold]     = 0.4
+  options[:drop_zero]          = true
 
   result = {}
   data = process_all_tasks tasks, sentences
