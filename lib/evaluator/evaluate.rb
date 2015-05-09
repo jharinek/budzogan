@@ -143,34 +143,30 @@ def summarize_data(data, options)
     sentence_data[:extracted_solution].sentence.content.split(' ').each { |word| sentence_data[:extracted_solution].tokens << Token.new(word) }
     summarized_data = {}
     summarized_relations = []
-    token_samples_count    = 0
-    relation_samples_count = 0
+    token_samples_count    = sentence_data[:student_solutions].count
 
     sentence_data[:extracted_solution].tokens.each {|token| summarized_data[token.text] = [Array.new(6,0), Array.new(7,0), Array.new(6,0)] }
 
-    if sentence_data
-      sentence_data[:student_solutions].each do |sample|
-        sample.tokens.each do |token|
-          summarized_data[token.text][0][token.properties[0]] += 1*sample.options[:coeficient]
-          summarized_data[token.text][1][token.properties[1]] += 1*sample.options[:coeficient]
-          summarized_data[token.text][2][token.properties[2]] += 1*sample.options[:coeficient]
-          token_samples_count += 1
-        end
-
-        sample.relations.each do |relation|
-          rel = summarized_relations.find {|rel| rel[:relation].equals? relation} || (summarized_relations << {relation: relation, count: 0}).last
-          rel[:count] += 1
-        end
+    sentence_data[:student_solutions].each do |sample|
+      sample.tokens.each do |token|
+        summarized_data[token.text][0][token.properties[0]] += 1*sample.options[:coeficient]
+        summarized_data[token.text][1][token.properties[1]] += 1*sample.options[:coeficient]
+        summarized_data[token.text][2][token.properties[2]] += 1*sample.options[:coeficient]
       end
 
-      summarized_relations.each do |relation|
-        sentence_data[:extracted_solution].relations <<  relation[:relation] if valid? relation, sentence_data[:student_solutions].count, options[:relations_treshold]
+      sample.relations.each do |relation|
+        rel = summarized_relations.find { |rel| rel[:relation].equals? relation } || (summarized_relations << {relation: relation, count: 0}).last
+        rel[:count] += 1
       end
+    end
 
-      summarized_data.each do |key, value|
-        i = sentence_data[:extracted_solution].tokens.index { |t| t.text == key }
-        sentence_data[:extracted_solution].tokens[i].properties = evaluate_properties(value, token_samples_count, options[:token_treshold], options[:drop_zero] || false)
-      end
+    summarized_relations.each do |relation|
+      sentence_data[:extracted_solution].relations << relation[:relation] if valid? relation, sentence_data[:student_solutions].count, options[:relations_treshold]
+    end
+
+    summarized_data.each do |key, value|
+      i = sentence_data[:extracted_solution].tokens.index { |t| t.text == key }
+      sentence_data[:extracted_solution].tokens[i].properties = evaluate_properties(value, token_samples_count, options[:token_treshold], options[:drop_zero] || false)
     end
   end
 
@@ -250,7 +246,8 @@ def extract_expert_solutions(data)
   tasks.each do |task|
     if data[task.sentence.id]
       data[task.sentence.id][:correct_solution] = process_task task
-      data[task.sentence.id][:positives_t]        = count_tokens(data[task.sentence.id][:correct_solution].tokens)
+      data[task.sentence.id][:positives_t]      = count_tokens(data[task.sentence.id][:correct_solution].tokens)
+      data[task.sentence.id][:positives_r]      = data[task.sentence.id][:correct_solution].relations.count
     end
   end
 end
@@ -318,6 +315,9 @@ def extract_corpus_solutions(data)
                 data[sentence.id][:correct_solution].relations << Relation.new(key, parent, resolve_relation)
               end
             end
+
+            data[sentence.id][:positives_t] = count_tokens(data[sentence.id][:correct_solution].tokens)
+            data[sentence.id][:positives_r] = data[sentence.id][:correct_solution].relations.count
           end
         end
       end
@@ -354,7 +354,7 @@ def evaluate_tokens(data, options={})
   tokens_overall_positive  = 0
   tokens_overall_negative  = 0
   tokens_overall_undefined = 0
-  positives_overall        = 0
+  positives_overall_t      = 0
 
   data.each do |key, sentence|
     next if sentence[:student_solutions].empty?
@@ -363,12 +363,13 @@ def evaluate_tokens(data, options={})
     tokens_positive = 0
     tokens_negative = 0
     tokens_undefined = 0
-    positives_overall += sentence[:positives_t]
+    positives_overall_t += sentence[:positives_t]
 
     sentence[:extracted_solution].tokens.each_with_index do |token, index|
-      next if sentence[:correct_solution].tokens[index].properties[0] == 0# || token.properties[0] == 0
+      correct_token = sentence[:correct_solution].tokens.find { |t| t.text == token.text }
+      next if correct_token.properties[0] == 0# || token.properties[0] == 0 ...sentence[:correct_solution].tokens[index]
 
-      if token.properties[0] == sentence[:correct_solution].tokens[index].properties[0]
+      if token.properties[0] == correct_token.properties[0]
         tokens_positive         += 1
         tokens_overall_positive += 1
       else
@@ -376,7 +377,7 @@ def evaluate_tokens(data, options={})
           tokens_undefined         += 1
           tokens_overall_undefined += 1
         else
-          puts "#{token.text}:#{token.properties[0]} - #{sentence[:correct_solution].tokens[index].properties[0]} - #{sentence[:correct_solution].sentence.content}"
+          # puts "#{token.text}:#{token.properties[0]} - #{sentence[:correct_solution].tokens[index].properties[0]} - #{sentence[:correct_solution].sentence.content}"
           tokens_negative         += 1
           tokens_overall_negative += 1
         end
@@ -392,7 +393,7 @@ def evaluate_tokens(data, options={})
   result[:tokens_negative]   = tokens_overall_negative
   result[:tokens_positive]   = tokens_overall_positive
   result[:tokens_undefined]  = tokens_overall_undefined
-  result[:positives_overall] = positives_overall
+  result[:tokens_positives_overall] = positives_overall_t
 
   result
 end
@@ -401,6 +402,8 @@ def evaluate_relations(data, options={})
   relations_overall_positive  = 0
   relations_overall_negative  = 0
   relations_overall_undefined = 0
+  positives_overall_r         = 0
+  rel_count                   = 0
 
   data.each do |key, sentence|
     next if sentence[:student_solutions].empty?
@@ -409,6 +412,7 @@ def evaluate_relations(data, options={})
     relations_positive  = 0
     relations_negative  = 0
     relations_undefined = 0
+
     sentence[:extracted_solution].relations.each do |relation|
       if valid_relation?(sentence[:correct_solution].relations, relation)
         relations_positive         += 1
@@ -417,17 +421,23 @@ def evaluate_relations(data, options={})
         relations_negative         += 1
         relations_overall_negative += 1
       end
+
+      rel_count += 1
     end
 
     sentence[:relations_positive]  = relations_positive
     sentence[:relations_negative]  = relations_negative
     sentence[:relations_undefined] = relations_undefined
+    sentence[:positives_r]         = sentence[:correct_solution].relations.count
+    positives_overall_r += sentence[:positives_r]
   end
 
   result = {}
   result[:relations_negative]  = relations_overall_negative
   result[:relations_positive]  = relations_overall_positive
   result[:relations_undefined] = relations_overall_undefined
+  result[:positives_r]         = positives_overall_r
+  result[:rel_cnt]             = rel_count
 
   result
 end
