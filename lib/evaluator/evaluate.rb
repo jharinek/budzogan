@@ -4,9 +4,7 @@ require_relative './processed_task.rb'
 require_relative './token.rb'
 require_relative './relation.rb'
 
-
-
-def process_task(task)
+def process_task(task, options={})
   solution = JSON.parse task.student_solution.to_json
   links    = []
   nodes    = []
@@ -81,6 +79,9 @@ def process_task(task)
     end
   end
 
+  coeficient = options.delete(:coeficient) || 1
+  processed_task[:options][:coeficient] = coeficient
+
   processed_task
 end
 
@@ -100,18 +101,37 @@ end
 # def resolve_word_index(sentence, word)
 #   (i=sentence.index word) ? i + 1 : 0
 # end
+def resolve_coeficient(student)
+  case student.evaluation.to_i
+    when 1
+      return 1.5
+    when 2
+      return 1.3
+    when 3
+      return 1
+    when 4
+      return 0.8
+    when 5
+      return 0.5
+    else
+      return 1
+  end
+end
 
 def process_all_tasks(tasks, sentences, options={})
   processed_data = initialize_data_array(sentences)
+  opt = {}
 
   tasks.each do |task|
-    processed_data[task.sentence_id][:student_solutions] << process_task(task) if sentences.ids.include? task.sentence.id
+    opt[:coeficient] = resolve_coeficient(task.user)  if(options[:with_evaluation_coeficient])
+
+    processed_data[task.sentence_id][:student_solutions] << process_task(task, opt) if sentences.ids.include? task.sentence.id
   end
 
   processed_data
 end
 
-def summarize_data(data)
+def summarize_data(data, options)
   processed_data = data
 
   processed_data.each do |key , sentence_data|
@@ -121,15 +141,18 @@ def summarize_data(data)
     sentence_data[:extracted_solution].sentence.content.split(' ').each { |word| sentence_data[:extracted_solution].tokens << Token.new(word) }
     summarized_data = {}
     summarized_relations = []
+    token_samples_count    = 0
+    relation_samples_count = 0
 
     sentence_data[:extracted_solution].tokens.each {|token| summarized_data[token.text] = [Array.new(6,0), Array.new(7,0), Array.new(6,0)] }
 
     if sentence_data
       sentence_data[:student_solutions].each do |sample|
         sample.tokens.each do |token|
-          summarized_data[token.text][0][token.properties[0]] += 1
-          summarized_data[token.text][1][token.properties[1]] += 1
-          summarized_data[token.text][2][token.properties[2]] += 1
+          summarized_data[token.text][0][token.properties[0]] += 1*sentence_data[:coeficient]
+          summarized_data[token.text][1][token.properties[1]] += 1*sentence_data[:coeficient]
+          summarized_data[token.text][2][token.properties[2]] += 1*sentence_data[:coeficient]
+          token_samples_count += 1
         end
 
         sample.relations.each do |relation|
@@ -139,12 +162,12 @@ def summarize_data(data)
       end
 
       summarized_relations.each do |relation|
-        sentence_data[:extracted_solution].relations <<  relation[:relation] if valid? relation, sentence_data[:student_solutions].count
+        sentence_data[:extracted_solution].relations <<  relation[:relation] if valid? relation, sentence_data[:student_solutions].count, options[:relations_treshold]
       end
 
       summarized_data.each do |key, value|
         i = sentence_data[:extracted_solution].tokens.index { |t| t.text == key }
-        sentence_data[:extracted_solution].tokens[i].properties = evaluate_properties(value, 0.6, true)
+        sentence_data[:extracted_solution].tokens[i].properties = evaluate_properties(value, token_samples_count, options[:token_treshold], true)
       end
     end
   end
@@ -152,21 +175,19 @@ def summarize_data(data)
   nil
 end
 
-def valid?(relation_hash, count)
-  return true if Float(relation_hash[:count])/count > 0.4
+def valid?(relation_hash, count, treshold)
+  return true if Float(relation_hash[:count])/count > treshold
 
   false
 end
 
-def evaluate_properties(properties, treshold, drop_zero=false)
+def evaluate_properties(properties, samples_count, treshold, drop_zero=false)
   result = []
 
   properties.each_with_index do |property, i|
     if drop_zero
+      samples_count -= property[0]
       property[0] = 0
-      samples_count = property.sum
-    else
-      samples_count = property.sum
     end
 
     property.map! { |p| samples_count > 0 ? Float(p)/Float(samples_count) : 0 }
@@ -317,7 +338,7 @@ def resolve_relation
   return 0
 end
 
-def evaluate_tokens(data)
+def evaluate_tokens(data, options={})
   tokens_overall_positive  = 0
   tokens_overall_negative  = 0
   tokens_overall_undefined = 0
@@ -360,7 +381,7 @@ def evaluate_tokens(data)
   result
 end
 
-def evaluate_relations(data)
+def evaluate_relations(data, options={})
   relations_overall_positive  = 0
   relations_overall_negative  = 0
   relations_overall_undefined = 0
@@ -410,9 +431,15 @@ def print_data(data)
 end
 
 def process_batch(tasks, sentences, options={})
+  # compulsory
+  # :relations_treshold (float), :token_treshold (float)
+
+  # optional
+  # :with_evaluation_coeficient (bool)
+
   result = {}
-  data = process_all_tasks tasks, sentences, options
-  summarize_data data
+  data = process_all_tasks tasks, sentences
+  summarize_data data, options
   extract_corpus_solutions data
   extract_expert_solutions data
   result[:tokens]    = evaluate_tokens data
