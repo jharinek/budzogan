@@ -7,13 +7,17 @@ require_relative './relation.rb'
 
 
 def transform_file(file)
-  f = File.open('results.csv', 'a')
+  f = File.open('results_tokens_coef_final.csv', 'a')
   hash = YAML.load(File.read(file))
 
   hash.each do |key, value|
     f.write(key)
     f.write(",,\n")
 
+    # value.each do |k, v|
+    #   s = "#{k}, #{v[:positive]}, #{v[:negative]}, #{v[:positives_all]}\n"
+    #   f.write s
+    # end
     value.each do |k, v|
       s = "#{k}, #{v[:t_precision]}, #{v[:t_recall]}\n"
       f.write s
@@ -127,13 +131,13 @@ def resolve_coeficient(student)
     when 1
       return 1.5
     when 2
-      return 1.3
+      return 1.39
     when 3
-      return 1
+      return 1.33
     when 4
-      return 0.7
+      return 0.72
     when 5
-      return 0.5
+      return 0.44
     else
       return 1
   end
@@ -141,12 +145,11 @@ end
 
 def process_all_tasks(tasks, sentences, options={})
   processed_data = initialize_data_array(sentences)
-  opt = {}
 
   tasks.each do |task|
-    opt[:coeficient] = resolve_coeficient(task.user)  if(options[:with_evaluation_coeficient])
+    options[:coeficient] = resolve_coeficient(task.user)  if(options[:with_evaluation_coeficient])
 
-    processed_data[task.sentence_id][:student_solutions] << process_task(task, opt) if sentences.ids.include? task.sentence.id
+    processed_data[task.sentence_id][:student_solutions] << process_task(task, options) if sentences.ids.include? task.sentence.id
   end
 
   processed_data
@@ -489,12 +492,12 @@ def process_batch(tasks, sentences, options={})
   # options[:with_evaluation_coeficient] = true
 
   result = {}
-  data = process_all_tasks tasks, sentences
+  data = process_all_tasks tasks, sentences, options
   summarize_data data, options
   extract_corpus_solutions data, options[:tokens]
   extract_expert_solutions data, options[:tokens]
   result[:tokens]    = evaluate_tokens data, options
-  result[:relations] = evaluate_relations data
+  result[:relations] = evaluate_relations data, options
   result[:data]      = data
 
   result
@@ -505,7 +508,9 @@ def commands
   load './lib/evaluator/evaluate.rb'
 
   sentences = Sentence.short(1000).where("source = 'dennikN' OR source = 'slovencina-8-rocnik'")
-  User.where(evaluation: "1", role: "student").each {|u| u.tasks.started.each {|t| tasks << t}}
+  tasks=[];User.where(evaluation: "1", role: "student").each {|u| u.tasks.started.each {|t| tasks << t}}
+
+  process_batch tasks, sentences;nil
 
 end
 
@@ -587,10 +592,103 @@ def relations_experiment
   nil
 end
 
+def experiment_usr
+  results = {}
+  yaml_file = File.open('results_users.yaml', 'a')
+
+  tresholds = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+
+  options = {}
+  options[:relation_treshold] = 0.2
+  options[:drop_zero]         = true
+  options[:tokens]            = [1,2,3,4,5]
+  options[:with_evaluation_coeficient] = false
+
+  # sentences
+  ids = [];Sentence.all.each { |s| ids << s.id if s.tasks.started.count > 10 && s.tasks.started.count < 100 }
+  sentences = Sentence.where('id in (?)', ids)
+
+  # tasks = Task.started
+  tasks_1=[];User.where(evaluation: "1", role: "student").each {|u| u.tasks.started.each {|t| tasks_1 << t}}
+  tasks_2=[];User.where(evaluation: "2", role: "student").each {|u| u.tasks.started.each {|t| tasks_2 << t}}
+  tasks_3=[];User.where(evaluation: "3", role: "student").each {|u| u.tasks.started.each {|t| tasks_3 << t}}
+  tasks_4=[];User.where(evaluation: "4", role: "student").each {|u| u.tasks.started.each {|t| tasks_4 << t}}
+  tasks_5=[];User.where(evaluation: "5", role: "student").each {|u| u.tasks.started.each {|t| tasks_5 << t}}
+
+
+
+  # altogether - token treshold change, with evaluation coeficient
+  results[:tokens_1] = {}
+  options[:with_evaluation_coeficient] = false
+  tresholds.each do |t|
+    options[:token_treshold] = t
+
+    data = process_batch(tasks_1, sentences, options)
+    results[:tokens_1][t] = {}
+    results[:tokens_1][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+    results[:tokens_1][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  end
+
+  # altogether - token treshold change, with evaluation coeficient
+  results[:tokens_2] = {}
+  options[:with_evaluation_coeficient] = false
+  tresholds.each do |t|
+    options[:token_treshold] = t
+
+    data = process_batch(tasks_2, sentences, options)
+    results[:tokens_2][t] = {}
+    results[:tokens_2][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+    results[:tokens_2][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  end
+
+  # altogether - token treshold change, with evaluation coeficient
+  results[:tokens_3] = {}
+  options[:with_evaluation_coeficient] = false
+  tresholds.each do |t|
+    options[:token_treshold] = t
+
+    data = process_batch(tasks_3, sentences, options)
+    results[:tokens_3][t] = {}
+    results[:tokens_3][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+    results[:tokens_3][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  end
+
+  # altogether - token treshold change, with evaluation coeficient
+  results[:tokens_4] = {}
+  options[:with_evaluation_coeficient] = false
+  tresholds.each do |t|
+    options[:token_treshold] = t
+
+    data = process_batch(tasks_4, sentences, options)
+    results[:tokens_4][t] = {}
+    results[:tokens_4][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+    results[:tokens_4][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  end
+
+  # altogether - token treshold change, with evaluation coeficient
+  results[:tokens_5] = {}
+  options[:with_evaluation_coeficient] = false
+  tresholds.each do |t|
+    options[:token_treshold] = t
+
+    data = process_batch(tasks_5, sentences, options)
+    results[:tokens_5][t] = {}
+    results[:tokens_5][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+    results[:tokens_5][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  end
+
+
+  yaml_file.write(results.to_yaml)
+  yaml_file.close
+
+  nil
+end
+
+
 def experiment
   results = {}
-  yaml_file = File.open('results.yaml', 'a')
-  xml_file  = File.open('results.xml', 'a')
+  yaml_file = File.open('results_3.yaml', 'a')
+  xml_file  = File.open('results_3.xml', 'a')
 
   tresholds = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
 
@@ -606,84 +704,85 @@ def experiment
 
   tasks = Task.started
 
-  # altogether - token treshold change
-  results[:token_treshold] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, sentences, options)
-    results[:token_treshold][t] = {}
-    results[:token_treshold][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold][t][:r_las]
-    results[:token_treshold][t][:r_uas]
-    results[:token_treshold][t][:r_la]
-  end
+  # # altogether - token treshold change
+  # results[:token_treshold] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, sentences, options)
+  #   results[:token_treshold][t] = {}
+  #   results[:token_treshold][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold][t][:r_las]
+  #   results[:token_treshold][t][:r_uas]
+  #   results[:token_treshold][t][:r_la]
+  # end
 
   # altogether - token treshold change, with evaluation coeficient
-  results[:token_treshold_evaluation_coeficient] = {}
-  options[:with_evaluation_coeficient] = true
-  tresholds.each do |t|
-    options[:token_treshold] = t
+  # results[:token_treshold_evaluation_coeficient] = {}
+  # options[:with_evaluation_coeficient] = true
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, sentences, options)
+  #   results[:token_treshold_evaluation_coeficient][t] = {}
+  #   results[:token_treshold_evaluation_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_evaluation_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_evaluation_coeficient][t][:r_las]
+  #   results[:token_treshold_evaluation_coeficient][t][:r_uas]
+  #   results[:token_treshold_evaluation_coeficient][t][:r_la]
+  # end
 
-    data = process_batch(tasks, sentences, options)
-    results[:token_treshold_evaluation_coeficient][t] = {}
-    results[:token_treshold_evaluation_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_evaluation_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_evaluation_coeficient][t][:r_las]
-    results[:token_treshold_evaluation_coeficient][t][:r_uas]
-    results[:token_treshold_evaluation_coeficient][t][:r_la]
-  end
-
-  options[:with_evaluation_coeficient] = false
-
+  # options[:with_evaluation_coeficient] = false
+  #
   s_short  = sentences.short 100
   s_medium = sentences.medium 100
   s_long   = sentences.long 100
+  #
+  # # short - token treshold change
+  # results[:token_treshold_s_short] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_short, options)
+  #   results[:token_treshold_s_short][t] = {}
+  #   results[:token_treshold_s_short][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_short][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_short][t][:r_las]
+  #   results[:token_treshold_s_short][t][:r_uas]
+  #   results[:token_treshold_s_short][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_medium] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_medium, options)
+  #   results[:token_treshold_s_medium][t] = {}
+  #   results[:token_treshold_s_medium][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_medium][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_medium][t][:r_las]
+  #   results[:token_treshold_s_medium][t][:r_uas]
+  #   results[:token_treshold_s_medium][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_long] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_long, options)
+  #   results[:token_treshold_s_long][t] = {}
+  #   results[:token_treshold_s_long][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_long][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_long][t][:r_las]
+  #   results[:token_treshold_s_long][t][:r_uas]
+  #   results[:token_treshold_s_long][t][:r_la]
+  # end
+  #
 
-  # short - token treshold change
-  results[:token_treshold_s_short] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_short, options)
-    results[:token_treshold_s_short][t] = {}
-    results[:token_treshold_s_short][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_short][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_short][t][:r_las]
-    results[:token_treshold_s_short][t][:r_uas]
-    results[:token_treshold_s_short][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_medium] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_medium, options)
-    results[:token_treshold_s_medium][t] = {}
-    results[:token_treshold_s_medium][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_medium][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_medium][t][:r_las]
-    results[:token_treshold_s_medium][t][:r_uas]
-    results[:token_treshold_s_medium][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_long] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_long, options)
-    results[:token_treshold_s_long][t] = {}
-    results[:token_treshold_s_long][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_long][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_long][t][:r_las]
-    results[:token_treshold_s_long][t][:r_uas]
-    results[:token_treshold_s_long][t][:r_la]
-  end
-
-
+  # ----------------------------------
   # same with student coeficient
   options[:with_evaluation_coeficient] = true
   # short - token treshold change
@@ -728,767 +827,768 @@ def experiment
     results[:token_treshold_s_long_coeficient][t][:r_la]
   end
 
-  options[:with_evaluation_coeficient] = false
-
-  xml_file.write(results.to_xml)
-  yaml_file.write(results.to_yaml)
-
-  xml_file.flush
-  yaml_file.flush
-  xml_file.close
-  yaml_file.close
-
-  # --------------------------------------------------------------------------------------------------------------------
-  # podmet
-  results = {}
-  yaml_file = File.open('results1.yaml', 'a')
-  xml_file  = File.open('results1.xml', 'a')
-
-  tresholds = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
-
-  options = {}
-  options[:relation_treshold] = 0.2
-  options[:drop_zero]         = true
-  options[:tokens]            = [1]
-
-
-  # sentences
-  ids = [];Sentence.all.each { |s| ids << s.id if s.tasks.started.count > 10 && s.tasks.started.count < 100 }
-  sentences = Sentence.where('id in (?)', ids)
-
-  tasks = Task.started
-
-  # altogether - token treshold change
-  results[:token_treshold] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, sentences, options)
-    results[:token_treshold][t] = {}
-    results[:token_treshold][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold][t][:r_las]
-    results[:token_treshold][t][:r_uas]
-    results[:token_treshold][t][:r_la]
-  end
-
-  # altogether - token treshold change, with evaluation coeficient
-  results[:token_treshold_evaluation_coeficient] = {}
-  options[:with_evaluation_coeficient] = true
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, sentences, options)
-    results[:token_treshold_evaluation_coeficient][t] = {}
-    results[:token_treshold_evaluation_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_evaluation_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_evaluation_coeficient][t][:r_las]
-    results[:token_treshold_evaluation_coeficient][t][:r_uas]
-    results[:token_treshold_evaluation_coeficient][t][:r_la]
-  end
-
-  options[:with_evaluation_coeficient] = false
-
-  s_short  = sentences.short 100
-  s_medium = sentences.medium 100
-  s_long   = sentences.long 100
-
-  # short - token treshold change
-  results[:token_treshold_s_short] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_short, options)
-    results[:token_treshold_s_short][t] = {}
-    results[:token_treshold_s_short][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_short][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_short][t][:r_las]
-    results[:token_treshold_s_short][t][:r_uas]
-    results[:token_treshold_s_short][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_medium] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_medium, options)
-    results[:token_treshold_s_medium][t] = {}
-    results[:token_treshold_s_medium][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_medium][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_medium][t][:r_las]
-    results[:token_treshold_s_medium][t][:r_uas]
-    results[:token_treshold_s_medium][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_long] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_long, options)
-    results[:token_treshold_s_long][t] = {}
-    results[:token_treshold_s_long][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_long][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_long][t][:r_las]
-    results[:token_treshold_s_long][t][:r_uas]
-    results[:token_treshold_s_long][t][:r_la]
-  end
-
-
-  # same with student coeficient
-  options[:with_evaluation_coeficient] = true
-  # short - token treshold change
-  results[:token_treshold_s_short_coeficient] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_short, options)
-    results[:token_treshold_s_short_coeficient][t] = {}
-    results[:token_treshold_s_short_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_short_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_short_coeficient][t][:r_las]
-    results[:token_treshold_s_short_coeficient][t][:r_uas]
-    results[:token_treshold_s_short_coeficient][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_medium_coeficient] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_medium, options)
-    results[:token_treshold_s_medium_coeficient][t] = {}
-    results[:token_treshold_s_medium_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_medium_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_medium_coeficient][t][:r_las]
-    results[:token_treshold_s_medium_coeficient][t][:r_uas]
-    results[:token_treshold_s_medium_coeficient][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_long_coeficient] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_long, options)
-    results[:token_treshold_s_long_coeficient][t] = {}
-    results[:token_treshold_s_long_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_long_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_long_coeficient][t][:r_las]
-    results[:token_treshold_s_long_coeficient][t][:r_uas]
-    results[:token_treshold_s_long_coeficient][t][:r_la]
-  end
-
-  options[:with_evaluation_coeficient] = false
-
-  xml_file.write(results.to_xml)
-  yaml_file.write(results.to_yaml)
-
-  xml_file.flush
-  yaml_file.flush
-  xml_file.close
-  yaml_file.close
-
-  # --------------------------------------------------------------------------------------------------------------------
-  # prisudok
-  results = {}
-  yaml_file = File.open('results2.yaml', 'a')
-  xml_file  = File.open('results2.xml', 'a')
-
-  tresholds = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
-
-  options = {}
-  options[:relation_treshold] = 0.2
-  options[:drop_zero]         = true
-  options[:tokens]            = [2]
-
-
-  # sentences
-  ids = [];Sentence.all.each { |s| ids << s.id if s.tasks.started.count > 10 && s.tasks.started.count < 100 }
-  sentences = Sentence.where('id in (?)', ids)
-
-  tasks = Task.started
-
-  # altogether - token treshold change
-  results[:token_treshold] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, sentences, options)
-    results[:token_treshold][t] = {}
-    results[:token_treshold][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold][t][:r_las]
-    results[:token_treshold][t][:r_uas]
-    results[:token_treshold][t][:r_la]
-  end
-
-  # altogether - token treshold change, with evaluation coeficient
-  results[:token_treshold_evaluation_coeficient] = {}
-  options[:with_evaluation_coeficient] = true
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, sentences, options)
-    results[:token_treshold_evaluation_coeficient][t] = {}
-    results[:token_treshold_evaluation_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_evaluation_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_evaluation_coeficient][t][:r_las]
-    results[:token_treshold_evaluation_coeficient][t][:r_uas]
-    results[:token_treshold_evaluation_coeficient][t][:r_la]
-  end
-
-  options[:with_evaluation_coeficient] = false
-
-  s_short  = sentences.short 100
-  s_medium = sentences.medium 100
-  s_long   = sentences.long 100
-
-  # short - token treshold change
-  results[:token_treshold_s_short] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_short, options)
-    results[:token_treshold_s_short][t] = {}
-    results[:token_treshold_s_short][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_short][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_short][t][:r_las]
-    results[:token_treshold_s_short][t][:r_uas]
-    results[:token_treshold_s_short][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_medium] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_medium, options)
-    results[:token_treshold_s_medium][t] = {}
-    results[:token_treshold_s_medium][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_medium][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_medium][t][:r_las]
-    results[:token_treshold_s_medium][t][:r_uas]
-    results[:token_treshold_s_medium][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_long] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_long, options)
-    results[:token_treshold_s_long][t] = {}
-    results[:token_treshold_s_long][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_long][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_long][t][:r_las]
-    results[:token_treshold_s_long][t][:r_uas]
-    results[:token_treshold_s_long][t][:r_la]
-  end
-
-
-  # same with student coeficient
-  options[:with_evaluation_coeficient] = true
-  # short - token treshold change
-  results[:token_treshold_s_short_coeficient] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_short, options)
-    results[:token_treshold_s_short_coeficient][t] = {}
-    results[:token_treshold_s_short_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_short_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_short_coeficient][t][:r_las]
-    results[:token_treshold_s_short_coeficient][t][:r_uas]
-    results[:token_treshold_s_short_coeficient][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_medium_coeficient] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_medium, options)
-    results[:token_treshold_s_medium_coeficient][t] = {}
-    results[:token_treshold_s_medium_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_medium_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_medium_coeficient][t][:r_las]
-    results[:token_treshold_s_medium_coeficient][t][:r_uas]
-    results[:token_treshold_s_medium_coeficient][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_long_coeficient] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_long, options)
-    results[:token_treshold_s_long_coeficient][t] = {}
-    results[:token_treshold_s_long_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_long_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_long_coeficient][t][:r_las]
-    results[:token_treshold_s_long_coeficient][t][:r_uas]
-    results[:token_treshold_s_long_coeficient][t][:r_la]
-  end
-
-  options[:with_evaluation_coeficient] = false
-
-  xml_file.write(results.to_xml)
-  yaml_file.write(results.to_yaml)
-
-  xml_file.flush
-  yaml_file.flush
-  xml_file.close
-  yaml_file.close
-
-  # --------------------------------------------------------------------------------------------------------------------
-  # predmet
-  results = {}
-  yaml_file = File.open('results3.yaml', 'a')
-  xml_file  = File.open('results3.xml', 'a')
-
-  tresholds = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
-
-  options = {}
-  options[:relation_treshold] = 0.2
-  options[:drop_zero]         = true
-  options[:tokens]            = [3]
-
-
-  # sentences
-  ids = [];Sentence.all.each { |s| ids << s.id if s.tasks.started.count > 10 && s.tasks.started.count < 100 }
-  sentences = Sentence.where('id in (?)', ids)
-
-  tasks = Task.started
-
-  # altogether - token treshold change
-  results[:token_treshold] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, sentences, options)
-    results[:token_treshold][t] = {}
-    results[:token_treshold][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold][t][:r_las]
-    results[:token_treshold][t][:r_uas]
-    results[:token_treshold][t][:r_la]
-  end
-
-  # altogether - token treshold change, with evaluation coeficient
-  results[:token_treshold_evaluation_coeficient] = {}
-  options[:with_evaluation_coeficient] = true
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, sentences, options)
-    results[:token_treshold_evaluation_coeficient][t] = {}
-    results[:token_treshold_evaluation_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_evaluation_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_evaluation_coeficient][t][:r_las]
-    results[:token_treshold_evaluation_coeficient][t][:r_uas]
-    results[:token_treshold_evaluation_coeficient][t][:r_la]
-  end
-
-  options[:with_evaluation_coeficient] = false
-
-  s_short  = sentences.short 100
-  s_medium = sentences.medium 100
-  s_long   = sentences.long 100
-
-  # short - token treshold change
-  results[:token_treshold_s_short] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_short, options)
-    results[:token_treshold_s_short][t] = {}
-    results[:token_treshold_s_short][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_short][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_short][t][:r_las]
-    results[:token_treshold_s_short][t][:r_uas]
-    results[:token_treshold_s_short][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_medium] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_medium, options)
-    results[:token_treshold_s_medium][t] = {}
-    results[:token_treshold_s_medium][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_medium][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_medium][t][:r_las]
-    results[:token_treshold_s_medium][t][:r_uas]
-    results[:token_treshold_s_medium][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_long] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_long, options)
-    results[:token_treshold_s_long][t] = {}
-    results[:token_treshold_s_long][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_long][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_long][t][:r_las]
-    results[:token_treshold_s_long][t][:r_uas]
-    results[:token_treshold_s_long][t][:r_la]
-  end
-
-
-  # same with student coeficient
-  options[:with_evaluation_coeficient] = true
-  # short - token treshold change
-  results[:token_treshold_s_short_coeficient] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_short, options)
-    results[:token_treshold_s_short_coeficient][t] = {}
-    results[:token_treshold_s_short_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_short_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_short_coeficient][t][:r_las]
-    results[:token_treshold_s_short_coeficient][t][:r_uas]
-    results[:token_treshold_s_short_coeficient][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_medium_coeficient] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_medium, options)
-    results[:token_treshold_s_medium_coeficient][t] = {}
-    results[:token_treshold_s_medium_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_medium_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_medium_coeficient][t][:r_las]
-    results[:token_treshold_s_medium_coeficient][t][:r_uas]
-    results[:token_treshold_s_medium_coeficient][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_long_coeficient] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_long, options)
-    results[:token_treshold_s_long_coeficient][t] = {}
-    results[:token_treshold_s_long_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_long_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_long_coeficient][t][:r_las]
-    results[:token_treshold_s_long_coeficient][t][:r_uas]
-    results[:token_treshold_s_long_coeficient][t][:r_la]
-  end
-
-  options[:with_evaluation_coeficient] = false
-
-  xml_file.write(results.to_xml)
-  yaml_file.write(results.to_yaml)
-
-  xml_file.flush
-  yaml_file.flush
-  xml_file.close
-  yaml_file.close
-
-  # --------------------------------------------------------------------------------------------------------------------
-  # privlastok
-  results = {}
-  yaml_file = File.open('results4.yaml', 'a')
-  xml_file  = File.open('results4.xml', 'a')
-
-  tresholds = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
-
-  options = {}
-  options[:relation_treshold] = 0.2
-  options[:drop_zero]         = true
-  options[:tokens]            = [4]
-
-
-  # sentences
-  ids = [];Sentence.all.each { |s| ids << s.id if s.tasks.started.count > 10 && s.tasks.started.count < 100 }
-  sentences = Sentence.where('id in (?)', ids)
-
-  tasks = Task.started
-
-  # altogether - token treshold change
-  results[:token_treshold] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, sentences, options)
-    results[:token_treshold][t] = {}
-    results[:token_treshold][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold][t][:r_las]
-    results[:token_treshold][t][:r_uas]
-    results[:token_treshold][t][:r_la]
-  end
-
-  # altogether - token treshold change, with evaluation coeficient
-  results[:token_treshold_evaluation_coeficient] = {}
-  options[:with_evaluation_coeficient] = true
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, sentences, options)
-    results[:token_treshold_evaluation_coeficient][t] = {}
-    results[:token_treshold_evaluation_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_evaluation_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_evaluation_coeficient][t][:r_las]
-    results[:token_treshold_evaluation_coeficient][t][:r_uas]
-    results[:token_treshold_evaluation_coeficient][t][:r_la]
-  end
-
-  options[:with_evaluation_coeficient] = false
-
-  s_short  = sentences.short 100
-  s_medium = sentences.medium 100
-  s_long   = sentences.long 100
-
-  # short - token treshold change
-  results[:token_treshold_s_short] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_short, options)
-    results[:token_treshold_s_short][t] = {}
-    results[:token_treshold_s_short][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_short][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_short][t][:r_las]
-    results[:token_treshold_s_short][t][:r_uas]
-    results[:token_treshold_s_short][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_medium] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_medium, options)
-    results[:token_treshold_s_medium][t] = {}
-    results[:token_treshold_s_medium][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_medium][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_medium][t][:r_las]
-    results[:token_treshold_s_medium][t][:r_uas]
-    results[:token_treshold_s_medium][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_long] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_long, options)
-    results[:token_treshold_s_long][t] = {}
-    results[:token_treshold_s_long][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_long][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_long][t][:r_las]
-    results[:token_treshold_s_long][t][:r_uas]
-    results[:token_treshold_s_long][t][:r_la]
-  end
-
-
-  # same with student coeficient
-  options[:with_evaluation_coeficient] = true
-  # short - token treshold change
-  results[:token_treshold_s_short_coeficient] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_short, options)
-    results[:token_treshold_s_short_coeficient][t] = {}
-    results[:token_treshold_s_short_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_short_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_short_coeficient][t][:r_las]
-    results[:token_treshold_s_short_coeficient][t][:r_uas]
-    results[:token_treshold_s_short_coeficient][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_medium_coeficient] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_medium, options)
-    results[:token_treshold_s_medium_coeficient][t] = {}
-    results[:token_treshold_s_medium_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_medium_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_medium_coeficient][t][:r_las]
-    results[:token_treshold_s_medium_coeficient][t][:r_uas]
-    results[:token_treshold_s_medium_coeficient][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_long_coeficient] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_long, options)
-    results[:token_treshold_s_long_coeficient][t] = {}
-    results[:token_treshold_s_long_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_long_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_long_coeficient][t][:r_las]
-    results[:token_treshold_s_long_coeficient][t][:r_uas]
-    results[:token_treshold_s_long_coeficient][t][:r_la]
-  end
-
-  options[:with_evaluation_coeficient] = false
-
-  xml_file.write(results.to_xml)
-  yaml_file.write(results.to_yaml)
-
-  xml_file.flush
-  yaml_file.flush
-  xml_file.close
-  yaml_file.close
-
-  # --------------------------------------------------------------------------------------------------------------------
-  # prislovkove urcenie
-  results = {}
-  yaml_file = File.open('results5.yaml', 'a')
-  xml_file  = File.open('results5.xml', 'a')
-
-  tresholds = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
-
-  options = {}
-  options[:relation_treshold] = 0.2
-  options[:drop_zero]         = true
-  options[:tokens]            = [5]
-
-
-  # sentences
-  ids = [];Sentence.all.each { |s| ids << s.id if s.tasks.started.count > 10 && s.tasks.started.count < 100 }
-  sentences = Sentence.where('id in (?)', ids)
-
-  tasks = Task.started
-
-  # altogether - token treshold change
-  results[:token_treshold] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, sentences, options)
-    results[:token_treshold][t] = {}
-    results[:token_treshold][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold][t][:r_las]
-    results[:token_treshold][t][:r_uas]
-    results[:token_treshold][t][:r_la]
-  end
-
-  # altogether - token treshold change, with evaluation coeficient
-  results[:token_treshold_evaluation_coeficient] = {}
-  options[:with_evaluation_coeficient] = true
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, sentences, options)
-    results[:token_treshold_evaluation_coeficient][t] = {}
-    results[:token_treshold_evaluation_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_evaluation_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_evaluation_coeficient][t][:r_las]
-    results[:token_treshold_evaluation_coeficient][t][:r_uas]
-    results[:token_treshold_evaluation_coeficient][t][:r_la]
-  end
-
-  options[:with_evaluation_coeficient] = false
-
-  s_short  = sentences.short 100
-  s_medium = sentences.medium 100
-  s_long   = sentences.long 100
-
-  # short - token treshold change
-  results[:token_treshold_s_short] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_short, options)
-    results[:token_treshold_s_short][t] = {}
-    results[:token_treshold_s_short][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_short][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_short][t][:r_las]
-    results[:token_treshold_s_short][t][:r_uas]
-    results[:token_treshold_s_short][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_medium] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_medium, options)
-    results[:token_treshold_s_medium][t] = {}
-    results[:token_treshold_s_medium][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_medium][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_medium][t][:r_las]
-    results[:token_treshold_s_medium][t][:r_uas]
-    results[:token_treshold_s_medium][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_long] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_long, options)
-    results[:token_treshold_s_long][t] = {}
-    results[:token_treshold_s_long][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_long][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_long][t][:r_las]
-    results[:token_treshold_s_long][t][:r_uas]
-    results[:token_treshold_s_long][t][:r_la]
-  end
-
-
-  # same with student coeficient
-  options[:with_evaluation_coeficient] = true
-  # short - token treshold change
-  results[:token_treshold_s_short_coeficient] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_short, options)
-    results[:token_treshold_s_short_coeficient][t] = {}
-    results[:token_treshold_s_short_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_short_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_short_coeficient][t][:r_las]
-    results[:token_treshold_s_short_coeficient][t][:r_uas]
-    results[:token_treshold_s_short_coeficient][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_medium_coeficient] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_medium, options)
-    results[:token_treshold_s_medium_coeficient][t] = {}
-    results[:token_treshold_s_medium_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_medium_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_medium_coeficient][t][:r_las]
-    results[:token_treshold_s_medium_coeficient][t][:r_uas]
-    results[:token_treshold_s_medium_coeficient][t][:r_la]
-  end
-
-  # medium - token treshold change
-  results[:token_treshold_s_long_coeficient] = {}
-  tresholds.each do |t|
-    options[:token_treshold] = t
-
-    data = process_batch(tasks, s_long, options)
-    results[:token_treshold_s_long_coeficient][t] = {}
-    results[:token_treshold_s_long_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
-    results[:token_treshold_s_long_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
-    results[:token_treshold_s_long_coeficient][t][:r_las]
-    results[:token_treshold_s_long_coeficient][t][:r_uas]
-    results[:token_treshold_s_long_coeficient][t][:r_la]
-  end
-
-  options[:with_evaluation_coeficient] = false
+  # ---------------------------------------234532453245
+  # options[:with_evaluation_coeficient] = false
+  #
+  # xml_file.write(results.to_xml)
+  # yaml_file.write(results.to_yaml)
+  #
+  # xml_file.flush
+  # yaml_file.flush
+  # xml_file.close
+  # yaml_file.close
+  #
+  # # --------------------------------------------------------------------------------------------------------------------
+  # # podmet
+  # results = {}
+  # yaml_file = File.open('results1.yaml', 'a')
+  # xml_file  = File.open('results1.xml', 'a')
+  #
+  # tresholds = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+  #
+  # options = {}
+  # options[:relation_treshold] = 0.2
+  # options[:drop_zero]         = true
+  # options[:tokens]            = [1]
+  #
+  #
+  # # sentences
+  # ids = [];Sentence.all.each { |s| ids << s.id if s.tasks.started.count > 10 && s.tasks.started.count < 100 }
+  # sentences = Sentence.where('id in (?)', ids)
+  #
+  # tasks = Task.started
+  #
+  # # altogether - token treshold change
+  # results[:token_treshold] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, sentences, options)
+  #   results[:token_treshold][t] = {}
+  #   results[:token_treshold][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold][t][:r_las]
+  #   results[:token_treshold][t][:r_uas]
+  #   results[:token_treshold][t][:r_la]
+  # end
+  #
+  # # altogether - token treshold change, with evaluation coeficient
+  # results[:token_treshold_evaluation_coeficient] = {}
+  # options[:with_evaluation_coeficient] = true
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, sentences, options)
+  #   results[:token_treshold_evaluation_coeficient][t] = {}
+  #   results[:token_treshold_evaluation_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_evaluation_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_evaluation_coeficient][t][:r_las]
+  #   results[:token_treshold_evaluation_coeficient][t][:r_uas]
+  #   results[:token_treshold_evaluation_coeficient][t][:r_la]
+  # end
+  #
+  # options[:with_evaluation_coeficient] = false
+  #
+  # s_short  = sentences.short 100
+  # s_medium = sentences.medium 100
+  # s_long   = sentences.long 100
+  #
+  # # short - token treshold change
+  # results[:token_treshold_s_short] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_short, options)
+  #   results[:token_treshold_s_short][t] = {}
+  #   results[:token_treshold_s_short][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_short][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_short][t][:r_las]
+  #   results[:token_treshold_s_short][t][:r_uas]
+  #   results[:token_treshold_s_short][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_medium] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_medium, options)
+  #   results[:token_treshold_s_medium][t] = {}
+  #   results[:token_treshold_s_medium][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_medium][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_medium][t][:r_las]
+  #   results[:token_treshold_s_medium][t][:r_uas]
+  #   results[:token_treshold_s_medium][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_long] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_long, options)
+  #   results[:token_treshold_s_long][t] = {}
+  #   results[:token_treshold_s_long][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_long][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_long][t][:r_las]
+  #   results[:token_treshold_s_long][t][:r_uas]
+  #   results[:token_treshold_s_long][t][:r_la]
+  # end
+  #
+  #
+  # # same with student coeficient
+  # options[:with_evaluation_coeficient] = true
+  # # short - token treshold change
+  # results[:token_treshold_s_short_coeficient] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_short, options)
+  #   results[:token_treshold_s_short_coeficient][t] = {}
+  #   results[:token_treshold_s_short_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_short_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_short_coeficient][t][:r_las]
+  #   results[:token_treshold_s_short_coeficient][t][:r_uas]
+  #   results[:token_treshold_s_short_coeficient][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_medium_coeficient] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_medium, options)
+  #   results[:token_treshold_s_medium_coeficient][t] = {}
+  #   results[:token_treshold_s_medium_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_medium_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_medium_coeficient][t][:r_las]
+  #   results[:token_treshold_s_medium_coeficient][t][:r_uas]
+  #   results[:token_treshold_s_medium_coeficient][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_long_coeficient] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_long, options)
+  #   results[:token_treshold_s_long_coeficient][t] = {}
+  #   results[:token_treshold_s_long_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_long_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_long_coeficient][t][:r_las]
+  #   results[:token_treshold_s_long_coeficient][t][:r_uas]
+  #   results[:token_treshold_s_long_coeficient][t][:r_la]
+  # end
+  #
+  # options[:with_evaluation_coeficient] = false
+  #
+  # xml_file.write(results.to_xml)
+  # yaml_file.write(results.to_yaml)
+  #
+  # xml_file.flush
+  # yaml_file.flush
+  # xml_file.close
+  # yaml_file.close
+  #
+  # # --------------------------------------------------------------------------------------------------------------------
+  # # prisudok
+  # results = {}
+  # yaml_file = File.open('results2.yaml', 'a')
+  # xml_file  = File.open('results2.xml', 'a')
+  #
+  # tresholds = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+  #
+  # options = {}
+  # options[:relation_treshold] = 0.2
+  # options[:drop_zero]         = true
+  # options[:tokens]            = [2]
+  #
+  #
+  # # sentences
+  # ids = [];Sentence.all.each { |s| ids << s.id if s.tasks.started.count > 10 && s.tasks.started.count < 100 }
+  # sentences = Sentence.where('id in (?)', ids)
+  #
+  # tasks = Task.started
+  #
+  # # altogether - token treshold change
+  # results[:token_treshold] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, sentences, options)
+  #   results[:token_treshold][t] = {}
+  #   results[:token_treshold][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold][t][:r_las]
+  #   results[:token_treshold][t][:r_uas]
+  #   results[:token_treshold][t][:r_la]
+  # end
+  #
+  # # altogether - token treshold change, with evaluation coeficient
+  # results[:token_treshold_evaluation_coeficient] = {}
+  # options[:with_evaluation_coeficient] = true
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, sentences, options)
+  #   results[:token_treshold_evaluation_coeficient][t] = {}
+  #   results[:token_treshold_evaluation_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_evaluation_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_evaluation_coeficient][t][:r_las]
+  #   results[:token_treshold_evaluation_coeficient][t][:r_uas]
+  #   results[:token_treshold_evaluation_coeficient][t][:r_la]
+  # end
+  #
+  # options[:with_evaluation_coeficient] = false
+  #
+  # s_short  = sentences.short 100
+  # s_medium = sentences.medium 100
+  # s_long   = sentences.long 100
+  #
+  # # short - token treshold change
+  # results[:token_treshold_s_short] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_short, options)
+  #   results[:token_treshold_s_short][t] = {}
+  #   results[:token_treshold_s_short][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_short][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_short][t][:r_las]
+  #   results[:token_treshold_s_short][t][:r_uas]
+  #   results[:token_treshold_s_short][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_medium] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_medium, options)
+  #   results[:token_treshold_s_medium][t] = {}
+  #   results[:token_treshold_s_medium][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_medium][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_medium][t][:r_las]
+  #   results[:token_treshold_s_medium][t][:r_uas]
+  #   results[:token_treshold_s_medium][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_long] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_long, options)
+  #   results[:token_treshold_s_long][t] = {}
+  #   results[:token_treshold_s_long][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_long][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_long][t][:r_las]
+  #   results[:token_treshold_s_long][t][:r_uas]
+  #   results[:token_treshold_s_long][t][:r_la]
+  # end
+  #
+  #
+  # # same with student coeficient
+  # options[:with_evaluation_coeficient] = true
+  # # short - token treshold change
+  # results[:token_treshold_s_short_coeficient] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_short, options)
+  #   results[:token_treshold_s_short_coeficient][t] = {}
+  #   results[:token_treshold_s_short_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_short_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_short_coeficient][t][:r_las]
+  #   results[:token_treshold_s_short_coeficient][t][:r_uas]
+  #   results[:token_treshold_s_short_coeficient][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_medium_coeficient] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_medium, options)
+  #   results[:token_treshold_s_medium_coeficient][t] = {}
+  #   results[:token_treshold_s_medium_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_medium_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_medium_coeficient][t][:r_las]
+  #   results[:token_treshold_s_medium_coeficient][t][:r_uas]
+  #   results[:token_treshold_s_medium_coeficient][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_long_coeficient] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_long, options)
+  #   results[:token_treshold_s_long_coeficient][t] = {}
+  #   results[:token_treshold_s_long_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_long_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_long_coeficient][t][:r_las]
+  #   results[:token_treshold_s_long_coeficient][t][:r_uas]
+  #   results[:token_treshold_s_long_coeficient][t][:r_la]
+  # end
+  #
+  # options[:with_evaluation_coeficient] = false
+  #
+  # xml_file.write(results.to_xml)
+  # yaml_file.write(results.to_yaml)
+  #
+  # xml_file.flush
+  # yaml_file.flush
+  # xml_file.close
+  # yaml_file.close
+  #
+  # # --------------------------------------------------------------------------------------------------------------------
+  # # predmet
+  # results = {}
+  # yaml_file = File.open('results3.yaml', 'a')
+  # xml_file  = File.open('results3.xml', 'a')
+  #
+  # tresholds = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+  #
+  # options = {}
+  # options[:relation_treshold] = 0.2
+  # options[:drop_zero]         = true
+  # options[:tokens]            = [3]
+  #
+  #
+  # # sentences
+  # ids = [];Sentence.all.each { |s| ids << s.id if s.tasks.started.count > 10 && s.tasks.started.count < 100 }
+  # sentences = Sentence.where('id in (?)', ids)
+  #
+  # tasks = Task.started
+  #
+  # # altogether - token treshold change
+  # results[:token_treshold] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, sentences, options)
+  #   results[:token_treshold][t] = {}
+  #   results[:token_treshold][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold][t][:r_las]
+  #   results[:token_treshold][t][:r_uas]
+  #   results[:token_treshold][t][:r_la]
+  # end
+  #
+  # # altogether - token treshold change, with evaluation coeficient
+  # results[:token_treshold_evaluation_coeficient] = {}
+  # options[:with_evaluation_coeficient] = true
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, sentences, options)
+  #   results[:token_treshold_evaluation_coeficient][t] = {}
+  #   results[:token_treshold_evaluation_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_evaluation_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_evaluation_coeficient][t][:r_las]
+  #   results[:token_treshold_evaluation_coeficient][t][:r_uas]
+  #   results[:token_treshold_evaluation_coeficient][t][:r_la]
+  # end
+  #
+  # options[:with_evaluation_coeficient] = false
+  #
+  # s_short  = sentences.short 100
+  # s_medium = sentences.medium 100
+  # s_long   = sentences.long 100
+  #
+  # # short - token treshold change
+  # results[:token_treshold_s_short] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_short, options)
+  #   results[:token_treshold_s_short][t] = {}
+  #   results[:token_treshold_s_short][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_short][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_short][t][:r_las]
+  #   results[:token_treshold_s_short][t][:r_uas]
+  #   results[:token_treshold_s_short][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_medium] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_medium, options)
+  #   results[:token_treshold_s_medium][t] = {}
+  #   results[:token_treshold_s_medium][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_medium][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_medium][t][:r_las]
+  #   results[:token_treshold_s_medium][t][:r_uas]
+  #   results[:token_treshold_s_medium][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_long] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_long, options)
+  #   results[:token_treshold_s_long][t] = {}
+  #   results[:token_treshold_s_long][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_long][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_long][t][:r_las]
+  #   results[:token_treshold_s_long][t][:r_uas]
+  #   results[:token_treshold_s_long][t][:r_la]
+  # end
+  #
+  #
+  # # same with student coeficient
+  # options[:with_evaluation_coeficient] = true
+  # # short - token treshold change
+  # results[:token_treshold_s_short_coeficient] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_short, options)
+  #   results[:token_treshold_s_short_coeficient][t] = {}
+  #   results[:token_treshold_s_short_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_short_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_short_coeficient][t][:r_las]
+  #   results[:token_treshold_s_short_coeficient][t][:r_uas]
+  #   results[:token_treshold_s_short_coeficient][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_medium_coeficient] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_medium, options)
+  #   results[:token_treshold_s_medium_coeficient][t] = {}
+  #   results[:token_treshold_s_medium_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_medium_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_medium_coeficient][t][:r_las]
+  #   results[:token_treshold_s_medium_coeficient][t][:r_uas]
+  #   results[:token_treshold_s_medium_coeficient][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_long_coeficient] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_long, options)
+  #   results[:token_treshold_s_long_coeficient][t] = {}
+  #   results[:token_treshold_s_long_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_long_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_long_coeficient][t][:r_las]
+  #   results[:token_treshold_s_long_coeficient][t][:r_uas]
+  #   results[:token_treshold_s_long_coeficient][t][:r_la]
+  # end
+  #
+  # options[:with_evaluation_coeficient] = false
+  #
+  # xml_file.write(results.to_xml)
+  # yaml_file.write(results.to_yaml)
+  #
+  # xml_file.flush
+  # yaml_file.flush
+  # xml_file.close
+  # yaml_file.close
+  #
+  # # --------------------------------------------------------------------------------------------------------------------
+  # # privlastok
+  # results = {}
+  # yaml_file = File.open('results4.yaml', 'a')
+  # xml_file  = File.open('results4.xml', 'a')
+  #
+  # tresholds = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+  #
+  # options = {}
+  # options[:relation_treshold] = 0.2
+  # options[:drop_zero]         = true
+  # options[:tokens]            = [4]
+  #
+  #
+  # # sentences
+  # ids = [];Sentence.all.each { |s| ids << s.id if s.tasks.started.count > 10 && s.tasks.started.count < 100 }
+  # sentences = Sentence.where('id in (?)', ids)
+  #
+  # tasks = Task.started
+  #
+  # # altogether - token treshold change
+  # results[:token_treshold] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, sentences, options)
+  #   results[:token_treshold][t] = {}
+  #   results[:token_treshold][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold][t][:r_las]
+  #   results[:token_treshold][t][:r_uas]
+  #   results[:token_treshold][t][:r_la]
+  # end
+  #
+  # # altogether - token treshold change, with evaluation coeficient
+  # results[:token_treshold_evaluation_coeficient] = {}
+  # options[:with_evaluation_coeficient] = true
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, sentences, options)
+  #   results[:token_treshold_evaluation_coeficient][t] = {}
+  #   results[:token_treshold_evaluation_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_evaluation_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_evaluation_coeficient][t][:r_las]
+  #   results[:token_treshold_evaluation_coeficient][t][:r_uas]
+  #   results[:token_treshold_evaluation_coeficient][t][:r_la]
+  # end
+  #
+  # options[:with_evaluation_coeficient] = false
+  #
+  # s_short  = sentences.short 100
+  # s_medium = sentences.medium 100
+  # s_long   = sentences.long 100
+  #
+  # # short - token treshold change
+  # results[:token_treshold_s_short] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_short, options)
+  #   results[:token_treshold_s_short][t] = {}
+  #   results[:token_treshold_s_short][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_short][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_short][t][:r_las]
+  #   results[:token_treshold_s_short][t][:r_uas]
+  #   results[:token_treshold_s_short][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_medium] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_medium, options)
+  #   results[:token_treshold_s_medium][t] = {}
+  #   results[:token_treshold_s_medium][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_medium][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_medium][t][:r_las]
+  #   results[:token_treshold_s_medium][t][:r_uas]
+  #   results[:token_treshold_s_medium][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_long] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_long, options)
+  #   results[:token_treshold_s_long][t] = {}
+  #   results[:token_treshold_s_long][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_long][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_long][t][:r_las]
+  #   results[:token_treshold_s_long][t][:r_uas]
+  #   results[:token_treshold_s_long][t][:r_la]
+  # end
+  #
+  #
+  # # same with student coeficient
+  # options[:with_evaluation_coeficient] = true
+  # # short - token treshold change
+  # results[:token_treshold_s_short_coeficient] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_short, options)
+  #   results[:token_treshold_s_short_coeficient][t] = {}
+  #   results[:token_treshold_s_short_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_short_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_short_coeficient][t][:r_las]
+  #   results[:token_treshold_s_short_coeficient][t][:r_uas]
+  #   results[:token_treshold_s_short_coeficient][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_medium_coeficient] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_medium, options)
+  #   results[:token_treshold_s_medium_coeficient][t] = {}
+  #   results[:token_treshold_s_medium_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_medium_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_medium_coeficient][t][:r_las]
+  #   results[:token_treshold_s_medium_coeficient][t][:r_uas]
+  #   results[:token_treshold_s_medium_coeficient][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_long_coeficient] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_long, options)
+  #   results[:token_treshold_s_long_coeficient][t] = {}
+  #   results[:token_treshold_s_long_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_long_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_long_coeficient][t][:r_las]
+  #   results[:token_treshold_s_long_coeficient][t][:r_uas]
+  #   results[:token_treshold_s_long_coeficient][t][:r_la]
+  # end
+  #
+  # options[:with_evaluation_coeficient] = false
+  #
+  # xml_file.write(results.to_xml)
+  # yaml_file.write(results.to_yaml)
+  #
+  # xml_file.flush
+  # yaml_file.flush
+  # xml_file.close
+  # yaml_file.close
+  #
+  # # --------------------------------------------------------------------------------------------------------------------
+  # # prislovkove urcenie
+  # results = {}
+  # yaml_file = File.open('results5.yaml', 'a')
+  # xml_file  = File.open('results5.xml', 'a')
+  #
+  # tresholds = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+  #
+  # options = {}
+  # options[:relation_treshold] = 0.2
+  # options[:drop_zero]         = true
+  # options[:tokens]            = [5]
+  #
+  #
+  # # sentences
+  # ids = [];Sentence.all.each { |s| ids << s.id if s.tasks.started.count > 10 && s.tasks.started.count < 100 }
+  # sentences = Sentence.where('id in (?)', ids)
+  #
+  # tasks = Task.started
+  #
+  # # altogether - token treshold change
+  # results[:token_treshold] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, sentences, options)
+  #   results[:token_treshold][t] = {}
+  #   results[:token_treshold][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold][t][:r_las]
+  #   results[:token_treshold][t][:r_uas]
+  #   results[:token_treshold][t][:r_la]
+  # end
+  #
+  # # altogether - token treshold change, with evaluation coeficient
+  # results[:token_treshold_evaluation_coeficient] = {}
+  # options[:with_evaluation_coeficient] = true
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, sentences, options)
+  #   results[:token_treshold_evaluation_coeficient][t] = {}
+  #   results[:token_treshold_evaluation_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_evaluation_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_evaluation_coeficient][t][:r_las]
+  #   results[:token_treshold_evaluation_coeficient][t][:r_uas]
+  #   results[:token_treshold_evaluation_coeficient][t][:r_la]
+  # end
+  #
+  # options[:with_evaluation_coeficient] = false
+  #
+  # s_short  = sentences.short 100
+  # s_medium = sentences.medium 100
+  # s_long   = sentences.long 100
+  #
+  # # short - token treshold change
+  # results[:token_treshold_s_short] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_short, options)
+  #   results[:token_treshold_s_short][t] = {}
+  #   results[:token_treshold_s_short][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_short][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_short][t][:r_las]
+  #   results[:token_treshold_s_short][t][:r_uas]
+  #   results[:token_treshold_s_short][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_medium] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_medium, options)
+  #   results[:token_treshold_s_medium][t] = {}
+  #   results[:token_treshold_s_medium][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_medium][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_medium][t][:r_las]
+  #   results[:token_treshold_s_medium][t][:r_uas]
+  #   results[:token_treshold_s_medium][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_long] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_long, options)
+  #   results[:token_treshold_s_long][t] = {}
+  #   results[:token_treshold_s_long][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_long][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_long][t][:r_las]
+  #   results[:token_treshold_s_long][t][:r_uas]
+  #   results[:token_treshold_s_long][t][:r_la]
+  # end
+  #
+  #
+  # # same with student coeficient
+  # options[:with_evaluation_coeficient] = true
+  # # short - token treshold change
+  # results[:token_treshold_s_short_coeficient] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_short, options)
+  #   results[:token_treshold_s_short_coeficient][t] = {}
+  #   results[:token_treshold_s_short_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_short_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_short_coeficient][t][:r_las]
+  #   results[:token_treshold_s_short_coeficient][t][:r_uas]
+  #   results[:token_treshold_s_short_coeficient][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_medium_coeficient] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_medium, options)
+  #   results[:token_treshold_s_medium_coeficient][t] = {}
+  #   results[:token_treshold_s_medium_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_medium_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_medium_coeficient][t][:r_las]
+  #   results[:token_treshold_s_medium_coeficient][t][:r_uas]
+  #   results[:token_treshold_s_medium_coeficient][t][:r_la]
+  # end
+  #
+  # # medium - token treshold change
+  # results[:token_treshold_s_long_coeficient] = {}
+  # tresholds.each do |t|
+  #   options[:token_treshold] = t
+  #
+  #   data = process_batch(tasks, s_long, options)
+  #   results[:token_treshold_s_long_coeficient][t] = {}
+  #   results[:token_treshold_s_long_coeficient][t][:t_precision] = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positive] + data[:tokens][:tokens_negative])
+  #   results[:token_treshold_s_long_coeficient][t][:t_recall]    = Float(data[:tokens][:tokens_positive])/Float(data[:tokens][:tokens_positives_overall])
+  #   results[:token_treshold_s_long_coeficient][t][:r_las]
+  #   results[:token_treshold_s_long_coeficient][t][:r_uas]
+  #   results[:token_treshold_s_long_coeficient][t][:r_la]
+  # end
+  #
+  # options[:with_evaluation_coeficient] = false
 
   xml_file.write(results.to_xml)
   yaml_file.write(results.to_yaml)
