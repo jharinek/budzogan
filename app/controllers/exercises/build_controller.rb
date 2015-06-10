@@ -8,11 +8,11 @@ class Exercises::BuildController < ApplicationController
     @workgroups   = Workgroup.all
     @strategies   = { one_to_one:        'Každý študent jedna veta',
                       every_to_everyone: 'Každý študent všetky vety' }
-    @difficulties = { easy:   'ľahká',
-                      medium: 'stredná',
-                      hard:   'ťažká' }
-    @sources      = { sme:  'sme.sk',
-                      juls: 'Národný korpus' }
+    # @difficulties = { easy:   'ľahká',
+    #                   medium: 'stredná',
+    #                   hard:   'ťažká' }
+    @sources      = { dennikn:  'dennikN',
+                      juls: 'závislostný korpus' }
 
     @sentences = @exercise.sentences
 

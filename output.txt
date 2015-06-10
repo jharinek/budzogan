@@ -1,0 +1,176 @@
+1
+Mama má Emu.(6)
+Mama(6): l1:1->6(100.0%);, l2:1->4(66.667%);0->2(33.333%);,l3:0->6(100.0%);, sklady:prisudzovací_2_má:5(83.333%)určovací_2_má:1(16.667%)
+má(6): l1:2->5(83.333%);4->1(16.667%);, l2:1->4(66.667%);0->2(33.333%);,l3:0->4(66.667%);1->1(16.667%);2->1(16.667%);, sklady:prisudzovací_1_Mama:5(83.333%)určovací_3_Emu.:4(66.667%)určovací_1_Mama:1(16.667%)priraďovací_3_Emu.:1(16.667%)
+Emu.(5): l1:3->5(100.0%);, l2:4->3(60.0%);0->2(40.0%);,l3:0->5(100.0%);, sklady:určovací_2_má:4(80.0%)priraďovací_2_má:1(20.0%)
+
+---------------------------------------------------
+2
+Rozprávali sme si vtipy, príbehy a legendy.(22)
+(38): l1:1->20(52.632%);2->18(47.368%);, l2:2->20(52.632%);0->10(26.316%);1->8(21.053%);,l3:0->32(84.211%);1->5(13.158%);2->1(2.632%);, sklady:prisudzovací_0_:18(47.368%)určovací_4_vtipy,:12(31.579%)prisudzovací_0_Rozprávali sme:10(26.316%)prisudzovací__:4(10.526%)určovací_5_príbehy:3(7.895%)priraďovací_4_vtipy,:3(7.895%)určovací__:1(2.632%)priraďovací_5_príbehy:1(2.632%)priraďovací_7_legendy.:1(2.632%)určovací_7_legendy.:1(2.632%)
+Rozprávali(2): l1:2->2(100.0%);, l2:0->2(100.0%);,l3:0->2(100.0%);, sklady:určovací_4_vtipy,:2(100.0%)prisudzovací_2_sme:1(50.0%)
+sme(2): l1:1->2(100.0%);, l2:0->1(50.0%);2->1(50.0%);,l3:0->2(100.0%);, sklady:prisudzovací_1_Rozprávali:1(50.0%)prisudzovací__:1(50.0%)
+vtipy,(20): l1:3->20(100.0%);, l2:0->11(55.0%);1->4(20.0%);4->4(20.0%);2->1(5.0%);,l3:0->20(100.0%);, sklady:určovací_0_:9(45.0%)priraďovací_5_príbehy:9(45.0%)priraďovací_7_legendy.:3(15.0%)určovací_5_príbehy:3(15.0%)určovací_0_Rozprávali sme:3(15.0%)určovací_1_Rozprávali:2(10.0%)priraďovací_0_Rozprávali sme:2(10.0%)priraďovací__:2(10.0%)priraďovací_0_:1(5.0%)
+príbehy(20): l1:3->17(85.0%);4->3(15.0%);, l2:0->12(60.0%);1->3(15.0%);4->3(15.0%);3->1(5.0%);2->1(5.0%);,l3:0->20(100.0%);, sklady:priraďovací_7_legendy.:15(75.0%)priraďovací_4_vtipy,:9(45.0%)určovací_4_vtipy,:3(15.0%)určovací_0_:3(15.0%)priraďovací__:2(10.0%)určovací_7_legendy.:2(10.0%)určovací__:2(10.0%)priraďovací_0_Rozprávali sme:1(5.0%)
+legendy.(20): l1:3->17(85.0%);4->3(15.0%);, l2:0->12(60.0%);1->3(15.0%);4->3(15.0%);3->1(5.0%);2->1(5.0%);,l3:0->20(100.0%);, sklady:priraďovací_5_príbehy:15(75.0%)priraďovací_4_vtipy,:3(15.0%)určovací__:2(10.0%)určovací_5_príbehy:2(10.0%)priraďovací_0_Rozprávali sme:1(5.0%)určovací_0_:1(5.0%)
+
+---------------------------------------------------
+3
+Mladý švárny bohatier si ulovil líšku svojich snov.(20)
+svojich snov.(5): l1:4->3(60.0%);3->1(20.0%);2->1(20.0%);, l2:0->2(40.0%);2->2(40.0%);1->1(20.0%);,l3:0->5(100.0%);, sklady:určovací_6_líšku:4(80.0%)priraďovací_6_líšku:1(20.0%)prisudzovací_3_bohatier:1(20.0%)
+Mladý(20): l1:4->19(95.0%);5->1(5.0%);, l2:1->13(65.0%);0->7(35.0%);,l3:0->20(100.0%);, sklady:určovací_3_bohatier:11(55.0%)určovací_2_švárny:10(50.0%)priraďovací_2_švárny:6(30.0%)priraďovací_3_bohatier:2(10.0%)určovací__:1(5.0%)priraďovací__:1(5.0%)
+švárny(20): l1:4->19(95.0%);5->1(5.0%);, l2:1->11(55.0%);0->7(35.0%);2->2(10.0%);,l3:0->20(100.0%);, sklady:určovací_1_Mladý:10(50.0%)určovací_3_bohatier:7(35.0%)priraďovací_1_Mladý:6(30.0%)priraďovací_3_bohatier:1(5.0%)priraďovací__:1(5.0%)určovací__:1(5.0%)
+bohatier(20): l1:1->20(100.0%);, l2:1->14(70.0%);0->6(30.0%);,l3:0->20(100.0%);, sklady:prisudzovací_5_ulovil:17(85.0%)určovací_1_Mladý:11(55.0%)určovací_2_švárny:7(35.0%)priraďovací_1_Mladý:2(10.0%)priraďovací_5_ulovil:1(5.0%)priraďovací_2_švárny:1(5.0%)prisudzovací_0_ulovil snov.:1(5.0%)určovací__svojich snov.:1(5.0%)prisudzovací__:1(5.0%)
+ulovil(19): l1:2->19(100.0%);, l2:1->10(52.632%);0->5(26.316%);2->4(21.053%);,l3:0->11(57.895%);1->6(31.579%);2->2(10.526%);, sklady:prisudzovací_3_bohatier:17(89.474%)určovací_6_líšku:15(78.947%)priraďovací_6_líšku:3(15.789%)priraďovací_3_bohatier:1(5.263%)určovací_7_svojich:1(5.263%)
+líšku(20): l1:3->20(100.0%);, l2:4->13(65.0%);0->6(30.0%);3->1(5.0%);,l3:0->20(100.0%);, sklady:určovací_5_ulovil:15(75.0%)určovací_8_snov.:7(35.0%)priraďovací_8_snov.:4(20.0%)určovací_0_svojich snov.:3(15.0%)priraďovací_5_ulovil:3(15.0%)určovací_7_svojich:3(15.0%)určovací__:1(5.0%)určovací_0_ulovil snov.:1(5.0%)priraďovací_0_svojich snov.:1(5.0%)
+svojich(15): l1:4->14(93.333%);3->1(6.667%);, l2:0->5(33.333%);1->5(33.333%);2->5(33.333%);,l3:0->15(100.0%);, sklady:určovací_8_snov.:7(46.667%)priraďovací_8_snov.:5(33.333%)určovací_6_líšku:3(20.0%)určovací_5_ulovil:1(6.667%)
+snov.(15): l1:4->11(73.333%);3->4(26.667%);, l2:2->8(53.333%);0->2(13.333%);1->2(13.333%);4->2(13.333%);5->1(6.667%);,l3:0->15(100.0%);, sklady:určovací_6_líšku:7(46.667%)určovací_7_svojich:7(46.667%)priraďovací_7_svojich:5(33.333%)priraďovací_6_líšku:4(26.667%)určovací__:1(6.667%)
+
+---------------------------------------------------
+4
+Moja cesta do amazónskej džungle sa začala v Lime.(20)
+Moja(18): l1:4->17(94.444%);3->1(5.556%);, l2:1->10(55.556%);0->5(27.778%);2->3(16.667%);,l3:0->18(100.0%);, sklady:určovací_2_cesta:14(77.778%)priraďovací_2_cesta:3(16.667%)priraďovací_4_amazónskej:1(5.556%)určovací__:1(5.556%)
+cesta(20): l1:1->20(100.0%);, l2:1->13(65.0%);0->7(35.0%);,l3:0->20(100.0%);, sklady:prisudzovací_7_začala:17(85.0%)určovací_1_Moja:14(70.0%)určovací_5_džungle:11(55.0%)priraďovací_5_džungle:4(20.0%)priraďovací_1_Moja:3(15.0%)priraďovací_7_začala:2(10.0%)
+amazónskej(19): l1:4->19(100.0%);, l2:1->10(52.632%);0->7(36.842%);2->2(10.526%);,l3:0->19(100.0%);, sklady:určovací_5_džungle:14(73.684%)priraďovací_5_džungle:5(26.316%)priraďovací_1_Moja:1(5.263%)
+džungle(19): l1:5->16(84.211%);3->2(10.526%);4->1(5.263%);, l2:1->10(52.632%);0->7(36.842%);2->2(10.526%);,l3:0->19(100.0%);, sklady:určovací_4_amazónskej:14(73.684%)určovací_2_cesta:11(57.895%)priraďovací_4_amazónskej:5(26.316%)priraďovací_2_cesta:4(21.053%)priraďovací_9_Lime.:2(10.526%)určovací_9_Lime.:1(5.263%)
+začala(20): l1:2->20(100.0%);, l2:1->11(55.0%);0->8(40.0%);2->1(5.0%);,l3:0->12(60.0%);1->7(35.0%);2->1(5.0%);, sklady:prisudzovací_2_cesta:17(85.0%)určovací_9_Lime.:15(75.0%)priraďovací_9_Lime.:4(20.0%)priraďovací_2_cesta:2(10.0%)
+Lime.(19): l1:5->19(100.0%);, l2:1->11(57.895%);0->8(42.105%);,l3:0->19(100.0%);, sklady:určovací_7_začala:15(78.947%)priraďovací_7_začala:4(21.053%)priraďovací_5_džungle:2(10.526%)určovací_5_džungle:1(5.263%)
+
+---------------------------------------------------
+5
+Nedovidíte na breh.(20)
+(20): l1:1->20(100.0%);, l2:2->16(80.0%);0->4(20.0%);,l3:0->20(100.0%);, sklady:prisudzovací_1_Nedovidíte:18(90.0%)priraďovací_1_Nedovidíte:1(5.0%)určovací_3_breh.:1(5.0%)prisudzovací__:1(5.0%)
+Nedovidíte(20): l1:2->20(100.0%);, l2:1->13(65.0%);0->7(35.0%);,l3:0->12(60.0%);1->7(35.0%);2->1(5.0%);, sklady:prisudzovací_0_:18(90.0%)určovací_3_breh.:15(75.0%)priraďovací_3_breh.:4(20.0%)priraďovací_0_:1(5.0%)
+breh.(20): l1:5->20(100.0%);, l2:1->13(65.0%);0->7(35.0%);,l3:0->20(100.0%);, sklady:určovací_1_Nedovidíte:15(75.0%)priraďovací_1_Nedovidíte:4(20.0%)určovací_0_:1(5.0%)
+
+---------------------------------------------------
+6
+Domorodci si delfíny veľmi vážia.(20)
+(1): l1:2->1(100.0%);, l2:0->1(100.0%);,l3:0->1(100.0%);, sklady:
+Domorodci(20): l1:1->20(100.0%);, l2:1->15(75.0%);0->5(25.0%);,l3:0->20(100.0%);, sklady:prisudzovací_5_vážia.:20(100.0%)určovací_3_delfíny:3(15.0%)určovací_4_veľmi:1(5.0%)
+delfíny(19): l1:3->17(89.474%);4->1(5.263%);5->1(5.263%);, l2:4->9(47.368%);0->7(36.842%);1->2(10.526%);2->1(5.263%);,l3:0->19(100.0%);, sklady:určovací_5_vážia.:10(52.632%)určovací_4_veľmi:5(26.316%)priraďovací_5_vážia.:4(21.053%)priraďovací_4_veľmi:3(15.789%)určovací_1_Domorodci:3(15.789%)
+veľmi(19): l1:5->15(78.947%);4->4(21.053%);, l2:3->11(57.895%);0->5(26.316%);1->3(15.789%);,l3:0->19(100.0%);, sklady:určovací_5_vážia.:9(47.368%)určovací_3_delfíny:5(26.316%)priraďovací_3_delfíny:3(15.789%)priraďovací_5_vážia.:2(10.526%)určovací_1_Domorodci:1(5.263%)
+vážia.(20): l1:2->20(100.0%);, l2:1->12(60.0%);0->6(30.0%);2->2(10.0%);,l3:0->11(55.0%);1->8(40.0%);2->1(5.0%);, sklady:prisudzovací_1_Domorodci:20(100.0%)určovací_3_delfíny:10(50.0%)určovací_4_veľmi:9(45.0%)priraďovací_3_delfíny:4(20.0%)priraďovací_4_veľmi:2(10.0%)určovací__:1(5.0%)
+
+---------------------------------------------------
+7
+V Tichom oceáne leží neveľký ostrov. (19)
+Tichom oceáne(2): l1:1->1(50.0%);5->1(50.0%);, l2:1->2(100.0%);,l3:0->2(100.0%);, sklady:prisudzovací_4_leží:1(50.0%)určovací_4_leží:1(50.0%)určovací_5_neveľký:1(50.0%)
+Tichom(18): l1:4->14(77.778%);5->4(22.222%);, l2:1->10(55.556%);0->7(38.889%);2->1(5.556%);,l3:0->18(100.0%);, sklady:určovací_3_oceáne:12(66.667%)priraďovací_3_oceáne:4(22.222%)určovací__:2(11.111%)určovací_4_leží:2(11.111%)určovací_6_ostrov.:1(5.556%)
+oceáne(18): l1:5->15(83.333%);4->1(5.556%);2->1(5.556%);1->1(5.556%);, l2:1->13(72.222%);0->5(27.778%);,l3:0->18(100.0%);, sklady:určovací_2_Tichom:12(66.667%)určovací_4_leží:5(27.778%)priraďovací_2_Tichom:4(22.222%)prisudzovací_4_leží:3(16.667%)priraďovací_4_leží:3(16.667%)určovací__:2(11.111%)určovací_6_ostrov.:2(11.111%)
+leží(19): l1:2->18(94.737%);1->1(5.263%);, l2:1->13(68.421%);0->6(31.579%);,l3:0->9(47.368%);1->9(47.368%);2->1(5.263%);, sklady:prisudzovací_6_ostrov.:14(73.684%)určovací_3_oceáne:5(26.316%)prisudzovací_3_oceáne:3(15.789%)určovací_5_neveľký:3(15.789%)priraďovací_3_oceáne:3(15.789%)určovací_2_Tichom:2(10.526%)priraďovací_6_ostrov.:2(10.526%)určovací_0_:1(5.263%)určovací_6_ostrov.:1(5.263%)prisudzovací_0_:1(5.263%)
+neveľký(19): l1:4->17(89.474%);3->1(5.263%);5->1(5.263%);, l2:1->12(63.158%);0->4(21.053%);2->2(10.526%);3->1(5.263%);,l3:0->19(100.0%);, sklady:určovací_6_ostrov.:11(57.895%)priraďovací_6_ostrov.:5(26.316%)určovací_4_leží:3(15.789%)určovací_0_:1(5.263%)
+ostrov.(18): l1:1->15(83.333%);3->2(11.111%);5->1(5.556%);, l2:1->13(72.222%);0->5(27.778%);,l3:0->18(100.0%);, sklady:prisudzovací_4_leží:14(77.778%)určovací_5_neveľký:11(61.111%)priraďovací_5_neveľký:5(27.778%)priraďovací_4_leží:2(11.111%)určovací_3_oceáne:2(11.111%)určovací_2_Tichom:1(5.556%)určovací_4_leží:1(5.556%)
+
+---------------------------------------------------
+8
+Na brehoch ostrova, ktoré sa strmo zvažujú k moru, stoja kamenné sochy.(18)
+(4): l1:1->2(50.0%);5->2(50.0%);, l2:0->2(50.0%);1->1(25.0%);2->1(25.0%);,l3:0->4(100.0%);, sklady:prisudzovací_7_zvažujú:2(50.0%)určovací_10_stoja:1(25.0%)
+brehoch(11): l1:5->7(63.636%);3->3(27.273%);1->1(9.091%);, l2:0->5(45.455%);1->5(45.455%);5->1(9.091%);,l3:0->11(100.0%);, sklady:určovací_3_ostrova,:8(72.727%)určovací_10_stoja:7(63.636%)priraďovací_3_ostrova,:2(18.182%)priraďovací_10_stoja:2(18.182%)
+ostrova,(10): l1:4->7(70.0%);3->2(20.0%);1->1(10.0%);, l2:0->5(50.0%);2->4(40.0%);1->1(10.0%);,l3:0->10(100.0%);, sklady:určovací_2_brehoch:8(80.0%)priraďovací_2_brehoch:2(20.0%)prisudzovací_7_zvažujú:1(10.0%)
+strmo(1): l1:5->1(100.0%);, l2:3->1(100.0%);,l3:0->1(100.0%);, sklady:určovací_7_zvažujú:1(100.0%)
+zvažujú(3): l1:2->3(100.0%);, l2:0->2(66.667%);1->1(33.333%);,l3:0->2(66.667%);1->1(33.333%);, sklady:prisudzovací_0_:2(66.667%)prisudzovací_3_ostrova,:1(33.333%)určovací_6_strmo:1(33.333%)
+stoja(11): l1:2->11(100.0%);, l2:1->8(72.727%);0->3(27.273%);,l3:0->5(45.455%);1->5(45.455%);2->1(9.091%);, sklady:prisudzovací_12_sochy.:10(90.909%)určovací_2_brehoch:7(63.636%)priraďovací_2_brehoch:2(18.182%)určovací_0_brehoch ostrova,:1(9.091%)
+kamenné(10): l1:4->10(100.0%);, l2:1->6(60.0%);0->3(30.0%);2->1(10.0%);,l3:0->10(100.0%);, sklady:určovací_12_sochy.:8(80.0%)priraďovací_12_sochy.:2(20.0%)
+sochy.(10): l1:1->10(100.0%);, l2:1->8(80.0%);0->2(20.0%);,l3:0->10(100.0%);, sklady:prisudzovací_10_stoja:10(100.0%)určovací_11_kamenné:8(80.0%)priraďovací_11_kamenné:2(20.0%)
+
+---------------------------------------------------
+9
+Podľa názoru psychológov sa inteligenčný kvocient podieľa na úspešnosti človeka len 20 percentami.(12)
+len 20 percentami.(5): l1:3->3(60.0%);2->1(20.0%);1->1(20.0%);, l2:0->3(60.0%);2->1(20.0%);6->1(20.0%);,l3:0->5(100.0%);, sklady:určovací_10_človeka:2(40.0%)priraďovací_6_kvocient:1(20.0%)priraďovací_3_psychológov:1(20.0%)
+názoru(1): l1:3->1(100.0%);, l2:0->1(100.0%);,l3:0->1(100.0%);, sklady:určovací_7_podieľa:1(100.0%)určovací_9_úspešnosti:1(100.0%)
+psychológov(2): l1:4->2(100.0%);, l2:0->1(50.0%);1->1(50.0%);,l3:0->2(100.0%);, sklady:určovací_5_inteligenčný:1(50.0%)priraďovací_0_Podľa názoru:1(50.0%)
+inteligenčný(7): l1:4->7(100.0%);, l2:1->4(57.143%);0->3(42.857%);,l3:0->7(100.0%);, sklady:určovací_6_kvocient:6(85.714%)určovací_3_psychológov:1(14.286%)priraďovací_6_kvocient:1(14.286%)
+kvocient(8): l1:1->8(100.0%);, l2:0->4(50.0%);1->4(50.0%);,l3:0->8(100.0%);, sklady:prisudzovací_7_podieľa:8(100.0%)určovací_5_inteligenčný:6(75.0%)priraďovací_0_Podľa názoru:1(12.5%)priraďovací_5_inteligenčný:1(12.5%)
+podieľa(8): l1:2->8(100.0%);, l2:1->4(50.0%);0->3(37.5%);2->1(12.5%);,l3:0->6(75.0%);1->1(12.5%);2->1(12.5%);, sklady:prisudzovací_6_kvocient:8(100.0%)určovací_9_úspešnosti:5(62.5%)určovací_2_názoru:1(12.5%)
+úspešnosti(6): l1:3->6(100.0%);, l2:0->5(83.333%);5->1(16.667%);,l3:0->6(100.0%);, sklady:určovací_7_podieľa:5(83.333%)určovací_10_človeka:4(66.667%)určovací_2_názoru:1(16.667%)
+človeka(4): l1:3->2(50.0%);4->2(50.0%);, l2:0->1(25.0%);1->1(25.0%);2->1(25.0%);4->1(25.0%);,l3:0->4(100.0%);, sklady:určovací_9_úspešnosti:4(100.0%)určovací_0_20 percentami.:1(25.0%)určovací_0_len 20 percentami.:1(25.0%)
+
+---------------------------------------------------
+10
+Cholerik má tendenciu rýchlo reagovať na rôzne situácie.(7)
+(4): l1:2->3(75.0%);3->1(25.0%);, l2:0->2(50.0%);2->2(50.0%);,l3:0->4(100.0%);, sklady:prisudzovací_1_Cholerik:3(75.0%)určovací_4_rýchlo:3(75.0%)určovací_1_Cholerik:1(25.0%)
+Cholerik(5): l1:1->5(100.0%);, l2:1->4(80.0%);0->1(20.0%);,l3:0->5(100.0%);, sklady:prisudzovací_5_reagovať:2(40.0%)prisudzovací_0_má tendenciu reagovať:2(40.0%)určovací_3_tendenciu:1(20.0%)určovací_0_má tendenciu:1(20.0%)prisudzovací_0_:1(20.0%)
+tendenciu(1): l1:3->1(100.0%);, l2:4->1(100.0%);,l3:0->1(100.0%);, sklady:určovací_1_Cholerik:1(100.0%)
+rýchlo(4): l1:4->3(75.0%);5->1(25.0%);, l2:1->3(75.0%);0->1(25.0%);,l3:0->4(100.0%);, sklady:určovací_8_situácie.:2(50.0%)určovací_0_má tendenciu reagovať:2(50.0%)určovací_5_reagovať:1(25.0%)určovací_0_má tendenciu:1(25.0%)
+reagovať(2): l1:2->2(100.0%);, l2:0->1(50.0%);1->1(50.0%);,l3:0->1(50.0%);1->1(50.0%);, sklady:prisudzovací_1_Cholerik:2(100.0%)určovací_4_rýchlo:1(50.0%)určovací_8_situácie.:1(50.0%)
+rôzne(4): l1:4->4(100.0%);, l2:1->3(75.0%);0->1(25.0%);,l3:0->4(100.0%);, sklady:určovací_8_situácie.:3(75.0%)určovací__má tendenciu:1(25.0%)
+situácie.(4): l1:3->3(75.0%);4->1(25.0%);, l2:0->1(25.0%);1->1(25.0%);2->1(25.0%);4->1(25.0%);,l3:0->4(100.0%);, sklady:určovací_7_rôzne:3(75.0%)určovací_4_rýchlo:2(50.0%)určovací_5_reagovať:1(25.0%)určovací__má tendenciu:1(25.0%)
+
+---------------------------------------------------
+11
+Na Galapágoch strávil šesť týždňov Darwin.(2)
+(2): l1:1->1(50.0%);2->1(50.0%);, l2:0->2(100.0%);,l3:0->2(100.0%);, sklady:
+Galapágoch(1): l1:5->1(100.0%);, l2:1->1(100.0%);,l3:0->1(100.0%);, sklady:priraďovací_3_strávil:1(100.0%)
+strávil(1): l1:2->1(100.0%);, l2:1->1(100.0%);,l3:1->1(100.0%);, sklady:prisudzovací_6_Darwin.:1(100.0%)priraďovací_2_Galapágoch:1(100.0%)
+Darwin.(1): l1:1->1(100.0%);, l2:1->1(100.0%);,l3:0->1(100.0%);, sklady:prisudzovací_3_strávil:1(100.0%)
+
+---------------------------------------------------
+12
+V umiestňovaní ovocia a zeleniny patrím ku konzervatívcom.(0)
+
+---------------------------------------------------
+13
+Neodpustím si ani koše čerstvých kvetín.(1)
+(1): l1:1->1(100.0%);, l2:2->1(100.0%);,l3:0->1(100.0%);, sklady:prisudzovací_1_Neodpustím:1(100.0%)
+Neodpustím(1): l1:2->1(100.0%);, l2:1->1(100.0%);,l3:1->1(100.0%);, sklady:prisudzovací_0_:1(100.0%)
+
+---------------------------------------------------
+14
+Dnešný deň bol teda hustý, to vám poviem!(1)
+bol hustý,(1): l1:2->1(100.0%);, l2:2->1(100.0%);,l3:0->1(100.0%);, sklady:prisudzovací_2_deň:1(100.0%)
+Dnešný(1): l1:4->1(100.0%);, l2:1->1(100.0%);,l3:0->1(100.0%);, sklady:priraďovací_2_deň:1(100.0%)
+deň(1): l1:1->1(100.0%);, l2:1->1(100.0%);,l3:0->1(100.0%);, sklady:prisudzovací_0_bol hustý,:1(100.0%)priraďovací_1_Dnešný:1(100.0%)
+
+---------------------------------------------------
+15
+Celé sa to začalo už včera, keď som babke zlikvidovala tekvicu na pečenie.(0)
+
+---------------------------------------------------
+16
+Pochádzal som z pomerne zámožnej obchodníckej rodiny.(0)
+
+---------------------------------------------------
+17
+Chcel som kráčať v šľapajach svojho otca Nicola Pola, ktorý odišiel krátko pred mojím narodením.(0)
+
+---------------------------------------------------
+18
+Môj otec a Mafeo sa vrátili v roku 1269, keď som mal pätnásť rokov.(2)
+otec Mafeo(1): l1:1->1(100.0%);, l2:1->1(100.0%);,l3:0->1(100.0%);, sklady:prisudzovací_6_vrátili:1(100.0%)určovací_1_Môj:1(100.0%)
+Môj(2): l1:4->2(100.0%);, l2:1->1(50.0%);2->1(50.0%);,l3:0->2(100.0%);, sklady:priraďovací_2_otec:1(50.0%)určovací_0_otec Mafeo:1(50.0%)
+otec(1): l1:1->1(100.0%);, l2:1->1(100.0%);,l3:0->1(100.0%);, sklady:prisudzovací_6_vrátili:1(100.0%)priraďovací_1_Môj:1(100.0%)
+vrátili(2): l1:2->2(100.0%);, l2:1->2(100.0%);,l3:0->1(50.0%);1->1(50.0%);, sklady:prisudzovací_2_otec:1(50.0%)prisudzovací_0_otec Mafeo:1(50.0%)
+
+---------------------------------------------------
+19
+Chcel by si ísť s nami?(5)
+(3): l1:1->2(66.667%);2->1(33.333%);, l2:0->3(100.0%);,l3:0->3(100.0%);, sklady:
+
+---------------------------------------------------
+20
+Domy na tejto ulici vyrastajú priamo z vody.(1)
+(1): l1:1->1(100.0%);, l2:1->1(100.0%);,l3:0->1(100.0%);, sklady:
+ulici(1): l1:5->1(100.0%);, l2:1->1(100.0%);,l3:0->1(100.0%);, sklady:
+vyrastajú(1): l1:2->1(100.0%);, l2:1->1(100.0%);,l3:1->1(100.0%);, sklady:
+vody.(1): l1:3->1(100.0%);, l2:5->1(100.0%);,l3:0->1(100.0%);, sklady:
+
+---------------------------------------------------
+21
+Cestovanie je dobrodružstvom.(6)
+Cestovanie(6): l1:1->5(83.333%);2->1(16.667%);, l2:1->4(66.667%);0->2(33.333%);,l3:0->6(100.0%);, sklady:prisudzovací_2_je:4(66.667%)prisudzovací_3_dobrodružstvom.:2(33.333%)priraďovací_3_dobrodružstvom.:1(16.667%)
+je(4): l1:2->4(100.0%);, l2:1->4(100.0%);,l3:1->2(50.0%);0->1(25.0%);2->1(25.0%);, sklady:prisudzovací_1_Cestovanie:4(100.0%)určovací_3_dobrodružstvom.:2(50.0%)priraďovací_3_dobrodružstvom.:1(25.0%)
+dobrodružstvom.(6): l1:4->2(33.333%);3->2(33.333%);2->1(16.667%);1->1(16.667%);, l2:0->2(33.333%);2->2(33.333%);1->1(16.667%);6->1(16.667%);,l3:0->6(100.0%);, sklady:určovací_2_je:2(33.333%)prisudzovací_1_Cestovanie:2(33.333%)priraďovací_1_Cestovanie:1(16.667%)priraďovací_2_je:1(16.667%)
+
+---------------------------------------------------
+22
+Vesmírne sondy už navštívili veľa miest v slnečnej sústave.(4)
+(3): l1:1->2(66.667%);2->1(33.333%);, l2:0->3(100.0%);,l3:0->3(100.0%);, sklady:
+Vesmírne(1): l1:4->1(100.0%);, l2:1->1(100.0%);,l3:0->1(100.0%);, sklady:priraďovací_2_sondy:1(100.0%)
+sondy(1): l1:1->1(100.0%);, l2:1->1(100.0%);,l3:0->1(100.0%);, sklady:priraďovací_1_Vesmírne:1(100.0%)prisudzovací_4_navštívili:1(100.0%)
+navštívili(1): l1:2->1(100.0%);, l2:1->1(100.0%);,l3:1->1(100.0%);, sklady:prisudzovací_2_sondy:1(100.0%)priraďovací_6_miest:1(100.0%)
+miest(1): l1:3->1(100.0%);, l2:2->1(100.0%);,l3:0->1(100.0%);, sklady:priraďovací_4_navštívili:1(100.0%)priraďovací_9_sústave.:1(100.0%)
+slnečnej(1): l1:4->1(100.0%);, l2:1->1(100.0%);,l3:0->1(100.0%);, sklady:priraďovací__:1(100.0%)
+sústave.(1): l1:5->1(100.0%);, l2:1->1(100.0%);,l3:0->1(100.0%);, sklady:priraďovací_6_miest:1(100.0%)
+
+---------------------------------------------------

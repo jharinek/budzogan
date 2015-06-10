@@ -1,4 +1,4 @@
-<%= link_to 'Generuj 10 nových viet', sentences_generate_path, remote: true, class: 'btn btn-default pull-right' %>
+<%= link_to 'Generuj 10 nových viet', sentences_generate_path(length: 6, source: ''), remote: true, class: 'btn btn-default pull-right' %>
 
 <table class="table" id="sentences-table">
   <thead>

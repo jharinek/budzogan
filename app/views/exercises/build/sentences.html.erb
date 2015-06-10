@@ -14,11 +14,6 @@
         </div>
 
         <div class="form-group">
-          <%= f.label :sentence_difficulty, 'Náročnosť viet' %>
-          <%= f.collection_select :sentence_difficulty, @difficulties, :first, :last, {include_blank: 'Nezáleží'}, {data: {as: :select2}, class: 'attribute-select'} %>
-        </div>
-
-        <div class="form-group">
           <%= f.label :sentence_source, 'Zdroj viet' %>
           <%= f.collection_select :sentence_source, @sources, :first, :last, {include_blank: 'Nezáleží'}, {data: {as: :select2}, class: 'attribute-select'} %>
         </div>
